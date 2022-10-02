@@ -1,5 +1,6 @@
 
 using OperationStacked.Abstractions;
+using OperationStacked.Data;
 using OperationStacked.Extensions;
 using OperationStacked.Services;
 
@@ -12,21 +13,31 @@ var assembly = typeof(Program).Assembly;
 //builder.Services.AddSingletonsByConvention(assembly, x => x.Name.EndsWith("Service"));
 builder.Services.AddTransient<IExerciseProgressionService,ExerciseProgressionService>();
 builder.Services.AddTransient<IExerciseCreationService,ExerciseCreationService>();
+builder.Services.AddTransient<IExerciseRetrievalService, ExerciseRetrievalService>();
+builder.Services.AddTransient<ILoginService, LoginService>();
+builder.Services.AddTransient<IPasswordHasherService, PasswordHasherService>();
+
+builder.Services.AddDbContext<OperationStackedContext>();
 builder.Services.AddExerciseFactory();
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    var dbContext = scope.ServiceProvider.GetRequiredService<OperationStackedContext>();
+    // use context
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+    app.UseHttpsRedirection();
+
+    app.MapControllers();
+    await dbContext.Database.EnsureCreatedAsync();
+    app.Run();
 }
+// Configure the HTTP request pipeline.
 
-app.UseHttpsRedirection();
-
-app.MapControllers();
-
-app.Run();
 
 internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {

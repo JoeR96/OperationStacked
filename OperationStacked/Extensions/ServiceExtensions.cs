@@ -16,7 +16,7 @@ namespace OperationStacked.Extensions
             {
                 var implementation = implementations.FirstOrDefault(x => @interface.IsAssignableFrom(x));
                 if (implementation == null) continue;
-                services.AddSingleton(@interface, implementation);
+                services.AddTransient(@interface, implementation);
             }
             return services;
         }

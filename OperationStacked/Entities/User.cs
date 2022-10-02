@@ -1,5 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OperationStacked.Entities
 {
@@ -7,10 +8,22 @@ namespace OperationStacked.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
+        public int UserId { get; set; }
+        [Required]
         public string UserName { get; set; }
+        [Required]
         public string Password { get; set; }
-        public int CurrentLiftDay { get; set; } = 0;
-        public int CurrentLiftWeek { get; set; } = 0;
+        [Required]
+        [DataType(DataType.EmailAddress)]
+        [StringLength(255)]
+        public string Email { get; set; }
+        public int CurrentWeek { get; set; } = 0;
+        public int CurrentDay { get; set; } = 0;
+        public int WorkoutDaysInWeek { get; set; }
+        public int WorkoutWeeks { get; set; }
+        public ICollection<UserRole> UserRoles { get; set; } = new Collection<UserRole>();
+
+
+        public User() { }
     }
 }

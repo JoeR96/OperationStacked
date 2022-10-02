@@ -25,7 +25,8 @@ namespace OperationStacked.Factories
                 PrimaryExercise = request.PrimaryExercise,
                 WorkingWeight = request.WorkingWeight,
                 WeightProgression = request.WeightProgression,
-                AttemptsBeforeDeload = request.AttemptsBeforeDeload
+                AttemptsBeforeDeload = request.AttemptsBeforeDeload,
+                UserId = request.UserId
             };
         }
         

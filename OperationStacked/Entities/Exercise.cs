@@ -17,7 +17,7 @@ namespace OperationStacked.Entities
         public int LiftDay { get; set; } = 1;
         public int LiftOrder { get; set; } = 1;
         public int LiftWeek { get; set; } = 1;
-
+        public int UserId { get; set; }
     }
 
     public class LinearProgressionExercise : Exercise

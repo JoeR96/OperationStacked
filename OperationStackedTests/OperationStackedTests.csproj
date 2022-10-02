@@ -25,6 +25,10 @@
   <ItemGroup>
     <ProjectReference Include="..\OperationStacked\OperationStacked.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="UnitTests\" />
+  </ItemGroup>
 	<Target Name="CopyDepsJsonFiles" AfterTargets="Publish">
 		<ItemGroup>
 			<DepsJsonFiles Include="$(TargetDir)*.deps.json" />

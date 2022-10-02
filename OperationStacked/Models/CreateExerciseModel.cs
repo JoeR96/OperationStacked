@@ -5,13 +5,13 @@ namespace OperationStacked.Models
     public class CreateExerciseModel
     {
         [Required]
-        public string ExerciseName { get; set; }
+        public string ExerciseName { get; set; } = string.Empty;
         [Required]
-        public string Username { get; set; }
+        public string Username { get; set; } = string.Empty;
         [Required]
-        public string Category { get; set; }
+        public string Category { get; set; } = string.Empty;
         [Required]
-        public string Template { get; set; }
+        public string Template { get; set; } = string.Empty;
         [Required]
         public int LiftDay { get; set; }
         [Required]
@@ -25,6 +25,7 @@ namespace OperationStacked.Models
         public bool PrimaryExercise { get; set; } = false;
         public decimal WorkingWeight { get; set; }
         public decimal WeightProgression { get; set; }
-        public int AttemptsBeforeDeload { get; internal set; }
+        public int AttemptsBeforeDeload { get; set; }
+        public int UserId { get; set; }
     }
 }

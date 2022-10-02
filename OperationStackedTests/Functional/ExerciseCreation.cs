@@ -3,31 +3,25 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using OperationStacked.Data;
 using OperationStacked.Entities;
 using OperationStacked.Models;
 using OperationStacked.Requests;
+using OperationStacked.Response;
 using OperationStackedTests.Helpers;
 using System.Net.Http.Json;
 
 namespace OperationStackedTests.Functional
 {
     [TestFixture]
-    public class ExerciseCreation
+    public class ExerciseCreation : BaseApiTest
     {
         private const string url = "/workout-creation";
-        private WebApplicationFactory<Program> _application;
-        private HttpClient _client; 
+        private const string completeExerciseUrl = "/workout-creation/complete";
 
-        OperationStackedContext _context;
-        [OneTimeSetUp]
-        public void SetUp()
-        {
-            _application = Setup();
-            _context = new InMemoryDatabaseHelper().DataContext;
-            _client = _application.CreateClient();
-        }
+
         [Test]
         public async Task ExerciseCreateAsync()
         {
@@ -39,6 +33,9 @@ namespace OperationStackedTests.Functional
                 .RuleFor(x => x.ExerciseName, "Squats")
                 .RuleFor(x => x.Template, "LinearProgression")
                 .RuleFor(x => x.Username, "ChickenLegTim")
+                .RuleFor(x => x.LiftDay, 1)
+                .RuleFor(x => x.LiftOrder, 1)
+                .RuleFor(x => x.UserId, 1)
                 .Generate(15);
 
             var request = new CreateWorkoutRequest();
@@ -52,35 +49,16 @@ namespace OperationStackedTests.Functional
             response.EnsureSuccessStatusCode(); // Status Code 200-299
             _context.Exercises.Count().Should().Be(request.ExerciseDaysAndOrders.Count);
 
-        }
-
-        private static WebApplicationFactory<Program> Setup()
-        {
-            var application = new WebApplicationFactory<Program>()
-        .WithWebHostBuilder(builder =>
-        {
-            builder.ConfigureServices(services =>
+            var get = new GetWorkoutRequest()
             {
-                var descriptor = services.SingleOrDefault(
-                        d => d.ServiceType ==
-                            typeof(DbContextOptions<OperationStackedContext>));
+                Day = 1,
+                Week = 1,
+                UserId = 1
+            };
+            var getRequest = url + "/1/1/1";
+            var getResponse = await client.GetStringAsync(getRequest);
+            var x = JsonConvert.SerializeObject(getResponse);
 
-                if (descriptor != null)
-                {
-                    services.Remove(descriptor);
-                }
-
-
-                // Add a database context using an in-memory 
-                // database for testing.
-                services.AddDbContext<OperationStackedContext>(options =>
-                {
-                    options.UseInMemoryDatabase("OperationStackedTestDB");
-                });
-            }
-            );
-        });
-            return application;
         }
 
         [Test]
@@ -99,7 +77,7 @@ namespace OperationStackedTests.Functional
                 Sets = 5
             };
 
-            var response = await _client.PutAsJsonAsync(url
+            var response = await _client.PostAsJsonAsync(completeExerciseUrl
                , request);
             var result = _context.LinearProgressionExercises.Where(x => x.ParentId == id).FirstOrDefault();
             result.LiftWeek.Should().Be(2);
@@ -154,7 +132,7 @@ namespace OperationStackedTests.Functional
                Sets = 4
            };
 
-           var response = await _client.PutAsJsonAsync(url
+           var response = await _client.PostAsJsonAsync(completeExerciseUrl
               , request);
            var result = _context.LinearProgressionExercises.Where(x => x.ParentId == id).FirstOrDefault();
 
@@ -192,7 +170,7 @@ namespace OperationStackedTests.Functional
                 Reps = 7,
                 Sets = 4
             };
-            var response = await _client.PutAsJsonAsync(url
+            var response = await _client.PostAsJsonAsync(completeExerciseUrl
                , request);
             var result = _context.LinearProgressionExercises.Where(x => x.ParentId == id).FirstOrDefault();
             result.LiftWeek.Should().Be(2);
@@ -233,7 +211,7 @@ namespace OperationStackedTests.Functional
                 Reps = 7,
                 Sets = 5
             };
-            var response = await _client.PutAsJsonAsync(url
+            var response = await _client.PostAsJsonAsync(completeExerciseUrl
                , request);
             var result = _context.LinearProgressionExercises.Where(x => x.ParentId == id).FirstOrDefault();
 
@@ -272,7 +250,8 @@ namespace OperationStackedTests.Functional
                 Reps = 7,
                 Sets = 5
             };
-            var response = await _client.PutAsJsonAsync(url
+
+            var response = await _client.PostAsJsonAsync(completeExerciseUrl
                , request);
             var result = _context.LinearProgressionExercises.Where(x => x.ParentId == id).FirstOrDefault();
             result.LiftWeek.Should().Be(2);
@@ -283,5 +262,9 @@ namespace OperationStackedTests.Functional
             // Assert
 
         }
+    }
+
+    internal class ExerciseViewModel
+    {
     }
 }

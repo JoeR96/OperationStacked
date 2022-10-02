@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Bogus;
+using Microsoft.EntityFrameworkCore;
 using OperationStacked.Entities;
+using OperationStacked.Models;
+using OperationStacked.Requests;
 
 namespace OperationStacked.Data
 {
@@ -7,6 +10,15 @@ namespace OperationStacked.Data
     {
         public OperationStackedContext(DbContextOptions options) : base(options)
         {
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("Server=ms-sql-server, 1433;Database=OperationStacked;User Id=SA;Password=Zelfdwnq9512!;Encrypt=False;TrustServerCertificate=True;");
+            base.OnConfiguring(optionsBuilder);
+            
+
+
+
         }
         public virtual DbSet<LinearProgressionExercise> LinearProgressionExercises { get; set; }
 
