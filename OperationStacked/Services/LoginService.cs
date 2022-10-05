@@ -12,24 +12,27 @@ namespace OperationStacked.Services
     {
         private readonly IPasswordHasherService _passwordHasherService;
         private OperationStackedContext _context;
-
-        public LoginService(OperationStackedContext context, IPasswordHasherService passwordHasherService)
+        private ITokenHandlerService _tokenHandlerService;
+        private readonly IUserAccountService _userAccountService;
+        public LoginService(OperationStackedContext context, IPasswordHasherService passwordHasherService, ITokenHandlerService tokenHandlerService, IUserAccountService userAccountService)
         {
             _passwordHasherService = passwordHasherService;
             _context = context;
+            _tokenHandlerService = tokenHandlerService;
+            _userAccountService = userAccountService;
         }
 
         public Result<LoginRequestResult> AttemptLogin(LoginRequest request)
         {
             var user = request.UserName == string.Empty ? 
-                GetUserByEmail(request.EmailAddress).Result : GetUserByUserName(request.UserName).Result;
+                _userAccountService.GetUserByEmail(request.EmailAddress).Result : _userAccountService.GetUserByUserName(request.UserName).Result;
 
-            return _passwordHasherService.PasswordMatches(request.Password, user.Password) ? Login(request) : Result.Create(new LoginRequestResult(false, "Invalid Password;"));
+            return _passwordHasherService.PasswordMatches(request.Password, user.Password) ? Login(user) : Result.Create(new LoginRequestResult(false, "Invalid Password;"));
         }
 
-        private Result<LoginRequestResult> Login(LoginRequest request)
+        private Result<LoginRequestResult> Login(User user)
         {
-            return Result.Create(new LoginRequestResult(true, "Success","JWT"));
+            return Result.Create(new LoginRequestResult(true, "Success","JWT",user.UserId,user.CurrentDay,user.CurrentWeek));
         }
 
         public Task Logout()
@@ -39,7 +42,7 @@ namespace OperationStacked.Services
 
         public async Task<Result<RegisterRequestResult>> Register(RegistrationRequest request)
         {
-            var user = await GetUserByEmail(request.EmailAddress);
+            var user = await _userAccountService.GetUserByEmail(request.EmailAddress);
 
             if (user != null)
                 return Result.Create(new RegisterRequestResult(false, "User with this email already exists"));
@@ -53,17 +56,7 @@ namespace OperationStacked.Services
 
             _context.Users.Add(userEntity);
             _context.SaveChanges();
-            return Result.Create(new RegisterRequestResult(true, ""));
+            return Result.Create(new RegisterRequestResult(true, "",userEntity.UserId));
         }
-
-        private async Task<User> GetUserByUserName(string username)
-            => await _context.Users.Where(x => x.UserName == username)
-            .FirstOrDefaultAsync();
-
-            private async Task<User> GetUserByEmail(string email)
-            => await _context.Users.Where(x => x.Email == email)
-            .FirstOrDefaultAsync();
-
-
     }
 }

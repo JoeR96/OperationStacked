@@ -1,4 +1,8 @@
-﻿using System.Reflection;
+﻿using OperationStacked.Abstractions;
+using OperationStacked.Data;
+using OperationStacked.Services;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace OperationStacked.Extensions
 {
@@ -23,5 +27,22 @@ namespace OperationStacked.Extensions
 
         public static IServiceCollection AddSingletonsByConvention(this IServiceCollection services, Assembly assembly, Func<Type, bool> predicate)
             => services.AddSingletonsByConvention(assembly, predicate, predicate);
+
+        public static IServiceCollection AddServices(this IServiceCollection services)
+        {
+            services.AddTransient<IExerciseProgressionService, ExerciseProgressionService>();
+            services.AddTransient<IExerciseCreationService, ExerciseCreationService>();
+            services.AddTransient<IExerciseRetrievalService, ExerciseRetrievalService>();
+            services.AddTransient<IUserAccountService, UserAccountService>();
+            services.AddTransient<ILoginService, LoginService>();
+            services.AddTransient<IPasswordHasherService, PasswordHasherService>();
+            services.AddTransient<ITokenHandlerService, TokenHandlerService>();
+            services.AddDbContext<OperationStackedContext>();
+
+            return services;
+        }
     }
 }
+
+
+

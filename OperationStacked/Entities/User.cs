@@ -17,8 +17,8 @@ namespace OperationStacked.Entities
         [DataType(DataType.EmailAddress)]
         [StringLength(255)]
         public string Email { get; set; }
-        public int CurrentWeek { get; set; } = 0;
-        public int CurrentDay { get; set; } = 0;
+        public int CurrentWeek { get; set; } = 1;
+        public int CurrentDay { get; set; } = 1;
         public int WorkoutDaysInWeek { get; set; }
         public int WorkoutWeeks { get; set; }
         public ICollection<UserRole> UserRoles { get; set; } = new Collection<UserRole>();

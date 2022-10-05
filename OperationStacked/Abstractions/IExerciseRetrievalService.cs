@@ -6,6 +6,6 @@ namespace OperationStacked.Abstractions
 {
     public interface IExerciseRetrievalService
     {
-        public Task<Result<GetWorkoutResult>> GetWorkout(int userId, int week, int day);
+        public Task<Result<GetWorkoutResult>> GetWorkout(int userid, int week, int day);
     }
 }

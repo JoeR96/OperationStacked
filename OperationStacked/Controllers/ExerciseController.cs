@@ -8,7 +8,7 @@ using FluentResult;
 using Bogus;
 using OperationStacked.Models;
 
-namespace OperationStacked.Data
+namespace OperationStacked.Controllers
 {
     [ApiController]
     [DisplayName("Workout Generation")]
@@ -47,12 +47,12 @@ namespace OperationStacked.Data
         [ProducesResponseType(200, Type = typeof(WorkoutCreationResult))]
         [ProducesResponseType(400, Type = typeof(WorkoutCreationResult))]
         public Task<IActionResult> GetWorkout([FromRoute] int userId, [FromRoute] int week, [FromRoute] int day)
-            => _exerciseRetrievalService.GetWorkout(userId,week,day)
+            => _exerciseRetrievalService.GetWorkout(userId, week, day)
                 .ToActionResultAsync(this);
 
         [HttpGet]
         [Route("dummydata")]
-        public Task<IActionResult> Dummydata()
+        public Task<IActionResult> Dummydata(int userId)
         {
             var exercises = new Faker<CreateExerciseModel>()
                 .RuleFor(x => x.Category, "Legs")
@@ -62,12 +62,11 @@ namespace OperationStacked.Data
                 .RuleFor(x => x.LiftDay, 1)
                 .RuleFor(x => x.LiftOrder, 1)
                 .RuleFor(x => x.UserId, 1)
-                .Generate(15);
+                .Generate(5);
 
             var request = new CreateWorkoutRequest();
             request.ExerciseDaysAndOrders = exercises;
-            request.userId = 1;
-
+            request.userId = userId;
             return _exerciseCreationService.CreateWorkout(request).ToActionResultAsync(this);
         }
     }

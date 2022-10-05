@@ -5,6 +5,8 @@ using System.ComponentModel;
 using FluentResult;
 using OperationStacked.Abstractions;
 using OperationStacked.Requests;
+using Microsoft.AspNetCore.Authentication;
+using OperationStacked.Communication;
 
 namespace OperationStacked.Controllers
 {
@@ -14,11 +16,14 @@ namespace OperationStacked.Controllers
     public class AuthenticationController : ControllerBase
     {
         private ILoginService _loginService;
-
-        public AuthenticationController(ILoginService loginService)
+        private IAuthenticationService _authenticationService;
+        private ITokenHandlerService _tokenHandlerService;
+        public AuthenticationController(ILoginService loginService,IAuthenticationService authenticationService)
         {
             _loginService = loginService;
+            _authenticationService = authenticationService;
         }
+
         [Route("register")]
         [AllowAnonymous]
         [HttpPost]
@@ -34,5 +39,6 @@ namespace OperationStacked.Controllers
         [ProducesResponseType(400, Type = typeof(LoginRequestResult))]
         public async Task<IActionResult> Login( [FromBody] LoginRequest request) => _loginService.AttemptLogin(request)
            .ToActionResult(this);
+      
     }
 }
