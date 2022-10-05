@@ -1,8 +1,5 @@
-﻿using Bogus;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using OperationStacked.Entities;
-using OperationStacked.Models;
-using OperationStacked.Requests;
 
 namespace OperationStacked.Data
 {
@@ -15,7 +12,10 @@ namespace OperationStacked.Data
         {
            if(!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=ms-sql-server, 1433;Database=OperationStacked;User Id=SA;Password=Zelfdwnq9512!;Encrypt=False;TrustServerCertificate=True;");
+                var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
+
+                optionsBuilder.UseMySql("server=ls-6b84692ae3e7c001eb2dd8e32baa790294ae17bb.cpofuaa7ukod.eu-west-2.rds.amazonaws.com;Port=3306;Database=OperationStacked;User Id=admin;Password=Zelfdwnq9512! ", serverVersion);
+                //optionsBuilder.UseSqlServer("Server=ms-sql-server, 1433;Database=OperationStacked;User Id=SA;Password=Zelfdwnq9512!;Encrypt=False;TrustServerCertificate=True;");
             }
             base.OnConfiguring(optionsBuilder);
             
