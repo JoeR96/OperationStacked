@@ -94,7 +94,7 @@ namespace OperationStacked.Services
                 CurrentSets = e.CurrentSets,
                 WeightIndex = e.WeightIndex += weightIndex,
                 PrimaryExercise = e.PrimaryExercise,
-                WorkingWeight = e.WorkingWeight,
+                StartingWeight = e.StartingWeight,
                 WeightProgression = e.WeightProgression,
                 AttemptsBeforeDeload = e.AttemptsBeforeDeload,
                 ExerciseName = e.ExerciseName,
@@ -106,6 +106,11 @@ namespace OperationStacked.Services
                 LiftWeek = e.LiftWeek += 1,
                 ParentId = e.Id,
                 CurrentAttempt = e.CurrentAttempt += attemptModifier,
+                WorkingWeight = WorkingWeight(e.WorkingWeight,weightIndex,e.WeightProgression),
+                EquipmentType = e.EquipmentType,
             };
+
+        private static decimal WorkingWeight(decimal workingWeight, int weightIndex, decimal weightProgression)
+            => workingWeight + (weightIndex * weightProgression);
     }
 }

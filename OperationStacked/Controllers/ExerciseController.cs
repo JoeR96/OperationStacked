@@ -54,18 +54,85 @@ namespace OperationStacked.Controllers
         [Route("dummydata")]
         public Task<IActionResult> Dummydata(int userId)
         {
-            var exercises = new Faker<CreateExerciseModel>()
-                .RuleFor(x => x.Category, "Legs")
-                .RuleFor(x => x.ExerciseName, "Squats")
+            var ohp = new Faker<CreateExerciseModel>()
+                .RuleFor(x => x.Category, "Shoulders")
+                .RuleFor(x => x.ExerciseName, "Overhead Press")
                 .RuleFor(x => x.Template, "LinearProgression")
-                .RuleFor(x => x.Username, "ChickenLegTim")
+                .RuleFor(x => x.Username, "BigDaveTV")
                 .RuleFor(x => x.LiftDay, 1)
                 .RuleFor(x => x.LiftOrder, 1)
                 .RuleFor(x => x.UserId, 1)
-                .Generate(5);
+                .RuleFor(x => x.StartingWeight, 40)
+                .RuleFor(x => x.WeightIndex, 0)
+                .RuleFor(x => x.TargetSets, 3)
+                .RuleFor(x => x.MinimumReps, 8)
+                .RuleFor(x => x.MaximumReps, 12)
+                .RuleFor(x => x.EquipmentType, "Barbell")
+                .RuleFor(x => x.WeightProgression, 1.25m);
+
+            var chestFly = new Faker<CreateExerciseModel>()
+                .RuleFor(x => x.Category, "Chest")
+                .RuleFor(x => x.ExerciseName, "Pec Dec")
+                .RuleFor(x => x.EquipmentType, "Machine")
+                .RuleFor(x => x.Template, "LinearProgression")
+                .RuleFor(x => x.Username, "BigDaveTV")
+                .RuleFor(x => x.LiftDay, 1)
+                .RuleFor(x => x.LiftOrder, 2)
+                .RuleFor(x => x.UserId, 1)
+                .RuleFor(x => x.StartingWeight, 59)
+                .RuleFor(x => x.WeightIndex, 9)
+                .RuleFor(x => x.TargetSets, 3)
+                .RuleFor(x => x.MinimumReps, 8)
+                .RuleFor(x => x.MaximumReps, 12);
+            var inclineSmithPress = new Faker<CreateExerciseModel>()
+                .RuleFor(x => x.Category, "Chest")
+                .RuleFor(x => x.ExerciseName, "Incline Smith Press")
+                .RuleFor(x => x.Template, "LinearProgression")
+                .RuleFor(x => x.Username, "BigDaveTV")
+                .RuleFor(x => x.EquipmentType, "Smith Machine")
+                .RuleFor(x => x.LiftDay, 1)
+                .RuleFor(x => x.LiftOrder, 3)
+                .RuleFor(x => x.UserId, 1)
+                .RuleFor(x => x.StartingWeight, 50)
+                .RuleFor(x => x.WeightIndex, 0)
+                .RuleFor(x => x.TargetSets, 3)
+                .RuleFor(x => x.MinimumReps, 8)
+                .RuleFor(x => x.MaximumReps, 12)
+                .RuleFor(x => x.WeightProgression, 1.25m);
+
+
+            var dumbBellLatRaise = new Faker<CreateExerciseModel>()
+                .RuleFor(x => x.Category, "Shoulders")
+                .RuleFor(x => x.ExerciseName, "Lateral Raise")
+                .RuleFor(x => x.Template, "LinearProgression")
+                .RuleFor(x => x.Username, "BigDaveTV")
+                .RuleFor(x => x.EquipmentType, "Dumbbell")
+                .RuleFor(x => x.LiftDay, 1)
+                .RuleFor(x => x.LiftOrder, 4)
+                .RuleFor(x => x.UserId, 1)
+                .RuleFor(x => x.StartingWeight, 8)
+                .RuleFor(x => x.WeightIndex, 7)
+                .RuleFor(x => x.TargetSets, 3)
+                .RuleFor(x => x.MinimumReps, 8)
+                .RuleFor(x => x.MaximumReps, 12);
+
+            var tricepRopePushDown = new Faker<CreateExerciseModel>()
+                .RuleFor(x => x.Category, "Triceps")
+                .RuleFor(x => x.ExerciseName, "Tricep Rope Pushdown")
+                .RuleFor(x => x.Template, "LinearProgression")
+                .RuleFor(x => x.Username, "BigDaveTV")
+                .RuleFor(x => x.EquipmentType, "Cable")
+                .RuleFor(x => x.LiftDay, 1)
+                .RuleFor(x => x.LiftOrder, 5)
+                .RuleFor(x => x.UserId, 1)
+                .RuleFor(x => x.StartingWeight, 18m)
+                .RuleFor(x => x.WeightIndex, 5)
+                .RuleFor(x => x.TargetSets, 3)
+                .RuleFor(x => x.MinimumReps, 8)
+                .RuleFor(x => x.MaximumReps, 12);
 
             var request = new CreateWorkoutRequest();
-            request.ExerciseDaysAndOrders = exercises;
+            request.ExerciseDaysAndOrders = new List<CreateExerciseModel> { ohp,chestFly,inclineSmithPress,dumbBellLatRaise,tricepRopePushDown};
             request.userId = userId;
             return _exerciseCreationService.CreateWorkout(request).ToActionResultAsync(this);
         }

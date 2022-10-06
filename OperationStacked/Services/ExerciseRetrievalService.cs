@@ -19,9 +19,9 @@ namespace OperationStacked.Services
         public async Task<Result<GetWorkoutResult>> GetWorkout(int userId, int week, int day)
             => Result.Create(new GetWorkoutResult(await GetExercises(userId, week, day)));
 
-        private async Task<List<Exercise>> GetExercises(int userId, int week, int day)
+        private async Task<List<LinearProgressionExercise>> GetExercises(int userId, int week, int day)
         {
-            return _context.Exercises.Where(x => x.LiftDay == day &&
+            return _context.LinearProgressionExercises.Where(x => x.LiftDay == day &&
                         x.LiftWeek == week &&
                         x.UserId == userId)
                          .ToList();

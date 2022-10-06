@@ -24,7 +24,7 @@ namespace OperationStacked.Services
         public async Task<Result<WorkoutCreationResult>> CreateWorkout(CreateWorkoutRequest request)
         {
             
-            IEnumerable<Exercise> exercises
+            IEnumerable<LinearProgressionExercise> exercises
                 = request.ExerciseDaysAndOrders.Select(exercise => _factory.CreateExercise(exercise));
 
             await _operationStackedContext.AddRangeAsync(exercises);

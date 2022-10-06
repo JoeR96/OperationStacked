@@ -13,6 +13,8 @@ namespace OperationStacked.Models
         [Required]
         public string Template { get; set; } = string.Empty;
         [Required]
+        public string EquipmentType { get; set; } = string.Empty;
+        [Required]
         public int LiftDay { get; set; }
         [Required]
         public int LiftOrder { get; set; }
@@ -23,7 +25,7 @@ namespace OperationStacked.Models
         public int CurrentSets { get; set; }
         public int WeightIndex { get; set; }
         public bool PrimaryExercise { get; set; } = false;
-        public decimal WorkingWeight { get; set; }
+        public decimal StartingWeight { get; set; }
         public decimal WeightProgression { get; set; }
         public int AttemptsBeforeDeload { get; set; }
         public int UserId { get; set; }

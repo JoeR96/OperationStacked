@@ -6,7 +6,7 @@ namespace OperationStacked.Abstractions
 {
     public interface IExerciseFactory
     {
-        public Exercise CreateExercise(CreateExerciseModel request);
+        public LinearProgressionExercise CreateExercise(CreateExerciseModel request);
 
     }
 }

@@ -2,6 +2,6 @@
 
 namespace OperationStacked.Response
 {
-    public sealed record GetWorkoutResult(IEnumerable<Exercise> Exercises);
+    public sealed record GetWorkoutResult(IEnumerable<LinearProgressionExercise> Exercises);
 
 }

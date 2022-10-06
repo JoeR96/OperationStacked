@@ -6,16 +6,15 @@ namespace OperationStacked.Factories
 {
     public class LinearProgressionExerciseFactory : IExerciseFactory
     {
-    public Exercise CreateExercise(CreateExerciseModel request)
+    public LinearProgressionExercise CreateExercise(CreateExerciseModel request)
         {
-            Enum.TryParse(request.Template, out ExerciseTemplate template);
-            
+
             return new LinearProgressionExercise
             {
                 ExerciseName = request.ExerciseName,
                 Username = request.Username,
                 Category = request.Category,
-                Template = template,
+                Template = request.Template,
                 LiftDay = request.LiftDay,
                 LiftOrder = request.LiftOrder,
                 MinimumReps = request.MinimumReps,
@@ -23,10 +22,12 @@ namespace OperationStacked.Factories
                 TargetSets = request.TargetSets,
                 WeightIndex = request.WeightIndex,
                 PrimaryExercise = request.PrimaryExercise,
-                WorkingWeight = request.WorkingWeight,
+                StartingWeight = request.StartingWeight,
                 WeightProgression = request.WeightProgression,
                 AttemptsBeforeDeload = request.AttemptsBeforeDeload,
-                UserId = request.UserId
+                UserId = request.UserId,
+                EquipmentType = request.EquipmentType,
+                WorkingWeight = request.StartingWeight
             };
         }
         

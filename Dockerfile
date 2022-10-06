@@ -7,7 +7,7 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["OperationStacked.csproj", "OperationStacked/"]
+COPY ["OperationStacked/OperationStacked.csproj", "OperationStacked/"]
 RUN dotnet restore "OperationStacked/OperationStacked.csproj"
 COPY . .
 WORKDIR "/src/OperationStacked"

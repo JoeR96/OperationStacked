@@ -13,11 +13,13 @@ namespace OperationStacked.Entities
         public string ExerciseName { get; set; }
         public string Username { get; set; }
         public string Category { get; set; }
-        public ExerciseTemplate Template { get; set; }
+        public string EquipmentType { get; set; }
+        public string Template { get; set; }
         public int LiftDay { get; set; } = 1;
         public int LiftOrder { get; set; } = 1;
         public int LiftWeek { get; set; } = 1;
         public int UserId { get; set; }
+        public decimal WorkingWeight { get; set; }
     }
 
     public class LinearProgressionExercise : Exercise
@@ -29,7 +31,7 @@ namespace OperationStacked.Entities
         public int CurrentSets { get; set; }
         public int WeightIndex { get; set; }
         public bool PrimaryExercise { get; set; } = false;
-        public decimal WorkingWeight { get; set; }
+        public decimal StartingWeight { get; set; }
         public decimal WeightProgression { get; set; }
         public int AttemptsBeforeDeload { get; set; }
         public int CurrentAttempt { get; set;} = 1;
