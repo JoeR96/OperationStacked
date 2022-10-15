@@ -26,7 +26,8 @@ namespace OperationStacked.Services
             //if rep target  and set count reached
             //Increase weight index
             if(exercise.SetCountReached(request.Sets) &&
-                exercise.TargetRepCountReached(request.Reps))
+                exercise.TargetRepCountReached(request.Reps) &&
+                exercise.WithinRepRange(request.Reps))
             {
                 //get next weeks exercise
                 //increase weight index
@@ -78,10 +79,11 @@ namespace OperationStacked.Services
     {
         public static bool SetCountReached(this LinearProgressionExercise e, int sets)
             => sets >= e.TargetSets ? true : false;
-        public static bool TargetRepCountReached(this LinearProgressionExercise e, int reps)
-            => reps >= e.MaximumReps ? true : false;
-        public static bool WithinRepRange(this LinearProgressionExercise e, int reps)
-            => Enumerable.Range(e.MinimumReps, 999).Contains(reps);
+        public static bool TargetRepCountReached(this LinearProgressionExercise e, int[] reps)
+            => !reps.Any(rep => rep < e.MaximumReps) ? true : false;
+        public static bool WithinRepRange(this LinearProgressionExercise e, int[] reps)
+            => !reps.Any(rep => rep < e.MinimumReps) ? true : false;
+            
         public static bool IsLastAttemptBeforeDeload(this LinearProgressionExercise e)
             => e.CurrentAttempt >= e.AttemptsBeforeDeload;
         public static LinearProgressionExercise GenerateNextExercise(this LinearProgressionExercise e, int weightIndex, int attemptModifier)

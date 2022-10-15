@@ -23,7 +23,7 @@ namespace OperationStackedTests.Functional
             var request = new CompleteExerciseRequest()
             {
                 Id = id,
-                Reps = 12,
+                Reps = new int[] { 12, 12, 12 },
                 Sets = 5
             };
 
@@ -50,7 +50,9 @@ namespace OperationStackedTests.Functional
                             .RuleFor(i => i.ExerciseName, "Squats")
                             .RuleFor(i => i.Category, "Legs")
                             .RuleFor(i => i.Username, "Tim420")
-                            .RuleFor(i => i.WeightIndex, 1);
+                            .RuleFor(i => i.WeightIndex, 1)
+                            .RuleFor(i => i.EquipmentType, "Barbell")
+                .RuleFor(i => i.Template, "LinearProgression");
         }
 
         [Test]
@@ -70,7 +72,9 @@ namespace OperationStackedTests.Functional
                 .RuleFor(i => i.Username, "Tim420")
                 .RuleFor(i => i.WeightIndex, 1)
             .RuleFor(i => i.CurrentAttempt, 1)
-                .RuleFor(i => i.AttemptsBeforeDeload, 2);
+                .RuleFor(i => i.AttemptsBeforeDeload, 2)
+                .RuleFor(i => i.EquipmentType, "Barbell")
+                .RuleFor(i => i.Template, "LinearProgression");
 
             _context.Exercises.Add(exercise);
             _context.SaveChanges();
@@ -78,7 +82,7 @@ namespace OperationStackedTests.Functional
             var request = new CompleteExerciseRequest()
             {
                 Id = id,
-                Reps = 12,
+                Reps = new int[] { 12, 12, 12 },
                 Sets = 4
             };
 
@@ -109,7 +113,9 @@ namespace OperationStackedTests.Functional
                 .RuleFor(i => i.Username, "Tim420")
                 .RuleFor(i => i.WeightIndex, 1)
                 .RuleFor(i => i.CurrentAttempt, 1)
-                .RuleFor(i => i.AttemptsBeforeDeload, 2);
+                .RuleFor(i => i.AttemptsBeforeDeload, 2)
+                .RuleFor(i => i.EquipmentType, "Barbell")
+                .RuleFor(i => i.Template, "LinearProgression");
 
             _context.Exercises.Add(exercise);
             _context.SaveChanges();
@@ -117,7 +123,7 @@ namespace OperationStackedTests.Functional
             var request = new CompleteExerciseRequest()
             {
                 Id = id,
-                Reps = 7,
+                Reps = new int[] { 7, 8, 8 },
                 Sets = 4
             };
             var response = await _client.PostAsJsonAsync(completeExerciseUrl
@@ -150,7 +156,9 @@ namespace OperationStackedTests.Functional
                 .RuleFor(i => i.Username, "Tim420")
                 .RuleFor(i => i.WeightIndex, 1)
                 .RuleFor(i => i.CurrentAttempt, 1)
-                .RuleFor(i => i.AttemptsBeforeDeload, 2);
+                .RuleFor(i => i.AttemptsBeforeDeload, 2)
+                .RuleFor(i => i.EquipmentType, "Barbell")
+                .RuleFor(i => i.Template, "LinearProgression");
 
             _context.Exercises.Add(exercise);
             _context.SaveChanges();
@@ -158,7 +166,7 @@ namespace OperationStackedTests.Functional
             var request = new CompleteExerciseRequest()
             {
                 Id = id,
-                Reps = 7,
+                Reps = new int[] { 7, 8, 8 },
                 Sets = 5
             };
             var response = await _client.PostAsJsonAsync(completeExerciseUrl
@@ -189,7 +197,9 @@ namespace OperationStackedTests.Functional
                 .RuleFor(i => i.Username, "Tim420")
                 .RuleFor(i => i.WeightIndex, 2)
                 .RuleFor(i => i.CurrentAttempt, 2)
-                .RuleFor(i => i.AttemptsBeforeDeload, 2);
+                .RuleFor(i => i.AttemptsBeforeDeload, 2)
+                .RuleFor(i => i.EquipmentType, "Barbell")
+                .RuleFor(i => i.Template, "LinearProgression");
 
             _context.Exercises.Add(exercise);
             _context.SaveChanges();
@@ -197,7 +207,7 @@ namespace OperationStackedTests.Functional
             var request = new CompleteExerciseRequest()
             {
                 Id = id,
-                Reps = 7,
+                Reps = new int[] { 7, 8, 8 },
                 Sets = 5
             };
 

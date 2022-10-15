@@ -24,15 +24,15 @@ namespace OperationStacked.Services
 
         public Result<LoginRequestResult> AttemptLogin(LoginRequest request)
         {
-            var user = request.UserName == string.Empty ? 
-                _userAccountService.GetUserByEmail(request.EmailAddress).Result : _userAccountService.GetUserByUserName(request.UserName).Result;
+            var user = request.UserName == string.Empty ? _userAccountService.GetUserByEmail(request.EmailAddress).Result :
+            _userAccountService.GetUserByUserName(request.UserName).Result;
 
             return _passwordHasherService.PasswordMatches(request.Password, user.Password) ? Login(user) : Result.Create(new LoginRequestResult(false, "Invalid Password;"));
         }
 
         private Result<LoginRequestResult> Login(User user)
         {
-            return Result.Create(new LoginRequestResult(true, "Success","JWT",user.UserId,user.CurrentDay,user.CurrentWeek));
+            return Result.Create(new LoginRequestResult(true, "Success","JWT",user.UserId,user.CurrentDay,user.CurrentWeek,user.UserName));
         }
 
         public Task Logout()
