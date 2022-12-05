@@ -74,7 +74,7 @@ namespace OperationStackedTests.Functional
             var request = new RegistrationRequest()
             {
                 UserName = user,
-                EmailAddress = "TITS@TITS@HOME.COM",
+                EmailAddress = "email@email@HOME.COM",
                 Password = "LOL!"
             };
             var response = await _client.PostAsJsonAsync(registerUrl
