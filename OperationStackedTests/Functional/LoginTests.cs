@@ -10,9 +10,9 @@ namespace OperationStackedTests.Functional
     {
         private const string registerUrl = "/auth/register";
         private const string loginUrl = "/auth/login";
-        private const string Email = "TITS@TITHOME.COM";
+        private const string Email = "email@email.COM";
         private const string Password = "LOL!";
-        private const string Username = "TITS@TITTIESHOME.COM";
+        private const string Username = "email@email.COM";
 
         [Test]
         public async Task RegistrationCompletes()
