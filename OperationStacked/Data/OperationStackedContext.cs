@@ -14,17 +14,12 @@ namespace OperationStacked.Data
             {
                 var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
 
-                optionsBuilder.UseMySql("server=ls-6b84692ae3e7c001eb2dd8e32baa790294ae17bb.cpofuaa7ukod.eu-west-2.rds.amazonaws.com;Port=3306;Database=OperationStacked;User Id=admin;Password=Zelfdwnq9512! ", serverVersion);
-                //optionsBuilder.UseSqlServer("Server=ms-sql-server, 1433;Database=OperationStacked;User Id=SA;Password=Zelfdwnq9512!;Encrypt=False;TrustServerCertificate=True;");
+                optionsBuilder.UseMySql("server=operationstacked.cjmlgmxmo9qy.eu-west-2.rds.amazonaws.com;Port=3306;Database=OperationStacked;User Id=opeartionstacked;Password=Zelfdwnq9512! ", serverVersion);
             }
             base.OnConfiguring(optionsBuilder);
-            
-
-
-
         }
         public virtual DbSet<LinearProgressionExercise> LinearProgressionExercises { get; set; }
-
+        public virtual DbSet<A2SHypertrophyExercise> A2SHypertrophyExercises { get; set; }
         public virtual DbSet<Exercise> Exercises { get; set; }
         public virtual DbSet<User> Users { get; set; }
     }

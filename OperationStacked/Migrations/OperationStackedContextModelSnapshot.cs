@@ -16,7 +16,7 @@ namespace OperationStacked.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.9")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("OperationStacked.Entities.Exercise", b =>
@@ -29,13 +29,8 @@ namespace OperationStacked.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("EquipmentType")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<int>("EquipmentType")
+                        .HasColumnType("int");
 
                     b.Property<string>("ExerciseName")
                         .IsRequired()
@@ -66,8 +61,6 @@ namespace OperationStacked.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Exercises");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Exercise");
                 });
 
             modelBuilder.Entity("OperationStacked.Entities.Role", b =>
@@ -142,6 +135,40 @@ namespace OperationStacked.Migrations
                     b.ToTable("UserRole");
                 });
 
+            modelBuilder.Entity("OperationStacked.Entities.A2SHypertrophyExercise", b =>
+                {
+                    b.HasBaseType("OperationStacked.Entities.Exercise");
+
+                    b.Property<int>("AmrapRepResult")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AmrapRepTarget")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("AuxillaryLift")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("Block")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Intensity")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<int>("RepsPerSet")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Sets")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TrainingMax")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<int>("Week")
+                        .HasColumnType("int");
+
+                    b.ToTable("A2SHypertrophyExercise");
+                });
+
             modelBuilder.Entity("OperationStacked.Entities.LinearProgressionExercise", b =>
                 {
                     b.HasBaseType("OperationStacked.Entities.Exercise");
@@ -182,7 +209,7 @@ namespace OperationStacked.Migrations
                     b.Property<decimal>("WeightProgression")
                         .HasColumnType("decimal(65,30)");
 
-                    b.HasDiscriminator().HasValue("LinearProgressionExercise");
+                    b.ToTable("LinearProgressionExercise");
                 });
 
             modelBuilder.Entity("OperationStacked.Entities.UserRole", b =>
@@ -202,6 +229,24 @@ namespace OperationStacked.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("UserAccount");
+                });
+
+            modelBuilder.Entity("OperationStacked.Entities.A2SHypertrophyExercise", b =>
+                {
+                    b.HasOne("OperationStacked.Entities.Exercise", null)
+                        .WithOne()
+                        .HasForeignKey("OperationStacked.Entities.A2SHypertrophyExercise", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("OperationStacked.Entities.LinearProgressionExercise", b =>
+                {
+                    b.HasOne("OperationStacked.Entities.Exercise", null)
+                        .WithOne()
+                        .HasForeignKey("OperationStacked.Entities.LinearProgressionExercise", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("OperationStacked.Entities.Role", b =>

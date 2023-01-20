@@ -15,7 +15,7 @@ namespace OperationStacked.Controllers
     [Route("auth")]
     public class AuthenticationController : ControllerBase
     {
-        private ILoginService _loginService;
+        private readonly ILoginService _loginService;
         private IAuthenticationService _authenticationService;
         private ITokenHandlerService _tokenHandlerService;
         public AuthenticationController(ILoginService loginService,IAuthenticationService authenticationService)

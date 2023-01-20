@@ -1,7 +1,8 @@
-﻿using OperationStacked.Entities;
+﻿using OperationStacked.Abstractions;
+using OperationStacked.Entities;
 
 namespace OperationStacked.Response
 {
-    public sealed record GetWorkoutResult(IEnumerable<LinearProgressionExercise> Exercises);
+    public sealed record GetWorkoutResult(IEnumerable<Exercise> Exercises);
 
 }

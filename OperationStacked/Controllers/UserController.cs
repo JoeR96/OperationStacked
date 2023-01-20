@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OperationStacked.Abstractions;
-using OperationStacked.Requests;
-using OperationStacked.Response;
-using OperationStacked.Services;
+using OperationStacked.Services.UserAccountsService;
 using System.ComponentModel;
 
 namespace OperationStacked.Controllers
@@ -22,25 +19,14 @@ namespace OperationStacked.Controllers
         [Route("update")]
         [HttpPost]
         public async Task<IActionResult> UpdateUserWeekAndDay([FromBody]int userid)
-        {
-            try
-            {
-                var _ = await _userAccountService.ProgressWeekAndDay(userid);
-                return Ok(_);
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
-        }
+        => Ok(await _userAccountService.ProgressWeekAndDay(userid));
 
 
-        [Route("week-and-day/{userId}")]
+        [Route("week-and-day/{userId:int}")]
         [HttpGet]
         public async Task<IActionResult> GetCurrentWeekAndDay([FromRoute] int userId)
-        {
-          return Ok(_userAccountService.GetWeekAndDay(userId));
-        }
+            => Ok(_userAccountService.GetWeekAndDay(userId));
+        
         
     }
 }
