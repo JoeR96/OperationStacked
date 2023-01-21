@@ -31,15 +31,11 @@ namespace OperationStackedTests.Functional
 
             // Assert
             registerResponse.EnsureSuccessStatusCode();
-
-           
-
         }
 
         [Test]
         public async Task RegistrationCompletesAndLogsIn()
         {
-
             // Act
             var registerRequest = new RegistrationRequest()
             {
@@ -51,8 +47,6 @@ namespace OperationStackedTests.Functional
               , registerRequest);
 
             // Assert
-            //registerResponse.EnsureSuccessStatusCode();
-
             LoginRequest loginRequest = new()
             {
                 Email = Email,
@@ -77,10 +71,10 @@ namespace OperationStackedTests.Functional
                 EmailAddress = "email@email@HOME.COM",
                 Password = "LOL!"
             };
-            var response = await _client.PostAsJsonAsync(registerUrl
+            await _client.PostAsJsonAsync(registerUrl
                , request);
 
-            var secondresponse = await _client.PostAsJsonAsync(registerUrl
+            await _client.PostAsJsonAsync(registerUrl
                , request);
 
             // Assert

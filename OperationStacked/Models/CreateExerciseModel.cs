@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OperationStacked.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace OperationStacked.Models
 {
@@ -11,9 +12,9 @@ namespace OperationStacked.Models
         [Required]
         public string Category { get; set; } = string.Empty;
         [Required]
-        public string Template { get; set; } = string.Empty;
+        public ExerciseTemplate Template { get; set; }
         [Required]
-        public string EquipmentType { get; set; } = string.Empty;
+        public EquipmentType EquipmentType { get; set; }
         [Required]
         public int LiftDay { get; set; }
         [Required]
@@ -29,5 +30,12 @@ namespace OperationStacked.Models
         public decimal WeightProgression { get; set; }
         public int AttemptsBeforeDeload { get; set; }
         public int UserId { get; set; }
+        public bool AuxillaryLift { get; set; }
+        public A2SBlocks Block { get; set; }
+        public decimal TrainingMax { get; set; }
+        public decimal Intensity { get; set; }
+        public int Sets { get; set; }
+        public int RepsPerSet { get; set; }
+        public int Week { get; set; }
     }
 }

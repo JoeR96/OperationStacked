@@ -2,12 +2,15 @@
 using FluentAssertions;
 using NUnit.Framework;
 using OperationStacked.Entities;
+using OperationStacked.Enums;
+using OperationStacked.Models;
 using OperationStacked.Requests;
 using System.Net.Http.Json;
 
 namespace OperationStackedTests.Functional
 {
-    internal class LinearProgressionProgressTests : BaseApiTest
+    [TestFixture]
+    public class LinearProgressionProgressTests : BaseApiTest
     {
         private const string completeExerciseUrl = "/workout-creation/complete";
 
@@ -51,8 +54,8 @@ namespace OperationStackedTests.Functional
                             .RuleFor(i => i.Category, "Legs")
                             .RuleFor(i => i.Username, "Tim420")
                             .RuleFor(i => i.WeightIndex, 1)
-                            .RuleFor(i => i.EquipmentType, "Barbell")
-                .RuleFor(i => i.Template, "LinearProgression");
+                            .RuleFor(i => i.EquipmentType, EquipmentType.Barbell)
+                .RuleFor(i => i.Template, ExerciseTemplate.A2SHypertrophy);
         }
 
         [Test]
@@ -73,8 +76,8 @@ namespace OperationStackedTests.Functional
                 .RuleFor(i => i.WeightIndex, 1)
             .RuleFor(i => i.CurrentAttempt, 1)
                 .RuleFor(i => i.AttemptsBeforeDeload, 2)
-                .RuleFor(i => i.EquipmentType, "Barbell")
-                .RuleFor(i => i.Template, "LinearProgression");
+                .RuleFor(i => i.EquipmentType, EquipmentType.Barbell)
+                .RuleFor(i => i.Template, ExerciseTemplate.A2SHypertrophy);
 
             _context.Exercises.Add(exercise);
             _context.SaveChanges();
@@ -114,8 +117,8 @@ namespace OperationStackedTests.Functional
                 .RuleFor(i => i.WeightIndex, 1)
                 .RuleFor(i => i.CurrentAttempt, 1)
                 .RuleFor(i => i.AttemptsBeforeDeload, 2)
-                .RuleFor(i => i.EquipmentType, "Barbell")
-                .RuleFor(i => i.Template, "LinearProgression");
+                .RuleFor(i => i.EquipmentType, EquipmentType.Barbell)
+                .RuleFor(i => i.Template, ExerciseTemplate.A2SHypertrophy);
 
             _context.Exercises.Add(exercise);
             _context.SaveChanges();
@@ -157,8 +160,8 @@ namespace OperationStackedTests.Functional
                 .RuleFor(i => i.WeightIndex, 1)
                 .RuleFor(i => i.CurrentAttempt, 1)
                 .RuleFor(i => i.AttemptsBeforeDeload, 2)
-                .RuleFor(i => i.EquipmentType, "Barbell")
-                .RuleFor(i => i.Template, "LinearProgression");
+                .RuleFor(i => i.EquipmentType, EquipmentType.Barbell)
+                .RuleFor(i => i.Template, ExerciseTemplate.A2SHypertrophy);
 
             _context.Exercises.Add(exercise);
             _context.SaveChanges();
@@ -198,8 +201,8 @@ namespace OperationStackedTests.Functional
                 .RuleFor(i => i.WeightIndex, 2)
                 .RuleFor(i => i.CurrentAttempt, 2)
                 .RuleFor(i => i.AttemptsBeforeDeload, 2)
-                .RuleFor(i => i.EquipmentType, "Barbell")
-                .RuleFor(i => i.Template, "LinearProgression");
+                .RuleFor(i => i.EquipmentType, EquipmentType.Barbell)
+                .RuleFor(i => i.Template, ExerciseTemplate.A2SHypertrophy);
 
             _context.Exercises.Add(exercise);
             _context.SaveChanges();

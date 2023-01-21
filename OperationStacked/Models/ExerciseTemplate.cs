@@ -2,6 +2,8 @@
 {
     public enum ExerciseTemplate
     {
-        LinerProgression = 0
+        LinearProgression = 0,
+        A2SHypertrophy = 1,
+        A2SRepsThenSets = 2
     }
 }

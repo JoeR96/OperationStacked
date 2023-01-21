@@ -3,6 +3,18 @@ using OperationStacked.Data;
 using OperationStacked.Services;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Amazon;
+using Amazon.DynamoDBv2;
+using Amazon.Internal;
+using OperationStacked.Utilities;
+using ServiceStack.Aws.DynamoDb;
+using OperationStacked.Services.ExerciseProgressionService;
+using OperationStacked.Repositories;
+using OperationStacked.Services.UserAccountsService;
+using OperationStacked.Services.JwtService;
+using OperationStacked.Services.LoginService;
+using OperationStacked.Services.ExerciseCreationService;
+using OperationStacked.Services.A2S;
 
 namespace OperationStacked.Extensions
 {
@@ -13,9 +25,11 @@ namespace OperationStacked.Extensions
             var interfaces = assembly.ExportedTypes
                 .Where(x => x.IsInterface && interfacePredicate(x))
                 .ToList();
+            
             var implementations = assembly.ExportedTypes
                 .Where(x => !x.IsInterface && !x.IsAbstract && implementationPredicate(x))
                 .ToList();
+            
             foreach (var @interface in interfaces)
             {
                 var implementation = implementations.FirstOrDefault(x => @interface.IsAssignableFrom(x));
@@ -41,7 +55,17 @@ namespace OperationStacked.Extensions
 
             return services;
         }
+
+        public static IServiceCollection RegisterA2S(this IServiceCollection services )
+        {
+            services.AddTransient<IA2SHypertrophyService, A2SHypertrophyService>();
+
+            return services;
+        }
+        
+        
     }
+    
 }
 
 
