@@ -2,7 +2,7 @@
 using OperationStacked.Entities;
 using OperationStacked.Response;
 
-namespace OperationStacked.Repositories
+namespace OperationStacked.Services.ExerciseRetrievalService
 {
     public interface IExerciseRetrievalService
     {

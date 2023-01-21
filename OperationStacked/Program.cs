@@ -12,11 +12,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 var assembly = typeof(Program).Assembly;
 builder.Services.AddServices();
+builder.Services.AddExerciseStrategy();
 builder.Services.Configure<TokenOptions>(config.GetSection("TokenOptions"));
 builder.Services.RegisterA2S();
 builder.Services.AddSingleton(signingConfigurations);
 builder.Services.AddExerciseFactory();
 builder.Services.AddHealthChecks();
+builder.Services.AddRepositories();
 builder.Services.AddCors(options =>
     options.AddPolicy("MyPolicy",
         builder => {

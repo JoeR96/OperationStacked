@@ -14,24 +14,23 @@ namespace OperationStacked.Services.ExerciseCreationService
     public class ExerciseCreationService : IExerciseCreationService
     {
         private readonly OperationStackedContext _operationStackedContext;
-        private readonly IA2SHypertrophyService _a2SHypertrophyService;
+        private readonly IExerciseStrategyResolver _exerciseStrategyResolver;
          
         public ExerciseCreationService(
-            IA2SHypertrophyService a2SHypertrophyService, OperationStackedContext operationStackedContext)
+            IExerciseStrategyResolver exerciseStrategyResolver, 
+            OperationStackedContext operationStackedContext)
         {
-            _a2SHypertrophyService = a2SHypertrophyService;
+            _exerciseStrategyResolver = exerciseStrategyResolver;
             _operationStackedContext = operationStackedContext;
         }
 
         public async Task<Result<WorkoutCreationResult>> CreateWorkout(CreateWorkoutRequest request)
         {
-            var strategy = new ExerciseStrategy(new IExerciseFactory[] {
-            new A2SHypertrophyFactory(_a2SHypertrophyService),
-            new LinearProgressionFactory()
-            });
-
+            
             IEnumerable<IExercise> exercises
-                = request.ExerciseDaysAndOrders.Select(exercise => strategy.CreateExercise(ResolveType(exercise.Template),exercise));
+                = request.ExerciseDaysAndOrders.Select(exercise => _exerciseStrategyResolver
+                .CreateStrategy()
+                .CreateExercise(ResolveType(exercise.Template),exercise));
 
             //move this to repository
             await _operationStackedContext.AddRangeAsync(exercises);

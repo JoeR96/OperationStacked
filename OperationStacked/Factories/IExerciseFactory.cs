@@ -1,5 +1,7 @@
 ﻿using OperationStacked.Abstractions;
+using OperationStacked.Entities;
 using OperationStacked.Models;
+using OperationStacked.Requests;
 
 namespace OperationStacked.Factories
 {
@@ -7,5 +9,7 @@ namespace OperationStacked.Factories
     {
         bool AppliesTo(Type type);
         IExercise CreateExercise(CreateExerciseModel exercise);
+        abstract Task<(Exercise, ExerciseCompletedStatus)> ProgressExercise(CompleteExerciseRequest request);
+
     }
 }

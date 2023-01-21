@@ -1,20 +1,16 @@
-﻿using OperationStacked.Abstractions;
+﻿using System.Reflection;
+using OperationStacked.Abstractions;
 using OperationStacked.Data;
-using OperationStacked.Services;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using Amazon;
-using Amazon.DynamoDBv2;
-using Amazon.Internal;
-using OperationStacked.Utilities;
-using ServiceStack.Aws.DynamoDb;
-using OperationStacked.Services.ExerciseProgressionService;
 using OperationStacked.Repositories;
-using OperationStacked.Services.UserAccountsService;
+using OperationStacked.Services;
+using OperationStacked.Services.A2S;
+using OperationStacked.Services.ExerciseCreationService;
+using OperationStacked.Services.ExerciseProgressionService;
+using OperationStacked.Services.ExerciseRetrievalService;
 using OperationStacked.Services.JwtService;
 using OperationStacked.Services.LoginService;
-using OperationStacked.Services.ExerciseCreationService;
-using OperationStacked.Services.A2S;
+using OperationStacked.Services.UserAccountsService;
+using OperationStacked.Strategy;
 
 namespace OperationStacked.Extensions
 {
@@ -43,19 +39,21 @@ namespace OperationStacked.Extensions
             => services.AddSingletonsByConvention(assembly, predicate, predicate);
 
         public static IServiceCollection AddServices(this IServiceCollection services)
-        {
-            services.AddTransient<IExerciseProgressionService, ExerciseProgressionService>();
-            services.AddTransient<IExerciseCreationService, ExerciseCreationService>();
-            services.AddTransient<IExerciseRetrievalService, ExerciseRetrievalService>();
-            services.AddTransient<IUserAccountService, UserAccountService>();
-            services.AddTransient<ILoginService, LoginService>();
-            services.AddTransient<IPasswordHasherService, PasswordHasherService>();
-            services.AddTransient<ITokenHandlerService, TokenHandlerService>();
-            services.AddDbContext<OperationStackedContext>();
+        =>  services
+            .AddTransient<IExerciseProgressionService, ExerciseProgressionService>()
+            .AddTransient<IExerciseCreationService, ExerciseCreationService>()
+            .AddTransient<IExerciseRetrievalService, ExerciseRetrievalService>()
+            .AddTransient<IUserAccountService, UserAccountService>()
+            .AddTransient<ILoginService, LoginService>()
+            .AddTransient<IPasswordHasherService, PasswordHasherService>()
+            .AddTransient<ITokenHandlerService, TokenHandlerService>()
+            .AddDbContext<OperationStackedContext>();
 
-            return services;
-        }
+        public static IServiceCollection AddExerciseStrategy(this IServiceCollection services) =>
+            services.AddTransient<IExerciseStrategyResolver, ExerciseStrategyResolver>();
 
+        public static IServiceCollection AddRepositories(this IServiceCollection services)
+        => services.AddTransient<IExerciseRepository, ExerciseRepository>();
         public static IServiceCollection RegisterA2S(this IServiceCollection services )
         {
             services.AddTransient<IA2SHypertrophyService, A2SHypertrophyService>();

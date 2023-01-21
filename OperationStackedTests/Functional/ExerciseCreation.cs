@@ -75,6 +75,7 @@ namespace OperationStackedTests.Functional
                 .RuleFor(x => x.TrainingMax, 40)
                 .RuleFor(x => x.EquipmentType, EquipmentType.Barbell)
                 .RuleFor(x => x.Block, A2SBlocks.Hypertrophy)
+                .RuleFor(x => x.WeightProgression, 2.5m)
                 .Generate(1);
 
 

@@ -37,5 +37,6 @@ namespace OperationStacked.Models
         public int Sets { get; set; }
         public int RepsPerSet { get; set; }
         public int Week { get; set; }
+        public Guid ParentId { get; set; }
     }
 }
