@@ -6,10 +6,10 @@ using System.Net.Mime;
 using FluentResult;
 using Bogus;
 using OperationStacked.Models;
-using OperationStacked.Repositories;
 using OperationStacked.Services.ExerciseProgressionService;
 using OperationStacked.Services.ExerciseCreationService;
 using OperationStacked.Entities;
+using OperationStacked.Services.ExerciseRetrievalService;
 
 namespace OperationStacked.Controllers
 {

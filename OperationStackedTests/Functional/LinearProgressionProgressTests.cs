@@ -55,7 +55,7 @@ namespace OperationStackedTests.Functional
                             .RuleFor(i => i.Username, "Tim420")
                             .RuleFor(i => i.WeightIndex, 1)
                             .RuleFor(i => i.EquipmentType, EquipmentType.Barbell)
-                .RuleFor(i => i.Template, ExerciseTemplate.A2SHypertrophy);
+                .RuleFor(i => i.Template, ExerciseTemplate.LinearProgression);
         }
 
         [Test]
@@ -77,7 +77,7 @@ namespace OperationStackedTests.Functional
             .RuleFor(i => i.CurrentAttempt, 1)
                 .RuleFor(i => i.AttemptsBeforeDeload, 2)
                 .RuleFor(i => i.EquipmentType, EquipmentType.Barbell)
-                .RuleFor(i => i.Template, ExerciseTemplate.A2SHypertrophy);
+                .RuleFor(i => i.Template, ExerciseTemplate.LinearProgression);
 
             _context.Exercises.Add(exercise);
             _context.SaveChanges();
@@ -118,7 +118,7 @@ namespace OperationStackedTests.Functional
                 .RuleFor(i => i.CurrentAttempt, 1)
                 .RuleFor(i => i.AttemptsBeforeDeload, 2)
                 .RuleFor(i => i.EquipmentType, EquipmentType.Barbell)
-                .RuleFor(i => i.Template, ExerciseTemplate.A2SHypertrophy);
+                .RuleFor(i => i.Template, ExerciseTemplate.LinearProgression);
 
             _context.Exercises.Add(exercise);
             _context.SaveChanges();
@@ -161,7 +161,7 @@ namespace OperationStackedTests.Functional
                 .RuleFor(i => i.CurrentAttempt, 1)
                 .RuleFor(i => i.AttemptsBeforeDeload, 2)
                 .RuleFor(i => i.EquipmentType, EquipmentType.Barbell)
-                .RuleFor(i => i.Template, ExerciseTemplate.A2SHypertrophy);
+                .RuleFor(i => i.Template, ExerciseTemplate.LinearProgression);
 
             _context.Exercises.Add(exercise);
             _context.SaveChanges();
@@ -202,7 +202,7 @@ namespace OperationStackedTests.Functional
                 .RuleFor(i => i.CurrentAttempt, 2)
                 .RuleFor(i => i.AttemptsBeforeDeload, 2)
                 .RuleFor(i => i.EquipmentType, EquipmentType.Barbell)
-                .RuleFor(i => i.Template, ExerciseTemplate.A2SHypertrophy);
+                .RuleFor(i => i.Template, ExerciseTemplate.LinearProgression);
 
             _context.Exercises.Add(exercise);
             _context.SaveChanges();

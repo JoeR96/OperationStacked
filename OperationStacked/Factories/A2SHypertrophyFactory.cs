@@ -1,14 +1,17 @@
 ﻿using OperationStacked.Data;
 using OperationStacked.Entities;
 using OperationStacked.Models;
+using OperationStacked.Repositories;
+using OperationStacked.Requests;
 using OperationStacked.Services.A2S;
 
 namespace OperationStacked.Factories
 {
     public class A2SHypertrophyFactory : ExerciseFactory<A2SHypertrophyExercise>
     {
+
         IA2SHypertrophyService _a2sHypertrophyService;
-        public A2SHypertrophyFactory(IA2SHypertrophyService a2SHypertrophyService) 
+        public A2SHypertrophyFactory(IA2SHypertrophyService a2SHypertrophyService, IExerciseRepository exerciseRepository) : base(exerciseRepository)
         {
             _a2sHypertrophyService = a2SHypertrophyService;
         }
@@ -53,5 +56,12 @@ namespace OperationStacked.Factories
             
             return _exercise;
         }
+
+        public async override Task<(Exercise, ExerciseCompletedStatus)> ProgressExercise(CompleteExerciseRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+    
     }
 }

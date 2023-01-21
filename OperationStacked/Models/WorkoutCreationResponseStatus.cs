@@ -11,6 +11,7 @@
         Progressed = 1,
         StayedTheSame = 2,
         Failed = 3,
-        Deload = 4
+        Deload = 4,
+        Active = 5
     }
 }
