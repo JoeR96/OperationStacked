@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using OperationStacked.Response;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using FluentResult;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OperationStacked.Abstractions;
 using OperationStacked.Requests;
-using Microsoft.AspNetCore.Authentication;
-using OperationStacked.Communication;
+using OperationStacked.Response;
 
 namespace OperationStacked.Controllers
 {
@@ -18,7 +17,8 @@ namespace OperationStacked.Controllers
         private readonly ILoginService _loginService;
         private IAuthenticationService _authenticationService;
         private ITokenHandlerService _tokenHandlerService;
-        public AuthenticationController(ILoginService loginService,IAuthenticationService authenticationService)
+        public AuthenticationController(ILoginService loginService,
+            IAuthenticationService authenticationService)
         {
             _loginService = loginService;
             _authenticationService = authenticationService;

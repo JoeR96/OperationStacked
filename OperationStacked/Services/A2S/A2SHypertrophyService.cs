@@ -1,4 +1,5 @@
-﻿using OperationStacked.Enums;
+﻿using OperationStacked.Entities;
+using OperationStacked.Enums;
 using OperationStacked.Models;
 using OperationStacked.Models.A2S;
 
@@ -41,6 +42,13 @@ namespace OperationStacked.Services.A2S
 
         public int GetSets(A2SBlocks block, int week, bool primary) => primary ? a2SPrimaryLifts[block].sets : a2SAuxLifts[block].sets;
 
+        public decimal GetWorkingWeight(A2SBlocks block, int week, bool primary, decimal trainingMax, decimal roundingValue)
+        {
+            var workingWeight = GetIntensity(block, week, primary) * trainingMax;
+            var newWeight = Math.Round(workingWeight / roundingValue);
+            return newWeight * roundingValue;
+
+        }
     }
 }
 
