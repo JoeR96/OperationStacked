@@ -16,6 +16,7 @@ namespace OperationStacked.Entities
         public decimal Intensity { get; set; }
         public int Sets { get; set; }
         public int RepsPerSet { get; set; }
+        public decimal RoundingValue { get; set; }
     }
     
 }
