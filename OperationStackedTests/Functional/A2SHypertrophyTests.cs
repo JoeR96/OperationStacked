@@ -77,7 +77,7 @@ namespace OperationStackedTests.Functional
             .RuleFor(i => i.ExerciseName, "Squats")
             .RuleFor(i => i.AmrapRepTarget, 5)
             .RuleFor(i => i.TrainingMax, 100.00m)
-            .RuleFor(i => i.PrimaryLift, true)
+            .RuleFor(i => i.AuxillaryLift, true)
             .RuleFor(i => i.RoundingValue, 5m);
         [TearDown]
         public void Teardown()

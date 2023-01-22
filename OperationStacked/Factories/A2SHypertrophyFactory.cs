@@ -23,7 +23,7 @@ namespace OperationStacked.Factories
         {
             CreateBaseExercise(createExerciseModel);
             _exercise.TrainingMax = _createExerciseModel.TrainingMax;
-            _exercise.PrimaryLift = _createExerciseModel.AuxillaryLift;
+            _exercise.AuxillaryLift = _createExerciseModel.AuxillaryLift;
             _exercise.Block = _createExerciseModel.Block;
 
             _exercise.WorkingWeight = _a2sHypertrophyService.GetWorkingWeight(
@@ -54,13 +54,17 @@ namespace OperationStacked.Factories
                 _createExerciseModel.Block,
                 _createExerciseModel.Week,
                 _createExerciseModel.AuxillaryLift);
-            
+
+            _exercise.RoundingValue = createExerciseModel.WeightProgression;
             return _exercise;
         }
 
         public async override Task<(Exercise, ExerciseCompletedStatus)> ProgressExercise(CompleteExerciseRequest request)
         {
             var exercise = (A2SHypertrophyExercise)await _exerciseRepository.GetExerciseById(request.Id);
+            exercise.Completed = true;
+
+            await _exerciseRepository.UpdateAsync(exercise);
             ExerciseCompletedStatus status = ExerciseCompletedStatus.Active;
 
             int updateModifier = 0;
@@ -69,19 +73,20 @@ namespace OperationStacked.Factories
             updateModifier = (request.Reps.FirstOrDefault() - exercise.AmrapRepTarget);
             var trainingMax = UpdateTrainingMax(exercise.TrainingMax, updateModifier);
             Math.Clamp(updateModifier, -2, 5);
-            var (week, block) = _a2sHypertrophyService.GetNextWeekAndBlock(exercise.Block, exercise.Week);
+            var (a2sWeek, block) = _a2sHypertrophyService.GetNextWeekAndBlock(exercise.Block, exercise.Week);
 
             var nextWeekWorkingWeight = _a2sHypertrophyService.GetWorkingWeight(block,
-                week,
-                exercise.PrimaryLift, 
+                a2sWeek,
+                exercise.AuxillaryLift, 
                 trainingMax, 
                 exercise.RoundingValue);
 
-            var nextExercise = exercise.GenerateNextExercise(trainingMax, nextWeekWorkingWeight, block, week,
-                _a2sHypertrophyService.GetAmprapRepTarget(block, week, exercise.PrimaryLift),
-                _a2sHypertrophyService.GetIntensity(block, week, exercise.PrimaryLift),
-                _a2sHypertrophyService.GetRepsPerSet(block, week, exercise.PrimaryLift));
-
+            var nextExercise = exercise.GenerateNextExercise(trainingMax, nextWeekWorkingWeight, block, a2sWeek,
+                _a2sHypertrophyService.GetAmprapRepTarget(block, a2sWeek, exercise.AuxillaryLift),
+                _a2sHypertrophyService.GetIntensity(block, a2sWeek, exercise.AuxillaryLift),
+                _a2sHypertrophyService.GetRepsPerSet(block, a2sWeek, exercise.AuxillaryLift),
+                exercise.Week,exercise.UserId);
+            nextExercise.Week = a2sWeek;
             await _exerciseRepository.InsertExercise(nextExercise);
 
             return (nextExercise, status);
