@@ -36,9 +36,5 @@ namespace OperationStacked.Extensions.TemplateExtensions
                RoundingValue = e.RoundingValue
            };
 
-        public static void ProgressWeek(this A2SHypertrophyExercise e)
-        {
-
-        }
     }
 }

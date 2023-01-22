@@ -18,8 +18,6 @@ namespace OperationStackedTests.Functional
         //1x Stays Same
         //2X Increase Training Max
         //1x Next Week block changes
-
-
         [Test]
         [TestCase(3,95,70)]
         [TestCase(4, 98, 75)]

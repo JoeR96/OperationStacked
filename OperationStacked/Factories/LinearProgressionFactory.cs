@@ -83,7 +83,5 @@ namespace OperationStacked.Factories
             await _exerciseRepository.InsertExercise(nextExercise);
             return (nextExercise, status);
         }
-
-       
     }
 }
