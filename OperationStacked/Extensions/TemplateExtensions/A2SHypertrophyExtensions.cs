@@ -12,11 +12,13 @@ namespace OperationStacked.Extensions.TemplateExtensions
             int week,
             int amrapRepTarget,
             decimal intensity,
-            int repsPerSet)
+            int repsPerSet,
+            int a2sWeek,
+            int userId)
            => new A2SHypertrophyExercise
            {
                TrainingMax = trainingMax,
-               PrimaryLift = e.PrimaryLift,
+               AuxillaryLift = e.AuxillaryLift,
                Block = block,
                AmrapRepTarget = amrapRepTarget,
                AmrapRepResult = 0,
@@ -29,11 +31,13 @@ namespace OperationStacked.Extensions.TemplateExtensions
                Template = e.Template,
                LiftDay = e.LiftDay,
                LiftOrder = e.LiftOrder,
-               LiftWeek = week,
+               LiftWeek = week += 1,
+               Week = a2sWeek,
                ParentId = e.Id,
                WorkingWeight = workingWeight,
                EquipmentType = e.EquipmentType,
-               RoundingValue = e.RoundingValue
+               RoundingValue = e.RoundingValue,
+               UserId = userId
            };
 
     }

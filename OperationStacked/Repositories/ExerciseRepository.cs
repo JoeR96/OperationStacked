@@ -15,13 +15,21 @@ namespace OperationStacked.Repositories
         public async Task<List<Exercise>> GetExercises(int userId, int week, int day) => _context.Exercises
         .Where(x => x.LiftDay == day &&
                x.LiftWeek == week &&
-               x.UserId == userId).ToList();
+               x.UserId == userId &&
+               x.Completed != true
+        ).ToList();
         public async Task<Exercise> GetExerciseById(Guid id) => _context.Exercises
         .FirstOrDefault(x => x.Id == id);
 
         public async Task InsertExercise(Exercise nextExercise)
         {
             await _context.Exercises.AddAsync(nextExercise);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(Exercise exercise)
+        {
+            _context.Exercises.Update(exercise);
             await _context.SaveChangesAsync();
         }
     }

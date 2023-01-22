@@ -92,7 +92,7 @@ namespace OperationStackedTests.Functional
             _context.Exercises.ForEach(x => x.Template.Should().Be(ExerciseTemplate.A2SHypertrophy));
             _context.Exercises.ForEach(x => x.EquipmentType.Should().Be(EquipmentType.Barbell));
             _context.Exercises.ForEach(x => x.Username.Should().Be("ChickenLegTim"));
-            _context.A2SHypertrophyExercises.ForEach(x => x.PrimaryLift.Should().Be(false));
+            _context.A2SHypertrophyExercises.ForEach(x => x.AuxillaryLift.Should().Be(false));
             //Return 0.60m for week 0,
             _context.A2SHypertrophyExercises.ForEach(x => x.Intensity.Should().Be(0.60m));
             _context.A2SHypertrophyExercises.ForEach(x => x.TrainingMax.Should().Be(40));

@@ -37,6 +37,8 @@ namespace OperationStacked.Factories
         public async override Task<(Exercise, ExerciseCompletedStatus)> ProgressExercise(CompleteExerciseRequest request)
         {
             var exercise = (LinearProgressionExercise)await _exerciseRepository.GetExerciseById(request.Id);
+            exercise.Completed = true;
+            await _exerciseRepository.UpdateAsync(exercise);
             ExerciseCompletedStatus status = ExerciseCompletedStatus.Active;
             int weightIndexModifier = 0;
             int attemptModifier = 0;

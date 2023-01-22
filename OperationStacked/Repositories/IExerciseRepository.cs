@@ -7,5 +7,6 @@ namespace OperationStacked.Repositories
         Task<Exercise> GetExerciseById(Guid id);
         Task<List<Exercise>> GetExercises(int userId, int week, int day);
         Task InsertExercise(Exercise nextExercise);
+        Task UpdateAsync(Exercise exercise);
     }
 }
