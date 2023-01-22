@@ -61,7 +61,6 @@ namespace OperationStackedTests.Functional
         [Test]
         public async Task ExercisesFailsFirstTimeSetsOnly()
         {
-
             var id = Guid.NewGuid();
             var exercise = new Faker<LinearProgressionExercise>()
                 .RuleFor(i => i.MaximumReps, 12)

@@ -8,7 +8,7 @@ namespace OperationStacked.Entities
     public class A2SHypertrophyExercise : Exercise
     {
         public decimal TrainingMax { get; set; }
-        public bool AuxillaryLift { get; set; }
+        public bool PrimaryLift { get; set; }
         public A2SBlocks Block { get; set; }
         public int AmrapRepTarget { get; set; }
         public int AmrapRepResult { get; set; }

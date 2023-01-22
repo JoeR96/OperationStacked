@@ -44,11 +44,28 @@ namespace OperationStacked.Services.A2S
 
         public decimal GetWorkingWeight(A2SBlocks block, int week, bool primary, decimal trainingMax, decimal roundingValue)
         {
+
             var workingWeight = GetIntensity(block, week, primary) * trainingMax;
             var newWeight = Math.Round(workingWeight / roundingValue);
             return newWeight * roundingValue;
 
         }
+
+        public (int,A2SBlocks) GetNextWeekAndBlock(A2SBlocks block, int week)
+        {
+            int nextWeekBlock = (int)block;
+
+            if(week == 5)
+            {
+                week = 0;
+            }
+            else
+            {
+                week++;
+            }
+
+            return (week, (A2SBlocks)nextWeekBlock);
+        }      
     }
 }
 

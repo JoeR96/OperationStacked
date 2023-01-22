@@ -1,4 +1,5 @@
-﻿using OperationStacked.Abstractions;
+﻿using Microsoft.EntityFrameworkCore;
+using OperationStacked.Abstractions;
 using OperationStacked.Data;
 using OperationStacked.Entities;
 using OperationStacked.Extensions.TemplateExtensions;
@@ -82,5 +83,7 @@ namespace OperationStacked.Factories
             await _exerciseRepository.InsertExercise(nextExercise);
             return (nextExercise, status);
         }
+
+       
     }
 }

@@ -2,7 +2,7 @@
 using OperationStacked.Entities;
 using OperationStacked.Factories;
 
-namespace OperationStacked.Extensions
+namespace OperationStacked.Extensions.FactoryExtensions
 {
     public static class ExerciseFactoryExtensions
     {

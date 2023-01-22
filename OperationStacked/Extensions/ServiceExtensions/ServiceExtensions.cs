@@ -12,7 +12,7 @@ using OperationStacked.Services.LoginService;
 using OperationStacked.Services.UserAccountsService;
 using OperationStacked.Strategy;
 
-namespace OperationStacked.Extensions
+namespace OperationStacked.Extensions.ServiceExtensions
 {
     public static class ServiceExtensions
     {
@@ -21,11 +21,11 @@ namespace OperationStacked.Extensions
             var interfaces = assembly.ExportedTypes
                 .Where(x => x.IsInterface && interfacePredicate(x))
                 .ToList();
-            
+
             var implementations = assembly.ExportedTypes
                 .Where(x => !x.IsInterface && !x.IsAbstract && implementationPredicate(x))
                 .ToList();
-            
+
             foreach (var @interface in interfaces)
             {
                 var implementation = implementations.FirstOrDefault(x => @interface.IsAssignableFrom(x));
@@ -39,7 +39,7 @@ namespace OperationStacked.Extensions
             => services.AddSingletonsByConvention(assembly, predicate, predicate);
 
         public static IServiceCollection AddServices(this IServiceCollection services)
-        =>  services
+        => services
             .AddTransient<IExerciseProgressionService, ExerciseProgressionService>()
             .AddTransient<IExerciseCreationService, ExerciseCreationService>()
             .AddTransient<IExerciseRetrievalService, ExerciseRetrievalService>()
@@ -54,16 +54,16 @@ namespace OperationStacked.Extensions
 
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         => services.AddTransient<IExerciseRepository, ExerciseRepository>();
-        public static IServiceCollection RegisterA2S(this IServiceCollection services )
+        public static IServiceCollection RegisterA2S(this IServiceCollection services)
         {
             services.AddTransient<IA2SHypertrophyService, A2SHypertrophyService>();
 
             return services;
         }
-        
-        
+
+
     }
-    
+
 }
 
 
