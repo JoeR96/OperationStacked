@@ -1,6 +1,7 @@
 using OperationStacked.Communication;
 using OperationStacked.Data;
-using OperationStacked.Extensions;
+using OperationStacked.Extensions.FactoryExtensions;
+using OperationStacked.Extensions.ServiceExtensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;

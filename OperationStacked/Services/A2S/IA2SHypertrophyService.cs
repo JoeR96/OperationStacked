@@ -10,5 +10,6 @@ namespace OperationStacked.Services.A2S
         int GetRepsPerSet(A2SBlocks block, int week, bool auxillaryLift);
         int GetSets(A2SBlocks block, int week, bool auxilllaryLift);
         public decimal GetWorkingWeight(A2SBlocks block, int week, bool primary, decimal trainingMax, decimal roundingValue);
+        public (int, A2SBlocks) GetNextWeekAndBlock(A2SBlocks block, int week);
     }
 }

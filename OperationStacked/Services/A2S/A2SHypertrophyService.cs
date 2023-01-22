@@ -49,6 +49,21 @@ namespace OperationStacked.Services.A2S
             return newWeight * roundingValue;
 
         }
+        public (int,A2SBlocks) GetNextWeekAndBlock(A2SBlocks block, int week)
+        {
+            int nextWeekBlock = (int)block;
+
+            if(week == 5)
+            {
+                week = 0;
+            }
+            else
+            {
+                week++;
+            }
+
+            return (week, (A2SBlocks)nextWeekBlock);
+        }      
     }
 }
 
