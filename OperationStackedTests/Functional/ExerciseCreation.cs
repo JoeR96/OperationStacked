@@ -69,7 +69,7 @@ namespace OperationStackedTests.Functional
                 .RuleFor(x => x.ExerciseName, "Squats")
                 .RuleFor(x => x.Template, ExerciseTemplate.A2SHypertrophy)
                 .RuleFor(x => x.Username, "ChickenLegTim")
-                .RuleFor(x => x.AuxillaryLift, false)
+                .RuleFor(x => x.PrimaryLift, false)
                 .RuleFor(x => x.LiftOrder, 1)
                 .RuleFor(x => x.UserId, 1)
                 .RuleFor(x => x.TrainingMax, 40)

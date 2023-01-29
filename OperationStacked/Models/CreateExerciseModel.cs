@@ -30,7 +30,7 @@ namespace OperationStacked.Models
         public decimal WeightProgression { get; set; }
         public int AttemptsBeforeDeload { get; set; }
         public int UserId { get; set; }
-        public bool AuxillaryLift { get; set; }
+        public bool PrimaryLift { get; set; }
         public A2SBlocks Block { get; set; }
         public decimal TrainingMax { get; set; }
         public decimal Intensity { get; set; }

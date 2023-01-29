@@ -1,5 +1,6 @@
 ﻿using OperationStacked.Data;
 using OperationStacked.Entities;
+using ServiceStack;
 
 namespace OperationStacked.Repositories
 {
@@ -12,11 +13,13 @@ namespace OperationStacked.Repositories
             _context = context;
         }
 
-        public async Task<List<Exercise>> GetExercises(int userId, int week, int day) => _context.Exercises
-        .Where(x => x.LiftDay == day &&
+        public async Task<List<Exercise>> GetExercises(int userId, int week, int day, bool completed) => completed ? _context.Exercises.Where(x => x.LiftDay == day &&
+               x.LiftWeek == week &&
+               x.UserId == userId 
+        ).ToList() : _context.Exercises.Where(x => x.LiftDay == day &&
                x.LiftWeek == week &&
                x.UserId == userId &&
-               x.Completed != true
+               x.Completed == false
         ).ToList();
         public async Task<Exercise> GetExerciseById(Guid id) => _context.Exercises
         .FirstOrDefault(x => x.Id == id);

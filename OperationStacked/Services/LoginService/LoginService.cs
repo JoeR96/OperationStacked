@@ -33,7 +33,7 @@ namespace OperationStacked.Services.LoginService
 
         private Result<LoginRequestResult> Login(User user)
         {
-            return Result.Create(new LoginRequestResult(true, "Success", "JWT", user.UserId, user.CurrentDay, user.CurrentWeek, user.UserName));
+            return Result.Create(new LoginRequestResult(true, "Success", "JWT", user.UserId, user.CurrentDay, user.CurrentWeek, user.WorkoutDaysInWeek, user.UserName ));
         }
 
         public Task Logout()
@@ -53,7 +53,7 @@ namespace OperationStacked.Services.LoginService
                 UserName = request.UserName,
                 Password = _passwordHasherService.HashPassword(request.Password),
                 Email = request.EmailAddress,
-                WorkoutDaysInWeek = 4,
+                WorkoutDaysInWeek = 5,
                 CurrentWeek = 1,
                 CurrentDay = 1
             };
