@@ -46,12 +46,12 @@ namespace OperationStacked.Controllers
             .ToActionResultAsync(this);
 
         [HttpGet]
-        [Route("{userId}/{week}/{day}")]
+        [Route("{userId}/{week}/{day}/{completed}")]
         [ProducesResponseType(200, Type = typeof(GetWorkoutResult))]
         [ProducesResponseType(400, Type = typeof(GetWorkoutResult))]
-        public async Task<IActionResult> GetWorkout([FromRoute] int userId, [FromRoute] int week, [FromRoute] int day)
+        public async Task<IActionResult> GetWorkout([FromRoute] int userId, [FromRoute] int week, [FromRoute] int day, [FromRoute] bool completed)
             => Ok(Newtonsoft.Json.JsonConvert.SerializeObject(
-                await _exerciseRetrievalService.GetWorkout(userId, week, day)));
+                await _exerciseRetrievalService.GetWorkout(userId, week, day,completed)));
 
 
         [HttpGet]
@@ -87,7 +87,7 @@ namespace OperationStacked.Controllers
                             .RuleFor(x => x.UserId, userId)
                             .RuleFor(x => x.TrainingMax, 100)
                             .RuleFor(x => x.WeightIndex, 0)
-                            .RuleFor(x => x.AuxillaryLift, false)
+                            .RuleFor(x => x.PrimaryLift, true)
                             .RuleFor(x => x.Block, Enums.A2SBlocks.Hypertrophy)
                             .RuleFor(x => x.EquipmentType, Enums.EquipmentType.Barbell)
                             .RuleFor(x => x.WeightProgression, 5m);
@@ -162,7 +162,7 @@ namespace OperationStacked.Controllers
                             .RuleFor(x => x.ExerciseName, "Overhead Press")
                             .RuleFor(x => x.Template, ExerciseTemplate.A2SHypertrophy)
                             .RuleFor(x => x.Username, "BigDaveTV")
-                                                        .RuleFor(x => x.AuxillaryLift, false)
+                                                        .RuleFor(x => x.PrimaryLift, true)
 
                             .RuleFor(x => x.LiftDay, 2)
                             .RuleFor(x => x.LiftOrder, 1)
@@ -239,7 +239,7 @@ namespace OperationStacked.Controllers
             var deadlift = new Faker<CreateExerciseModel>()
                     .RuleFor(x => x.Category, category)
                     .RuleFor(x => x.ExerciseName, "Deadlift")
-                    .RuleFor(x => x.AuxillaryLift, false)
+                    .RuleFor(x => x.PrimaryLift, true)
                     .RuleFor(x => x.Template, ExerciseTemplate.A2SHypertrophy)
                     .RuleFor(x => x.Username, "BigDaveTV")
                     .RuleFor(x => x.LiftDay, day)
@@ -313,7 +313,7 @@ namespace OperationStacked.Controllers
                             .RuleFor(x => x.TrainingMax, 80)
                             .RuleFor(x => x.WeightIndex, 0)
                             .RuleFor(x => x.Block, Enums.A2SBlocks.Hypertrophy)
-                            .RuleFor(x => x.AuxillaryLift, false)
+                            .RuleFor(x => x.PrimaryLift, true)
                             .RuleFor(x => x.EquipmentType, Enums.EquipmentType.Barbell)
                             .RuleFor(x => x.WeightProgression, 2.5m);
 
@@ -336,6 +336,7 @@ namespace OperationStacked.Controllers
                 .RuleFor(x => x.Category, "Chest")
                 .RuleFor(x => x.ExerciseName, "Incline Smith Press")
                 .RuleFor(x => x.Template, ExerciseTemplate.A2SHypertrophy)
+                .RuleFor(x => x.PrimaryLift, false)
                 .RuleFor(x => x.Username, "BigDaveTV")
                 .RuleFor(x => x.EquipmentType, Enums.EquipmentType.SmithMachine)
                 .RuleFor(x => x.LiftDay, 4)
@@ -366,7 +367,7 @@ namespace OperationStacked.Controllers
                 .RuleFor(x => x.Template, ExerciseTemplate.LinearProgression)
                 .RuleFor(x => x.Username, "BigDaveTV")
                 .RuleFor(x => x.EquipmentType, Enums.EquipmentType.Cable)
-                .RuleFor(x => x.LiftDay, 5)
+                .RuleFor(x => x.LiftDay, 4)
                 .RuleFor(x => x.LiftOrder, 5)
                 .RuleFor(x => x.UserId, userId)
                 .RuleFor(x => x.StartingWeight, 18m)
@@ -383,9 +384,9 @@ namespace OperationStacked.Controllers
                             .RuleFor(x => x.Category, "Legs")
                             .RuleFor(x => x.ExerciseName, "Front Squat")
                             .RuleFor(x => x.Template, ExerciseTemplate.A2SHypertrophy)
-                            .RuleFor(x => x.AuxillaryLift, false)
+                            .RuleFor(x => x.PrimaryLift, true)
                             .RuleFor(x => x.Username, "BigDaveTV")
-                            .RuleFor(x => x.LiftDay, 1)
+                            .RuleFor(x => x.LiftDay, 5)
                             .RuleFor(x => x.LiftOrder, 1)
                             .RuleFor(x => x.UserId, userId)
                             .RuleFor(x => x.TrainingMax, 100)
@@ -398,10 +399,10 @@ namespace OperationStacked.Controllers
                             .RuleFor(x => x.Category, "Legs")
                             .RuleFor(x => x.ExerciseName, "Romanian Deadlift")
                             .RuleFor(x => x.Template, ExerciseTemplate.A2SHypertrophy)
-                            .RuleFor(x => x.AuxillaryLift, true)
+                            .RuleFor(x => x.PrimaryLift, false)
                             .RuleFor(x => x.Username, "BigDaveTV")
-                            .RuleFor(x => x.LiftDay, 1)
-                            .RuleFor(x => x.LiftOrder, 1)
+                            .RuleFor(x => x.LiftDay, 5)
+                            .RuleFor(x => x.LiftOrder, 2)
                             .RuleFor(x => x.UserId, userId)
                             .RuleFor(x => x.TrainingMax, 100)
                             .RuleFor(x => x.WeightIndex, 0)
@@ -415,7 +416,7 @@ namespace OperationStacked.Controllers
                 .RuleFor(x => x.EquipmentType, Enums.EquipmentType.Machine)
                 .RuleFor(x => x.Template, ExerciseTemplate.LinearProgression)
                 .RuleFor(x => x.Username, "BigDaveTV")
-                .RuleFor(x => x.LiftDay, 2)
+                .RuleFor(x => x.LiftDay, 5)
                 .RuleFor(x => x.LiftOrder, 3)
                 .RuleFor(x => x.UserId, userId)
                 .RuleFor(x => x.StartingWeight, 59)
@@ -430,7 +431,7 @@ namespace OperationStacked.Controllers
                 .RuleFor(x => x.EquipmentType, Enums.EquipmentType.Machine)
                 .RuleFor(x => x.Template, ExerciseTemplate.LinearProgression)
                 .RuleFor(x => x.Username, "BigDaveTV")
-                .RuleFor(x => x.LiftDay, 2)
+                .RuleFor(x => x.LiftDay, 5)
                 .RuleFor(x => x.LiftOrder, 4)
                 .RuleFor(x => x.UserId, userId)
                 .RuleFor(x => x.StartingWeight, 59)
@@ -445,7 +446,7 @@ namespace OperationStacked.Controllers
                  .RuleFor(x => x.EquipmentType, Enums.EquipmentType.Machine)
                  .RuleFor(x => x.Template, ExerciseTemplate.LinearProgression)
                  .RuleFor(x => x.Username, "BigDaveTV")
-                 .RuleFor(x => x.LiftDay, 2)
+                 .RuleFor(x => x.LiftDay, 5)
                  .RuleFor(x => x.LiftOrder, 5)
                  .RuleFor(x => x.UserId, userId)
                  .RuleFor(x => x.StartingWeight, 59)

@@ -23,37 +23,37 @@ namespace OperationStacked.Factories
         {
             CreateBaseExercise(createExerciseModel);
             _exercise.TrainingMax = _createExerciseModel.TrainingMax;
-            _exercise.AuxillaryLift = _createExerciseModel.AuxillaryLift;
+            _exercise.AuxillaryLift = _createExerciseModel.PrimaryLift;
             _exercise.Block = _createExerciseModel.Block;
 
             _exercise.WorkingWeight = _a2sHypertrophyService.GetWorkingWeight(
                 _createExerciseModel.Block,
                 _createExerciseModel.Week,
-                _createExerciseModel.AuxillaryLift,
+                _createExerciseModel.PrimaryLift,
                 _createExerciseModel.TrainingMax,
                 _createExerciseModel.WeightProgression);
 
             _exercise.AmrapRepTarget = _a2sHypertrophyService.GetAmprapRepTarget(
                 _createExerciseModel.Block, 
                 _createExerciseModel.Week,
-                _createExerciseModel.AuxillaryLift);
+                _createExerciseModel.PrimaryLift);
             _exercise.AmrapRepResult = 0;
             _exercise.Week = _createExerciseModel.Week;
 
             _exercise.Intensity = _a2sHypertrophyService.GetIntensity(
                 _createExerciseModel.Block,
                 _createExerciseModel.Week,
-                _createExerciseModel.AuxillaryLift);
+                _createExerciseModel.PrimaryLift);
 
             _exercise.Sets = _a2sHypertrophyService.GetSets(
               _createExerciseModel.Block,
               _createExerciseModel.Week,
-              _createExerciseModel.AuxillaryLift);
+              _createExerciseModel.PrimaryLift);
 
             _exercise.RepsPerSet = _a2sHypertrophyService.GetRepsPerSet(
                 _createExerciseModel.Block,
                 _createExerciseModel.Week,
-                _createExerciseModel.AuxillaryLift);
+                _createExerciseModel.PrimaryLift);
 
             _exercise.RoundingValue = createExerciseModel.WeightProgression;
             return _exercise;
