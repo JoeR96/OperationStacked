@@ -18,7 +18,7 @@ namespace OperationStacked.Extensions.TemplateExtensions
            => new A2SHypertrophyExercise
            {
                TrainingMax = trainingMax,
-               AuxillaryLift = e.AuxillaryLift,
+               PrimaryLift = e.PrimaryLift,
                Block = block,
                AmrapRepTarget = amrapRepTarget,
                AmrapRepResult = 0,
