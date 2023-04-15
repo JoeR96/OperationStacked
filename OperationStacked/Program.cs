@@ -2,6 +2,7 @@ using OperationStacked.Communication;
 using OperationStacked.Data;
 using OperationStacked.Extensions.FactoryExtensions;
 using OperationStacked.Extensions.ServiceExtensions;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -29,6 +30,13 @@ builder.Services.AddCors(options =>
         }
     )
 );
+
+// Read the connection string from the configuration
+string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING") ?? config.GetConnectionString("OperationStackedDb");
+
+// Configure the DbContext
+builder.Services.AddDbContext<OperationStackedContext>(options => options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 29))));
+
 var app = builder.Build();
 app.MapHealthChecks("/health");
 

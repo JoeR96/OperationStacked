@@ -12,6 +12,12 @@ resource "aws_lambda_function" "dotnet_api" {
   runtime = "dotnet6" # Use the appropriate .NET runtime version
 
   role = aws_iam_role.lambda_exec.arn
+
+  environment {
+    variables = {
+      CONNECTION_STRING = data.aws_ssm_parameter.connection_string.value
+    }
+  }
 }
 
 resource "aws_iam_role" "lambda_exec" {
@@ -71,4 +77,8 @@ resource "aws_api_gateway_deployment" "dotnet_api_deployment" {
 
 output "api_url" {
   value = "${aws_api_gateway_deployment.dotnet_api_deployment.invoke_url}{proxy}"
+}
+
+data "aws_ssm_parameter" "connection_string" {
+  name = "/operationstacked/connectionstring/"
 }
