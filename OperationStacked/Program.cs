@@ -8,6 +8,8 @@ using Amazon.SimpleSystemsManagement.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
+var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+
 var tokenOptions = config.GetSection("TokenOptions").Get<TokenOptions>();
 var signingConfigurations = new SigningConfigurations(tokenOptions.Secret);
 
