@@ -29,6 +29,11 @@ jobs:
     - name: Publish
       run: dotnet publish -c Release -o published OperationStacked/OperationStacked.csproj
 
+    - name: Create Lambda function zip file
+      run: |
+        cd OperationStacked/bin/Release/netcoreapp3.1/publish
+        zip -r dotnet-api.zip *
+
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
       with:
