@@ -31,3 +31,24 @@ resource "aws_ssm_parameter" "operationstacked_connection_string" {
   type  = "String"
   value = "server=${aws_db_instance.operationstacked_db.endpoint};Port=3306;Database=OperationStacked;User Id=operationstacked;Password=${aws_ssm_parameter.operationstacked_db_password.value};"
 }
+
+resource "aws_security_group" "operationstacked_db_sg" {
+  name        = "operationstacked-db-sg"
+  description = "Security group for OperationStacked RDS instance"
+
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Adjust this to your desired IP range
+  }
+}
+
+resource "aws_db_subnet_group" "operationstacked_db_subnet_group" {
+  name       = "operationstacked-db-subnet-group"
+  subnet_ids = ["subnet-12345678", "subnet-abcdef12"] # Replace with your subnet IDs
+
+  tags = {
+    Name = "OperationStacked DB Subnet Group"
+  }
+}
