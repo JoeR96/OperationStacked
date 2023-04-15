@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Terraform", "Terraform", "{14668B6B-7361-46C5-A55A-16EA065D1CD4}"
 	ProjectSection(SolutionItems) = preProject
 		main.tf = main.tf
+		rds.tf = rds.tf
 	EndProjectSection
 EndProject
 Global

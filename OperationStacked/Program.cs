@@ -3,6 +3,8 @@ using OperationStacked.Data;
 using OperationStacked.Extensions.FactoryExtensions;
 using OperationStacked.Extensions.ServiceExtensions;
 using Microsoft.EntityFrameworkCore;
+using Amazon.SimpleSystemsManagement;
+using Amazon.SimpleSystemsManagement.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -31,11 +33,12 @@ builder.Services.AddCors(options =>
     )
 );
 
-// Read the connection string from the configuration
-string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING") ?? config.GetConnectionString("OperationStackedDb");
+builder.Services.AddDbContext<OperationStackedContext>(options =>
+{
+    var connectionString = GetConnectionStringFromParameterStore().Result;
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 29)));
+});
 
-// Configure the DbContext
-builder.Services.AddDbContext<OperationStackedContext>(options => options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 29))));
 
 var app = builder.Build();
 app.MapHealthChecks("/health");
@@ -52,4 +55,20 @@ using (var scope = app.Services.CreateScope())
     app.Run();
 }
 
+
+ async Task<string> GetConnectionStringFromParameterStore()
+{
+    var client = new AmazonSimpleSystemsManagementClient(Amazon.RegionEndpoint.EUWest1);
+    var request = new GetParameterRequest
+    {
+        Name = "/operationstacked/connectionstring/",
+        WithDecryption = true
+    };
+
+    var response = await client.GetParameterAsync(request);
+    return response.Parameter.Value;
+}
+
+
 public partial class Program { }
+

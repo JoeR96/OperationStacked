@@ -15,7 +15,7 @@ resource "aws_lambda_function" "dotnet_api" {
 
   environment {
     variables = {
-      CONNECTION_STRING = data.aws_ssm_parameter.connection_string.value
+      CONNECTION_STRING = data.aws_ssm_parameter.operationstacked_connection_string.value
     }
   }
 }
@@ -79,6 +79,10 @@ output "api_url" {
   value = "${aws_api_gateway_deployment.dotnet_api_deployment.invoke_url}{proxy}"
 }
 
-data "aws_ssm_parameter" "connection_string" {
+data "aws_ssm_parameter" "operationstacked_db_password" {
+  name = "/operationstacked/dbpassword/"
+}
+
+data "aws_ssm_parameter" "operationstacked_connection_string" {
   name = "/operationstacked/connectionstring/"
 }
