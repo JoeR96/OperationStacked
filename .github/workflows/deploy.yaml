@@ -33,7 +33,9 @@ jobs:
       run: |
         cd OperationStacked/bin/Release/net6.0
         zip -r ../../../../dotnet-api.zip *
-        mv dotnet-api.zip ../Terraform/
+        cd ../../../../
+        mv dotnet-api.zip ./Terraform/
+
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
