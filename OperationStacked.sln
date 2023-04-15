@@ -7,6 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OperationStacked", "Operati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OperationStackedTests", "OperationStackedTests\OperationStackedTests.csproj", "{DA2F37BF-4722-4C2F-9697-D2F5797B7D33}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Terraform", "Terraform", "{14668B6B-7361-46C5-A55A-16EA065D1CD4}"
+	ProjectSection(SolutionItems) = preProject
+		main.tf = main.tf
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

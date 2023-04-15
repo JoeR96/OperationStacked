@@ -1,5 +1,4 @@
-﻿using OperationStacked.Data;
-using OperationStacked.Entities;
+﻿using OperationStacked.Entities;
 using OperationStacked.Extensions.TemplateExtensions;
 using OperationStacked.Models;
 using OperationStacked.Repositories;
@@ -77,23 +76,23 @@ namespace OperationStacked.Factories
 
             var nextWeekWorkingWeight = _a2sHypertrophyService.GetWorkingWeight(block,
                 a2sWeek,
-                exercise.AuxillaryLift,
+                exercise.PrimaryLift,
                 trainingMax,
                 exercise.RoundingValue);
 
             var nextExercise = exercise.GenerateNextExercise(trainingMax, nextWeekWorkingWeight, block, a2sWeek,
-                _a2sHypertrophyService.GetAmprapRepTarget(block, a2sWeek, exercise.AuxillaryLift),
-                _a2sHypertrophyService.GetIntensity(block, a2sWeek, exercise.AuxillaryLift),
-                _a2sHypertrophyService.GetRepsPerSet(block, a2sWeek, exercise.AuxillaryLift),
+                _a2sHypertrophyService.GetAmprapRepTarget(block, a2sWeek, exercise.PrimaryLift),
+                _a2sHypertrophyService.GetIntensity(block, a2sWeek, exercise.PrimaryLift),
+                _a2sHypertrophyService.GetRepsPerSet(block, a2sWeek, exercise.PrimaryLift),
                 exercise.Week, exercise.UserId);
-            nextExercise.Week = a2sWeek;
+            nextExercise.Week = a2sWeek; 
             await _exerciseRepository.InsertExercise(nextExercise);
 
             return (nextExercise, status);
         }
         internal decimal UpdateTrainingMax(decimal trainingMax, int updateModifier)
         {
-            decimal modifier = 0;
+            decimal modifier;
             switch (updateModifier)
             {
                 case -2: modifier = -5m; break;

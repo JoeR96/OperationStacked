@@ -32,6 +32,23 @@ namespace OperationStacked.Controllers
         public async Task<IActionResult> Register( [FromBody] RegistrationRequest request) => await _loginService.Register(request)
             .ToActionResultAsync(this);
 
+        [Route("dummyRegister")]
+        [AllowAnonymous]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(RegisterRequestResult))]
+        [ProducesResponseType(400, Type = typeof(RegisterRequestResult))]
+        public async Task<IActionResult> DummyRegister()
+        {
+            var request = new RegistrationRequest
+            {
+                UserName = "BigDaveTv",
+                EmailAddress = "BigDaveTV@gmail.com",
+                Password = "BigDaveTV"
+            }; 
+             return await _loginService.Register(request)
+            .ToActionResultAsync(this);
+        }
+
         [Route("login")]
         [AllowAnonymous]
         [HttpPost]
