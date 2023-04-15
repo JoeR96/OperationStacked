@@ -18,16 +18,16 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
-    - name: Restore dependencies
-      run: dotnet restore
+   - name: Restore dependencies
+  run: dotnet restore OperationStacked/OperationStacked.csproj
 
-    - name: Build and test
-      run: |
-        dotnet build -c Release
-        dotnet test
+- name: Build and test
+  run: |
+    dotnet build -c Release OperationStacked/OperationStacked.csproj
+    dotnet test OperationStacked/OperationStacked.csproj
 
-    - name: Publish
-      run: dotnet publish -c Release -o published
+- name: Publish
+  run: dotnet publish -c Release -o published OperationStacked/OperationStacked.csproj
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
