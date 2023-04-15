@@ -6,7 +6,7 @@ resource "aws_lambda_function" "dotnet_api" {
   function_name = "DotnetApiFunction"
 
   filename = "dotnet-api.zip"
-  source_code_hash = filebase64sha256("dotnet-api.zip")
+  source_code_hash = filebase64sha256("${path.module}/app/bin/Release/net6.0/dotnet-api.zip")
 
   handler = "DotnetApi::DotnetApi.LambdaEntryPoint::FunctionHandlerAsync"
   runtime = "dotnet6" # Use the appropriate .NET runtime version
