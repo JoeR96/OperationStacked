@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "eu-west-1" # Change to your preferred AWS region
+  region = "eu-west-1" # Replace with your desired AWS region
 }
 
 resource "aws_lambda_function" "dotnet_api" {
