@@ -10,7 +10,6 @@ resource "aws_db_instance" "operationstacked_db" {
   parameter_group_name = "default.mysql8.0"
 
   vpc_security_group_ids = [local.operationstacked_db_sg_id]
-  db_subnet_group_name   = aws_db_subnet_group.operationstacked_db_subnet_group.name
 
   backup_retention_period = 7
   multi_az               = false
@@ -59,43 +58,4 @@ resource "aws_security_group" "operationstacked_db_sg" {
 
 locals {
   operationstacked_db_sg_id = data.aws_security_group.existing_operationstacked_db_sg.id != null ? data.aws_security_group.existing_operationstacked_db_sg.id : aws_security_group.operationstacked_db_sg[0].id
-}
-
-resource "aws_subnet" "subnet_1" {
-  cidr_block = "10.0.1.0/24"
-  vpc_id     = aws_vpc.example.id
-  availability_zone = "eu-west-1a"
-  tags = {
-    Name = "subnet-1"
-  }
-}
-
-resource "aws_subnet" "subnet_2" {
-  cidr_block = "10.0.2.0/24"
-  vpc_id     = aws_vpc.example.id
-  availability_zone = "eu-west-1b"
-  tags = {
-    Name = "subnet-2"
-  }
-}
-
-
-resource "aws_db_subnet_group" "operationstacked_db_subnet_group" {
-  name       = "operationstacked-db-subnet-group"
-  subnet_ids = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
-
-  tags = {
-    Name = "OperationStacked DB Subnet Group"
-  }
-
-  lifecycle {
-    ignore_changes = [name]
-  }
-}
-
-resource "aws_vpc" "example" {
-  cidr_block = "10.0.0.0/16"
-  tags = {
-    Name = "example-vpc"
-  }
 }
