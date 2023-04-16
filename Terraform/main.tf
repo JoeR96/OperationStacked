@@ -110,6 +110,7 @@ data "aws_ssm_parameter" "operationstacked_connection_string" {
 resource "aws_security_group" "ecs_security_group" {
   vpc_id      = aws_vpc.operation_stacked_vpc.id
 
+
   ingress {
     from_port   = 0
     to_port     = 65535
