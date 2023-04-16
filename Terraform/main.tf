@@ -137,6 +137,19 @@ resource "aws_lb_target_group" "operation_stacked_tg" {
   port     = 80
   protocol = "HTTP"
   vpc_id   = aws_vpc.operation_stacked_vpc.id
+  target_type = "ip" # Add this line
+}
+
+resource "aws_subnet" "operation_stacked_subnet_1" {
+  vpc_id                  = aws_vpc.operation_stacked_vpc.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = "eu-west-1a" # Replace with the desired Availability Zone
+}
+
+resource "aws_subnet" "operation_stacked_subnet_2" {
+  vpc_id                  = aws_vpc.operation_stacked_vpc.id
+  cidr_block              = "10.0.2.0/24"
+  availability_zone       = "eu-west-1b" # Replace with a different desired Availability Zone
 }
 
 resource "aws_lb" "operation_stacked_alb" {
@@ -144,10 +157,12 @@ resource "aws_lb" "operation_stacked_alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.ecs_security_group.id]
-  subnets            = [aws_subnet.operation_stacked_subnet.id]
+
+  subnets = [
+    aws_subnet.operation_stacked_subnet_1.id,
+    aws_subnet.operation_stacked_subnet_2.id
+  ]
 }
-
-
 resource "aws_lb_listener" "operation_stacked_listener" {
   load_balancer_arn = aws_lb.operation_stacked_alb.arn
   port              = 80
