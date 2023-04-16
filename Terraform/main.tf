@@ -99,6 +99,12 @@ resource "aws_ecs_service" "operation_stacked_api" {
     security_groups = [aws_security_group.ecs_security_group.id]
     assign_public_ip = "true"
   }
+
+  load_balancer {
+  target_group_arn = aws_lb_target_group.operation_stacked_tg.arn
+  container_name   = "operation-stacked-api"
+  container_port   = 80
+}
 }
 
 data "aws_ssm_parameter" "operationstacked_db_password" {
@@ -126,4 +132,33 @@ resource "aws_security_group" "ecs_security_group" {
   }
 }
 
+resource "aws_lb_target_group" "operation_stacked_tg" {
+  name     = "operation-stacked-tg"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = data.aws_vpc.selected.id
+}
 
+resource "aws_lb" "operation_stacked_alb" {
+  name               = "operation-stacked-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.ecs_security_group.id]
+  subnets            = [aws_subnet.operation_stacked_subnet.id]
+}
+
+
+resource "aws_lb_listener" "operation_stacked_listener" {
+  load_balancer_arn = aws_lb.operation_stacked_alb.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.operation_stacked_tg.arn
+  }
+}
+
+output "alb_dns_name" {
+  value = aws_lb.operation_stacked_alb.dns_name
+}
