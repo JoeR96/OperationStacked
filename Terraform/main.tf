@@ -109,14 +109,6 @@ data "aws_ssm_parameter" "operationstacked_connection_string" {
   name = "operationstacked-connectionstring"
 }
 
-data "aws_security_group" "existing_ecs_sg" {
-  filter {
-    name   = "tag:Name"
-    values = ["ecs-sg*"]
-  }
-}
-
-
 resource "aws_security_group" "ecs_security_group" {
   vpc_id      = aws_vpc.operation_stacked_vpc.id
 
