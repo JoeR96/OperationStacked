@@ -37,6 +37,14 @@ resource "aws_ecs_task_definition" "operation_stacked_api" {
         value = data.aws_ssm_parameter.operationstacked_connection_string.value
       }
     ]
+    logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        awslogs-group         = aws_cloudwatch_log_group.operation_stacked_api.name
+        awslogs-region        = "eu-west-1" # Replace with your desired AWS region
+        awslogs-stream-prefix = "ecs"
+      }
+    }
   }])
 }
 
@@ -192,4 +200,8 @@ resource "aws_route_table_association" "operation_stacked_subnet_1_association" 
 resource "aws_route_table_association" "operation_stacked_subnet_2_association" {
   subnet_id      = aws_subnet.operation_stacked_subnet_2.id
   route_table_id = aws_route_table.operation_stacked_route_table.id
+}
+
+resource "aws_cloudwatch_log_group" "operation_stacked_api" {
+  name = "operation_stacked_api"
 }
