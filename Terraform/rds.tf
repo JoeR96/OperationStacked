@@ -89,7 +89,7 @@ resource "aws_db_subnet_group" "operationstacked_db_subnet_group" {
   }
 
   lifecycle {
-    create_before_destroy = true
+    ignore_changes = [name]
   }
 }
 
