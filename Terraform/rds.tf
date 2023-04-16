@@ -21,6 +21,8 @@ resource "aws_db_instance" "operationstacked_db" {
 
   lifecycle {
     create_before_destroy = true
+    ignore_changes        = [allocated_storage, engine_version, instance_class]
+
   }
 
   publicly_accessible = true # Set this parameter to true to make the database publicly accessible
