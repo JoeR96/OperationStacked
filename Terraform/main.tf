@@ -38,7 +38,6 @@ resource "aws_ecs_task_definition" "operation_stacked_api" {
 }
 
 resource "aws_iam_role" "execution_role" {
-  name = "ecs_execution_role"
   name_prefix = "ecs_execution_role"
 
   assume_role_policy = jsonencode({
@@ -56,7 +55,6 @@ resource "aws_iam_role" "execution_role" {
 }
 
 resource "aws_iam_role" "task_role" {
-  name = "ecs_task_role"
   name_prefix = "ecs_task_role"
 
   assume_role_policy = jsonencode({
