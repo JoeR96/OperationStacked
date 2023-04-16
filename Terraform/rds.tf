@@ -16,12 +16,16 @@ resource "aws_db_instance" "operationstacked_db" {
   storage_encrypted      = false
 
   deletion_protection = false
-  skip_final_snapshot = true
+  skip_final_snapshot = false # Set this parameter to false to create a final snapshot before destroying the instance
+  final_snapshot_identifier = "operationstacked-db-snapshot" # Set a name for the final snapshot
+
   lifecycle {
     create_before_destroy = true
   }
+
   publicly_accessible = true # Set this parameter to true to make the database publicly accessible
 }
+
 
 resource "aws_ssm_parameter" "operationstacked_db_password" {
   name  = "operationstacked-dbpassword"
