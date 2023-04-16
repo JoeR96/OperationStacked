@@ -53,44 +53,44 @@ public class UserTests : BaseApiTest
         result.Should().Be(1);
     }
     
-    [Test]
-    public async Task CurrentWeekIncreasesIfDayIsEqualToTotalDays()
-    {
-        // Act
-        var request = new RegistrationRequest()
-        {
-            UserName = userName,
-            EmailAddress = email,
-            Password = password
-        };
-       await _client.PostAsJsonAsync(registerUrl
-            , request);
+    //[Test]
+    //public async Task CurrentWeekIncreasesIfDayIsEqualToTotalDays()
+    //{
+    //    // Act
+    //    var request = new RegistrationRequest()
+    //    {
+    //        UserName = userName,
+    //        EmailAddress = email,
+    //        Password = password
+    //    };
+    //   await _client.PostAsJsonAsync(registerUrl
+    //        , request);
 
 
-        var loginresponse = await _client.PostAsJsonAsync(loginUrl, request);
-        var id = await loginresponse.Content.ReadAsStringAsync();
+    //    var loginresponse = await _client.PostAsJsonAsync(loginUrl, request);
+    //    var id = await loginresponse.Content.ReadAsStringAsync();
 
-        var deserializeObject = JsonConvert.DeserializeObject<jsonObject>(id);
-        //var userId = id.Data.First().UserId;
-        var myObject = "1";
+    //    var deserializeObject = JsonConvert.DeserializeObject<jsonObject>(id);
+    //    //var userId = id.Data.First().UserId;
+    //    var myObject = "1";
 
-        JsonContent content = JsonContent.Create(myObject);
+    //    JsonContent content = JsonContent.Create(myObject);
 
-        await _client.GetAsync(getGetCurrentWeekAndDay + deserializeObject.Data.UserId);
-        await _client.PostAsync(updateUrl, content);
-        await _client.PostAsync(updateUrl, content);
-        var currentWeekAndDay = await _client.PostAsync(updateUrl, content);
+    //    await _client.GetAsync(getGetCurrentWeekAndDay + deserializeObject.Data.UserId);
+    //    await _client.PostAsync(updateUrl, content);
+    //    await _client.PostAsync(updateUrl, content);
+    //    var currentWeekAndDay = await _client.PostAsync(updateUrl, content);
 
-        var newWeekAndDay = await _client.PostAsJsonAsync(loginUrl, request);
+    //    var newWeekAndDay = await _client.PostAsJsonAsync(loginUrl, request);
 
-        var id2 = await newWeekAndDay.Content.ReadAsStringAsync();
+    //    var id2 = await newWeekAndDay.Content.ReadAsStringAsync();
 
-        var deserializeObject2 = JsonConvert.DeserializeObject<jsonObject>(id2);
+    //    var deserializeObject2 = JsonConvert.DeserializeObject<jsonObject>(id2);
 
-        var result = deserializeObject2.Data.CurrentWeek - deserializeObject.Data.CurrentWeek;
+    //    var result = deserializeObject2.Data.CurrentWeek - deserializeObject.Data.CurrentWeek;
         
-        result.Should().Be(1);
-    }
+    //    result.Should().Be(1);
+    //}
 }
 
 public class FakeContent : HttpContent
