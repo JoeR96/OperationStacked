@@ -94,17 +94,21 @@ resource "aws_ecs_service" "operation_stacked_api" {
   desired_count   = 1
   launch_type     = "FARGATE"
 
-    network_configuration {
+  network_configuration {
     subnets         = [aws_subnet.operation_stacked_subnet_1.id, aws_subnet.operation_stacked_subnet_2.id]
     security_groups = [aws_security_group.ecs_security_group.id]
     assign_public_ip = "true"
   }
 
   load_balancer {
-  target_group_arn = aws_lb_target_group.operation_stacked_tg.arn
-  container_name   = "operation-stacked-api"
-  container_port   = 80
-}
+    target_group_arn = aws_lb_target_group.operation_stacked_tg.arn
+    container_name   = "operation-stacked-api"
+    container_port   = 80
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 data "aws_ssm_parameter" "operationstacked_db_password" {
