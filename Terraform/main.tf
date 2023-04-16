@@ -12,11 +12,10 @@ variable "aws_secret_access_key" {
   default = ""
 }
 
-
 resource "aws_lambda_function" "dotnet_api" {
   function_name = "DotnetApiFunction"
 
-  filename = "dotnet-api.zip"
+  filename         = "dotnet-api.zip"
   source_code_hash = filebase64sha256("dotnet-api.zip")
 
   handler = "DotnetApi::DotnetApi.LambdaEntryPoint::FunctionHandlerAsync"
@@ -29,41 +28,11 @@ resource "aws_lambda_function" "dotnet_api" {
       CONNECTION_STRING = data.aws_ssm_parameter.operationstacked_connection_string.value
     }
   }
-}
 
-# Destroy existing Lambda function
-resource "aws_lambda_function" "dotnet_api_deletion" {
-  function_name = "DotnetApiFunction"
-    role = aws_iam_role.lambda_exec.arn
-
-  # Ensure that Terraform will delete the function
   lifecycle {
-    ignore_changes = [source_code_hash]
-    create_before_destroy = true
-  }
-
-  # Do not specify any other attributes to avoid potential conflicts with the existing function
-}
-
-# Create a new Lambda function with the same name and updated details
-resource "aws_lambda_function" "dotnet_api_creation" {
-  function_name = "DotnetApiFunction"
-
-  filename = "updated-dotnet-api.zip"
-  source_code_hash = filebase64sha256("updated-dotnet-api.zip")
-
-  handler = "DotnetApi::DotnetApi.LambdaEntryPoint::FunctionHandlerAsync"
-  runtime = "dotnet6"
-
-  role = aws_iam_role.lambda_exec.arn
-
-  environment {
-    variables = {
-      CONNECTION_STRING = data.aws_ssm_parameter.updated_operationstacked_connection_string.value
-    }
+    ignore_changes = [filename, source_code_hash]
   }
 }
-
 
 resource "aws_iam_role" "lambda_exec" {
   name = "lambda_exec"
@@ -129,12 +98,4 @@ data "aws_ssm_parameter" "operationstacked_db_password" {
   depends_on = [aws_ssm_parameter.operationstacked_db_password]
 }
 
-data "aws_ssm_parameter" "operationstacked_connection_string" {
-  name       = "operationstacked-connectionstring"
-  depends_on = [aws_ssm_parameter.operationstacked_connection_string]
-}
-
-data "aws_ssm_parameter" "updated_operationstacked_connection_string" {
-  name       = "updated-operationstacked-connectionstring"
-  depends_on = [aws_ssm_parameter.operationstacked_connection_string]
-}
+data "aws_ssm_parameter" "operationstacked
