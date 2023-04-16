@@ -40,6 +40,7 @@ resource "aws_ecs_task_definition" "operation_stacked_api" {
   }])
 }
 
+
 resource "aws_iam_role" "execution_role" {
   name_prefix = "ecs_execution_role"
 
