@@ -4,13 +4,7 @@ provider "aws" {
   secret_key = var.aws_secret_access_key
 }
 
-data "aws_vpc" "existing_operation_stacked_vpc" {
-  for_each = toset(["OperationStackedVPC"])
-  filter {
-    name   = "tag:Name"
-    values = [each.key]
-  }
-}
+
 
 resource "aws_vpc" "operation_stacked_vpc" {
   for_each = length(data.aws_vpc.existing_operation_stacked_vpc) > 0 ? {} : {default = "10.0.0.0/16"}
