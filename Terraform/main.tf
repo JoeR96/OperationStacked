@@ -112,3 +112,11 @@ data "aws_ssm_parameter" "operationstacked_connection_string" {
   name = "operationstacked-connectionstring"
   depends_on = [aws_ssm_parameter.operationstacked_connection_string]
 }
+
+resource "aws_ecr_repository" "operation_stacked_api" {
+  name = "operation-stacked-api"
+}
+
+output "ecr_repository_url" {
+  value = aws_ecr_repository.operation_stacked_api.repository_url
+}
