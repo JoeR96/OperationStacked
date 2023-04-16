@@ -19,8 +19,8 @@ resource "aws_ecs_task_definition" "operation_stacked_api" {
   network_mode             = "awsvpc"
   cpu                      = "256"
   memory                   = "512"
-  execution_role_arn       = local.execution_role_arn
-  task_role_arn            = local.task_role_arn
+  execution_role_arn       = aws_iam_role.execution_role.arn
+  task_role_arn            = aws_iam_role.task_role.arn
 
   container_definitions = jsonencode([{
     name  = "operation-stacked-api"
@@ -116,11 +116,14 @@ data "aws_ssm_parameter" "operationstacked_connection_string" {
 }
 
 data "aws_security_group" "existing_ecs_sg" {
-  name_prefix = "ecs-sg"
+  filter {
+    name   = "tag:Name"
+    values = ["ecs-sg*"]
+  }
 }
 
+
 resource "aws_security_group" "ecs_security_group" {
-  name_prefix = "ecs-sg"
   vpc_id      = aws_vpc.operation_stacked_vpc.id
 
   ingress {
