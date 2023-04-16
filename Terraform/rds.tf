@@ -87,6 +87,10 @@ resource "aws_db_subnet_group" "operationstacked_db_subnet_group" {
   tags = {
     Name = "OperationStacked DB Subnet Group"
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_vpc" "example" {
