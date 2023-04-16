@@ -43,10 +43,33 @@ resource "aws_security_group" "operationstacked_db_sg" {
     cidr_blocks = ["0.0.0.0/0"] # Adjust this to your desired IP range
   }
 }
+resource "aws_vpc" "example" {
+  cidr_block = "10.0.0.0/16"
+  tags = {
+    Name = "example-vpc"
+  }
+}
+
+resource "aws_subnet" "subnet_1" {
+  cidr_block = "10.0.1.0/24"
+  vpc_id     = aws_vpc.example.id
+  tags = {
+    Name = "subnet-1"
+  }
+}
+
+resource "aws_subnet" "subnet_2" {
+  cidr_block = "10.0.2.0/24"
+  vpc_id     = aws_vpc.example.id
+  tags = {
+    Name = "subnet-2"
+  }
+}
+
 
 resource "aws_db_subnet_group" "operationstacked_db_subnet_group" {
   name       = "operationstacked-db-subnet-group"
-  subnet_ids = ["subnet-12345678", "subnet-abcdef12"] # Replace with your subnet IDs
+  subnet_ids = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
 
   tags = {
     Name = "OperationStacked DB Subnet Group"
