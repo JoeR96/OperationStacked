@@ -12,7 +12,7 @@ data "aws_vpc" "existing_operation_stacked_vpc" {
 }
 
 resource "aws_vpc" "operation_stacked_vpc" {
-  count = length(data.aws_vpc.existing_operation_stacked_vpc.id) > 0 ? 0 : 1
+  count = length(local.existing_vpc_id) > 0 ? 0 : 1
 
   cidr_block = "10.0.0.0/16"
 
@@ -123,6 +123,7 @@ resource "aws_iam_role" "task_role" {
 locals {
   execution_role_arn = data.aws_iam_role.existing_execution_role.id != null ? data.aws_iam_role.existing_execution_role.arn : aws_iam_role.execution_role[0].arn
   task_role_arn = data.aws_iam_role.existing_task_role.id != null ? data.aws_iam_role.existing_task_role.arn : aws_iam_role.task_role[0].arn
+  existing_vpc_id = try(data.aws_vpc.existing_operation_stacked_vpc.id, "")
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_execution_policy" {
