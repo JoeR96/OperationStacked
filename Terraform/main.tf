@@ -12,7 +12,7 @@ data "aws_vpc" "existing_operation_stacked_vpc" {
 }
 
 resource "aws_vpc" "operation_stacked_vpc" {
-  count = length(data.aws_vpc.existing_operation_stacked_vpc.ids) > 0 ? 0 : 1
+  count = length(data.aws_vpc.existing_operation_stacked_vpc.id) > 0 ? 0 : 1
 
   cidr_block = "10.0.0.0/16"
 
@@ -126,9 +126,9 @@ locals {
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_execution_policy" {
-  count      = aws_iam_role.execution_role.count
+  count      = length(aws_iam_role.execution_role)
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-  role       = aws_iam_role.execution_role[0].name
+  role       = aws_iam_role.execution_role[count.index].name
 }
 
 resource "aws_ecs_service" "operation_stacked_api" {
