@@ -16,8 +16,8 @@ resource "aws_ecs_task_definition" "operation_stacked_api" {
   network_mode             = "awsvpc"
   cpu                      = "256"
   memory                   = "512"
-  execution_role_arn       = local.execution_role_arn
-  task_role_arn            = local.task_role_arn
+  execution_role_arn       = aws_iam_role.execution_role.arn
+  task_role_arn            = aws_iam_role.task_role.arn
 
   container_definitions = jsonencode([{
     name  = "operation-stacked-api"
@@ -109,6 +109,7 @@ resource "aws_ecs_service" "operation_stacked_api" {
   desired_count   = 1
   launch_type     = "FARGATE"
 }
+
 data "aws_ssm_parameter" "operationstacked_db_password" {
   name = "operationstacked-dbpassword"
 }
@@ -116,3 +117,28 @@ data "aws_ssm_parameter" "operationstacked_db_password" {
 data "aws_ssm_parameter" "operationstacked_connection_string" {
   name = "operationstacked-connectionstring"
 }
+
+data "aws_security_group" "existing_ecs_sg" {
+  name_prefix = "ecs-sg"
+}
+
+resource "aws_security_group" "ecs_security_group" {
+  count = data.aws_security_group.existing_ecs_sg.id != null ? 0 : 1
+
+  name_prefix = "ecs-sg"
+
+  ingress {
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
