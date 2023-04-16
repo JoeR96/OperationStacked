@@ -83,3 +83,10 @@ resource "aws_ecs_service" "operation_stacked_api" {
   desired_count   = 1
   launch_type     = "FARGATE"
 }
+data "aws_ssm_parameter" "operationstacked_db_password" {
+  name = "operationstacked-dbpassword"
+}
+
+data "aws_ssm_parameter" "operationstacked_connection_string" {
+  name = "operationstacked-connectionstring"
+}
