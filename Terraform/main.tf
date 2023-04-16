@@ -21,15 +21,11 @@ resource "aws_vpc" "operation_stacked_vpc" {
   }
 }
 
-locals {
-  operation_stacked_vpc_id = length(data.aws_vpc.existing_operation_stacked_vpc.ids) > 0 ? data.aws_vpc.existing_operation_stacked_vpc.ids[0] : aws_vpc.operation_stacked_vpc[0].id
-}
-
 resource "aws_subnet" "operation_stacked_subnet" {
   count = 2
 
   cidr_block = "10.0.${count.index + 1}.0/24"
-  vpc_id     = local.operation_stacked_vpc_id
+  vpc_id     = aws_vpc.operation_stacked_vpc[0].id
 
   tags = {
     Name = "OperationStackedSubnet-${count.index + 1}"
@@ -102,58 +98,55 @@ resource "aws_iam_role" "execution_role" {
   })
 }
 
-locals {
-  execution_role_arn = data.aws_iam_role.existing_execution_role.id != null ? data.aws_iam_role.existing_execution_role.arn : aws_iam_role.execution_role[0].arn
-}
-
 data "aws_iam_role" "existing_task_role" {
   name = "ecs_task_role"
 }
 
 resource "aws_iam_role" "task_role" {
-count = data.aws_iam_role.existing_task_role.id != null ? 0 : 1
+  count = data.aws_iam_role.existing_task_role.id != null ? 0 : 1
 
-name = "ecs_task_role"
+  name = "ecs_task_role"
 
-assume_role_policy = jsonencode({
-Version = "2012-10-17"
-Statement = [
-{
-Action = "sts:AssumeRole"
-Effect = "Allow"
-Principal = {
-Service = "ecs-tasks.amazonaws.com"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      }
+    ]
+  })
 }
-}
-]
-})
-}
-
 locals {
-task_role_arn = data.aws_iam_role.existing_task_role.id != null ? data.aws_iam_role.existing_task_role.arn : aws_iam_role.task_role[0].arn
+  execution_role_arn = data.aws_iam_role.existing_execution_role.id != null ? data.aws_iam_role.existing_execution_role.arn : aws_iam_role.execution_role[0].arn
+  task_role_arn = data.aws_iam_role.existing_task_role.id != null ? data.aws_iam_role.existing_task_role.arn : aws_iam_role.task_role[0].arn
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_execution_policy" {
-policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-role = aws_iam_role.execution_role.name
+  count      = aws_iam_role.execution_role.count
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+  role       = aws_iam_role.execution_role[0].name
 }
 
 resource "aws_ecs_service" "operation_stacked_api" {
-name = "operation-stacked-api"
-cluster = aws_ecs_cluster.operation_stacked_api.id
-task_definition = aws_ecs_task_definition.operation_stacked_api.arn
-desired_count = 1
-launch_type = "FARGATE"
+  name            = "operation-stacked-api"
+  cluster         = aws_ecs_cluster.operation_stacked_api.id
+  task_definition = aws_ecs_task_definition.operation_stacked_api.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
 
-network_configuration {
-subnets = aws_subnet.operation_stacked_subnet.*.id
-}
+  network_configuration {
+    subnets = aws_subnet.operation_stacked_subnet.*.id
+  }
 }
 
 data "aws_ssm_parameter" "operationstacked_db_password" {
-name = "operationstacked-dbpassword"
+  name = "operationstacked-dbpassword"
 }
 
 data "aws_ssm_parameter" "operationstacked_connection_string" {
-name = "operationstacked-connectionstring"
+  name = "operationstacked-connectionstring"
 }
