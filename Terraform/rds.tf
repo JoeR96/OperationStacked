@@ -6,7 +6,7 @@ resource "aws_db_instance" "operationstacked_db" {
 
   name     = "OperationStacked"
   username = "operationstacked"
-  password = "your_password"
+  password = data.aws_ssm_parameter.operationstacked_db_password.value
   parameter_group_name = "default.mysql8.0"
 
   vpc_security_group_ids = [local.operationstacked_db_sg_id]
@@ -22,24 +22,22 @@ resource "aws_db_instance" "operationstacked_db" {
   lifecycle {
     create_before_destroy = true
     ignore_changes        = [allocated_storage, engine_version, instance_class]
-
   }
 
   publicly_accessible = true # Set this parameter to true to make the database publicly accessible
 }
 
-
 resource "aws_ssm_parameter" "operationstacked_db_password" {
-  name  = "operationstacked-dbpassword"
-  type  = "SecureString"
-  value = "your_secure_password"
+  name      = "operationstacked-dbpassword"
+  type      = "SecureString"
+  value     = "your_secure_password"
   overwrite = true
 }
 
 resource "aws_ssm_parameter" "operationstacked_connection_string" {
-  name  = "operationstacked-connectionstring"
-  type  = "String"
-  value = "server=${aws_db_instance.operationstacked_db.endpoint};Port=3306;Database=OperationStacked;User Id=operationstacked;Password=${aws_ssm_parameter.operationstacked_db_password.value};"
+  name      = "operationstacked-connectionstring"
+  type      = "String"
+  value     = "server=${aws_db_instance.operationstacked_db.endpoint};Port=3306;Database=OperationStacked;User Id=operationstacked;Password=${aws_ssm_parameter.operationstacked_db_password.value};"
   overwrite = true
 }
 
@@ -60,7 +58,7 @@ resource "aws_security_group" "operationstacked_db_sg" {
     to_port     = 3306
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"] # Adjust this to your desired IP range
-  }
+      }
 }
 
 locals {

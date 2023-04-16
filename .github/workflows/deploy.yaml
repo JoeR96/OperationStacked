@@ -1,4 +1,4 @@
-name: Deploy to AWS Lambda
+name: Deploy to AWS Fargate
 
 on:
   push:
@@ -29,12 +29,17 @@ jobs:
     - name: Publish
       run: dotnet publish -c Release -o published OperationStacked/OperationStacked.csproj
 
-    - name: Create Lambda function zip file
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Create Docker image
       run: |
-        cd OperationStacked/bin/Release/net6.0
-        zip -r ../../../../dotnet-api.zip *
-        cd ../../../../
-        mv dotnet-api.zip ./Terraform/
+        docker build -t operation-stacked-api .
+        docker tag operation-stacked-api:latest ${{ steps.login-ecr.outputs.registry }}/operation-stacked-api:latest
+
+    - name: Push Docker image to Amazon ECR
+      run: docker push ${{ steps.login-ecr.outputs.registry }}/operation-stacked-api:latest
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
@@ -55,14 +60,6 @@ jobs:
 
     - name: Terraform Plan
       run: terraform plan -out=tfplan
-      working-directory: ./Terraform
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_EC2_METADATA_DISABLED: true
-
-    - name: Terraform Import - IAM Role
-      run: terraform import aws_iam_role.lambda_exec lambda_exec
       working-directory: ./Terraform
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
