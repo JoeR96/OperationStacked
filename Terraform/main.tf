@@ -97,7 +97,7 @@ resource "aws_ecs_service" "operation_stacked_api" {
   network_configuration {
     subnets         = [aws_subnet.operation_stacked_subnet.id]
     security_groups = [aws_security_group.ecs_security_group.id]
-    assign_public_ip = "ENABLED"
+    assign_public_ip = "true"
   }
 }
 
