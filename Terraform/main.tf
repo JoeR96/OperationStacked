@@ -203,5 +203,5 @@ resource "aws_route_table_association" "operation_stacked_subnet_2_association" 
 }
 
 resource "aws_cloudwatch_log_group" "operation_stacked_api" {
-  name = "operation_stacked_api"
+  name_name_prefix = "os-logs"
 }
