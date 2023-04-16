@@ -34,23 +34,23 @@ resource "aws_ssm_parameter" "operationstacked_connection_string" {
   overwrite = true
 }
 
-resource "aws_security_group" "operationstacked_db_sg" {
-  name        = "operationstacked-db-sg"
-  description = "Security group for OperationStacked RDS instance"
+# resource "aws_security_group" "operationstacked_db_sg" {
+#   name        = "operationstacked-db-sg"
+#   description = "Security group for OperationStacked RDS instance"
 
-  ingress {
-    from_port   = 3306
-    to_port     = 3306
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Adjust this to your desired IP range
-  }
-}
-resource "aws_vpc" "example" {
-  cidr_block = "10.0.0.0/16"
-  tags = {
-    Name = "example-vpc"
-  }
-}
+#   ingress {
+#     from_port   = 3306
+#     to_port     = 3306
+#     protocol    = "tcp"
+#     cidr_blocks = ["0.0.0.0/0"] # Adjust this to your desired IP range
+#   }
+# }
+# resource "aws_vpc" "example" {
+#   cidr_block = "10.0.0.0/16"
+#   tags = {
+#     Name = "example-vpc"
+#   }
+# }
 
 resource "aws_subnet" "subnet_1" {
   cidr_block = "10.0.1.0/24"
