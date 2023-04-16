@@ -136,7 +136,7 @@ resource "aws_lb_target_group" "operation_stacked_tg" {
   name     = "operation-stacked-tg"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = data.aws_vpc.selected.id
+  vpc_id   = aws_vpc.operation_stacked_vpc.id
 }
 
 resource "aws_lb" "operation_stacked_alb" {
