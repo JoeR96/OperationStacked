@@ -24,12 +24,14 @@ resource "aws_ssm_parameter" "operationstacked_db_password" {
   name  = "operationstacked-dbpassword"
   type  = "SecureString"
   value = "your_secure_password"
+  overwrite = true
 }
 
 resource "aws_ssm_parameter" "operationstacked_connection_string" {
   name  = "operationstacked-connectionstring"
   type  = "String"
   value = "server=${aws_db_instance.operationstacked_db.endpoint};Port=3306;Database=OperationStacked;User Id=operationstacked;Password=${aws_ssm_parameter.operationstacked_db_password.value};"
+  overwrite = true
 }
 
 resource "aws_security_group" "operationstacked_db_sg" {
@@ -53,6 +55,7 @@ resource "aws_vpc" "example" {
 resource "aws_subnet" "subnet_1" {
   cidr_block = "10.0.1.0/24"
   vpc_id     = aws_vpc.example.id
+  availability_zone = "eu-west-1a"
   tags = {
     Name = "subnet-1"
   }
@@ -61,6 +64,7 @@ resource "aws_subnet" "subnet_1" {
 resource "aws_subnet" "subnet_2" {
   cidr_block = "10.0.2.0/24"
   vpc_id     = aws_vpc.example.id
+  availability_zone = "eu-west-1b"
   tags = {
     Name = "subnet-2"
   }
