@@ -69,14 +69,6 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_EC2_METADATA_DISABLED: true
 
-    - name: Terraform Import - Security Group
-      run: terraform import aws_security_group.operationstacked_db_sg operationstacked-db-sg
-      working-directory: ./Terraform
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_EC2_METADATA_DISABLED: true
-
     - name: Terraform Apply
       run: terraform apply -auto-approve
       working-directory: ./Terraform
