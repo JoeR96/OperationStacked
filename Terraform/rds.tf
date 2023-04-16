@@ -9,7 +9,7 @@ resource "aws_db_instance" "operationstacked_db" {
   password = "your_password"
   parameter_group_name = "default.mysql8.0"
 
-  vpc_security_group_ids = [aws_security_group.operationstacked_db_sg.id]
+  vpc_security_group_ids = [local.operationstacked_db_sg_id]
   db_subnet_group_name   = aws_db_subnet_group.operationstacked_db_subnet_group.name
 
   backup_retention_period = 7
@@ -18,6 +18,9 @@ resource "aws_db_instance" "operationstacked_db" {
 
   deletion_protection = false
   skip_final_snapshot = true
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_ssm_parameter" "operationstacked_db_password" {
@@ -34,23 +37,41 @@ resource "aws_ssm_parameter" "operationstacked_connection_string" {
   overwrite = true
 }
 
-# resource "aws_security_group" "operationstacked_db_sg" {
-#   name        = "operationstacked-db-sg"
-#   description = "Security group for OperationStacked RDS instance"
+data "aws_security_group" "existing_operationstacked_db_sg" {
+  filter {
+    name   = "group-name"
+    values = ["operationstacked-db-sg"]
+  }
+}
 
-#   ingress {
-#     from_port   = 3306
-#     to_port     = 3306
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"] # Adjust this to your desired IP range
-#   }
-# }
-# resource "aws_vpc" "example" {
-#   cidr_block = "10.0.0.0/16"
-#   tags = {
-#     Name = "example-vpc"
-#   }
-# }
+data "aws_security_group" "existing_operationstacked_db_sg" {
+  filter {
+    name   = "group-name"
+    values = ["operationstacked-db-sg"]
+  }
+}
+
+resource "aws_security_group" "operationstacked_db_sg" {
+  count       = data.aws_security_group.existing_operationstacked_db_sg.id != null ? 0 : 1
+  name        = "operationstacked-db-sg"
+  description = "Security group for OperationStacked RDS instance"
+
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Adjust this to your desired IP range
+  }
+}
+
+locals {
+  operationstacked_db_sg_id = data.aws_security_group.existing_operationstacked_db_sg.id != null ? data.aws_security_group.existing_operationstacked_db_sg.id : aws_security_group.operationstacked_db_sg[0].id
+}
+
+
+locals {
+  operationstacked_db_sg_id = data.aws_security_group.existing_operationstacked_db_sg.id != null ? data.aws_security_group.existing_operationstacked_db_sg.id : aws_security_group.operationstacked_db_sg[0].id
+}
 
 resource "aws_subnet" "subnet_1" {
   cidr_block = "10.0.1.0/24"
