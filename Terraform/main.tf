@@ -34,6 +34,7 @@ resource "aws_lambda_function" "dotnet_api" {
 # Destroy existing Lambda function
 resource "aws_lambda_function" "dotnet_api_deletion" {
   function_name = "DotnetApiFunction"
+    role = aws_iam_role.lambda_exec.arn
 
   # Ensure that Terraform will delete the function
   lifecycle {
@@ -130,5 +131,10 @@ data "aws_ssm_parameter" "operationstacked_db_password" {
 
 data "aws_ssm_parameter" "operationstacked_connection_string" {
   name       = "operationstacked-connectionstring"
+  depends_on = [aws_ssm_parameter.operationstacked_connection_string]
+}
+
+data "aws_ssm_parameter" "updated_operationstacked_connection_string" {
+  name       = "updated-operationstacked-connectionstring"
   depends_on = [aws_ssm_parameter.operationstacked_connection_string]
 }
