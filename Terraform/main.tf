@@ -9,8 +9,6 @@ data "aws_vpc" "existing_operation_stacked_vpc" {
     name   = "tag:Name"
     values = ["OperationStackedVPC"]
   }
-
-  optional = true
 }
 
 resource "aws_vpc" "operation_stacked_vpc" {
