@@ -40,11 +40,11 @@ jobs:
     - name: Create Docker image
       run: |
         docker build -t operation-stacked-api .
-        docker tag operation-stacked-api:latest ${{ steps.login-ecr.outputs.registry }}/operation-stacked-api:latest
+        docker tag operation-stacked-api:latest ${{ secrets.ECR_REPOSITORY_URI }}:latest
 
     - name: Push Docker image to Amazon ECR
       run: |
-        docker push ${{ steps.login-ecr.outputs.registry }}/operation-stacked-api:latest
+        docker push ${{ secrets.ECR_REPOSITORY_URI }}:latest
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
