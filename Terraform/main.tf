@@ -31,6 +31,39 @@ resource "aws_lambda_function" "dotnet_api" {
   }
 }
 
+# Destroy existing Lambda function
+resource "aws_lambda_function" "dotnet_api_deletion" {
+  function_name = "DotnetApiFunction"
+
+  # Ensure that Terraform will delete the function
+  lifecycle {
+    ignore_changes = [source_code_hash]
+    create_before_destroy = true
+  }
+
+  # Do not specify any other attributes to avoid potential conflicts with the existing function
+}
+
+# Create a new Lambda function with the same name and updated details
+resource "aws_lambda_function" "dotnet_api_creation" {
+  function_name = "DotnetApiFunction"
+
+  filename = "updated-dotnet-api.zip"
+  source_code_hash = filebase64sha256("updated-dotnet-api.zip")
+
+  handler = "DotnetApi::DotnetApi.LambdaEntryPoint::FunctionHandlerAsync"
+  runtime = "dotnet6"
+
+  role = aws_iam_role.lambda_exec.arn
+
+  environment {
+    variables = {
+      CONNECTION_STRING = data.aws_ssm_parameter.updated_operationstacked_connection_string.value
+    }
+  }
+}
+
+
 resource "aws_iam_role" "lambda_exec" {
   name = "lambda_exec"
 
