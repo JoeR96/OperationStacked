@@ -44,13 +44,6 @@ data "aws_security_group" "existing_operationstacked_db_sg" {
   }
 }
 
-data "aws_security_group" "existing_operationstacked_db_sg" {
-  filter {
-    name   = "group-name"
-    values = ["operationstacked-db-sg"]
-  }
-}
-
 resource "aws_security_group" "operationstacked_db_sg" {
   count       = data.aws_security_group.existing_operationstacked_db_sg.id != null ? 0 : 1
   name        = "operationstacked-db-sg"
@@ -63,11 +56,6 @@ resource "aws_security_group" "operationstacked_db_sg" {
     cidr_blocks = ["0.0.0.0/0"] # Adjust this to your desired IP range
   }
 }
-
-locals {
-  operationstacked_db_sg_id = data.aws_security_group.existing_operationstacked_db_sg.id != null ? data.aws_security_group.existing_operationstacked_db_sg.id : aws_security_group.operationstacked_db_sg[0].id
-}
-
 
 locals {
   operationstacked_db_sg_id = data.aws_security_group.existing_operationstacked_db_sg.id != null ? data.aws_security_group.existing_operationstacked_db_sg.id : aws_security_group.operationstacked_db_sg[0].id
