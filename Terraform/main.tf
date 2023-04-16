@@ -1,6 +1,17 @@
 provider "aws" {
-  region = "eu-west-1" # Replace with your desired AWS region
+  region                  = "eu-west-1" # Replace with your desired AWS region
+  access_key              = var.aws_access_key_id
+  secret_key              = var.aws_secret_access_key
 }
+
+variable "aws_access_key_id" {
+  default = ""
+}
+
+variable "aws_secret_access_key" {
+  default = ""
+}
+
 
 resource "aws_lambda_function" "dotnet_api" {
   function_name = "DotnetApiFunction"
