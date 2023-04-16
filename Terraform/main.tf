@@ -4,6 +4,26 @@ provider "aws" {
   secret_key = var.aws_secret_access_key
 }
 
+resource "aws_vpc" "operation_stacked_vpc" {
+  cidr_block = "10.0.0.0/16"
+
+  tags = {
+    Name = "OperationStackedVPC"
+  }
+}
+
+resource "aws_subnet" "operation_stacked_subnet" {
+  count = 2
+
+  cidr_block = "10.0.${count.index + 1}.0/24"
+  vpc_id     = aws_vpc.operation_stacked_vpc.id
+
+  tags = {
+    Name = "OperationStackedSubnet-${count.index + 1}"
+  }
+}
+
+
 variable "aws_access_key_id" {
   default = ""
 }
@@ -14,11 +34,6 @@ variable "aws_secret_access_key" {
 
 variable "ecr_image_uri" {
   description = "ECR image URI for operation_stacked_api"
-}
-
-variable "subnets" {
-  description = "List of subnet IDs for the ECS service"
-  type        = list(string)
 }
 
 resource "aws_ecs_cluster" "operation_stacked_api" {
@@ -99,8 +114,9 @@ resource "aws_ecs_service" "operation_stacked_api" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets = var.subnets
-  }
+  subnets = aws_subnet.operation_stacked_subnet.*.id
+}
+
 }
 
 data "aws_ssm_parameter" "operationstacked_db_password" {
