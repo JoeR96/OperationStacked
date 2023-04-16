@@ -40,14 +40,6 @@ resource "aws_ecs_task_definition" "operation_stacked_api" {
   }])
 }
 
-
-resource "aws_subnet" "operation_stacked_subnet" {
-  vpc_id     = aws_vpc.operation_stacked_vpc.id
-  cidr_block = "10.0.0.0/24"
-}
-
-
-
 resource "aws_iam_role" "execution_role" {
   name_prefix = "ecs_execution_role"
 
@@ -94,8 +86,8 @@ resource "aws_ecs_service" "operation_stacked_api" {
   desired_count   = 1
   launch_type     = "FARGATE"
 
-  network_configuration {
-    subnets         = [aws_subnet.operation_stacked_subnet.id]
+    network_configuration {
+    subnets         = [aws_subnet.operation_stacked_subnet_1.id, aws_subnet.operation_stacked_subnet_2.id]
     security_groups = [aws_security_group.ecs_security_group.id]
     assign_public_ip = "true"
   }
