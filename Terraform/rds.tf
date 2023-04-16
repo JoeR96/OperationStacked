@@ -13,7 +13,7 @@ resource "aws_db_instance" "operationstacked_db" {
 
   backup_retention_period = 7
   multi_az               = false
-  storage_encrypted      = true
+  storage_encrypted      = false
 
   deletion_protection = false
   skip_final_snapshot = true
