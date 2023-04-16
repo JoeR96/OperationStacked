@@ -29,14 +29,6 @@ jobs:
     - name: Publish
       run: dotnet publish -c Release -o published OperationStacked/OperationStacked.csproj
 
-    - name: Create ECR repository
-      run: |
-        aws ecr create-repository --repository-name operation-stacked-repo --region eu-west-1
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_EC2_METADATA_DISABLED: true
-
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
