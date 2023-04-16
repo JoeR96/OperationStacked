@@ -13,7 +13,6 @@ resource "aws_ecs_cluster" "operation_stacked_api" {
 resource "aws_ecs_task_definition" "operation_stacked_api" {
   family                   = "operation-stacked-api"
   requires_compatibilities = ["FARGATE"]
-  network_mode             = "awsvpc"
   cpu                      = "256"
   memory                   = "512"
   execution_role_arn       = aws_iam_role.execution_role.arn
