@@ -123,8 +123,8 @@ resource "aws_iam_role" "task_role" {
 locals {
   execution_role_arn = data.aws_iam_role.existing_execution_role.id != null ? data.aws_iam_role.existing_execution_role.arn : aws_iam_role.execution_role[0].arn
   task_role_arn = data.aws_iam_role.existing_task_role.id != null ? data.aws_iam_role.existing_task_role.arn : aws_iam_role.task_role[0].arn
-  existing_vpc_id = try(data.aws_vpc.existing_operation_stacked_vpc.id, "")
-  vpc_id = length(data.aws_vpc.existing_operation_stacked_vpc) > 0 ? data.aws_vpc.existing_operation_stacked_vpc.operationstackedvpc.id : aws_vpc.operation_stacked_vpc.default.id
+  existing_vpc_id = length(data.aws_vpc.existing_operation_stacked_vpc) > 0 ? data.aws_vpc.existing_operation_stacked_vpc["OperationStackedVPC"].id : ""
+  vpc_id          = length(data.aws_vpc.existing_operation_stacked_vpc) > 0 ? data.aws_vpc.existing_operation_stacked_vpc["OperationStackedVPC"].id : aws_vpc.operation_stacked_vpc["default"].id
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_execution_policy" {
