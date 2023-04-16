@@ -13,11 +13,11 @@ resource "aws_ecs_cluster" "operation_stacked_api" {
 resource "aws_ecs_task_definition" "operation_stacked_api" {
   family                   = "operation-stacked-api"
   requires_compatibilities = ["FARGATE"]
-  network_mode             = "bridge"
+  network_mode             = "awsvpc"
   cpu                      = "256"
   memory                   = "512"
-  execution_role_arn       = aws_iam_role.execution_role.arn
-  task_role_arn            = aws_iam_role.task_role.arn
+  execution_role_arn       = local.execution_role_arn
+  task_role_arn            = local.task_role_arn
 
   container_definitions = jsonencode([{
     name  = "operation-stacked-api"
@@ -35,6 +35,32 @@ resource "aws_ecs_task_definition" "operation_stacked_api" {
       }
     ]
   }])
+
+  network_configuration {
+    subnets          = [aws_subnet.operation_stacked_subnet.id]
+    assign_public_ip = "ENABLED"
+    security_groups  = [aws_security_group.ecs_security_group.id]
+  }
+}
+
+resource "aws_subnet" "operation_stacked_subnet" {
+  cidr_block = "10.0.0.0/24"
+}
+
+resource "aws_security_group" "ecs_security_group" {
+  name_prefix = "ecs-sg"
+  ingress {
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_iam_role" "execution_role" {
