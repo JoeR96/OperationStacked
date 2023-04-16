@@ -20,6 +20,7 @@ resource "aws_db_instance" "operationstacked_db" {
   lifecycle {
     create_before_destroy = true
   }
+  publicly_accessible = true # Set this parameter to true to make the database publicly accessible
 }
 
 resource "aws_ssm_parameter" "operationstacked_db_password" {
