@@ -21,13 +21,13 @@ resource "aws_db_instance" "operationstacked_db" {
 }
 
 resource "aws_ssm_parameter" "operationstacked_db_password" {
-  name  = "operationstacked/dbpassword/"
+  name  = "operationstacked-dbpassword"
   type  = "SecureString"
   value = "your_secure_password"
 }
 
 resource "aws_ssm_parameter" "operationstacked_connection_string" {
-  name  = "operationstacked/connectionstring/"
+  name  = "operationstacked-connectionstring"
   type  = "String"
   value = "server=${aws_db_instance.operationstacked_db.endpoint};Port=3306;Database=OperationStacked;User Id=operationstacked;Password=${aws_ssm_parameter.operationstacked_db_password.value};"
 }
