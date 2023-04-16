@@ -134,7 +134,7 @@ resource "aws_security_group" "ecs_security_group" {
 }
 
 resource "aws_lb_target_group" "operation_stacked_tg" {
-  name    = "operation-stacked-tg"
+  name_prefix    = "os-tg"
   port     = 80
   protocol = "HTTP"
   vpc_id   = aws_vpc.operation_stacked_vpc.id
@@ -154,7 +154,7 @@ resource "aws_subnet" "operation_stacked_subnet_2" {
 }
 
 resource "aws_lb" "operation_stacked_alb" {
-  name               = "operation-stacked-alb"
+  name_prefix               = "os-alb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.ecs_security_group.id]
