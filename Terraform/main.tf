@@ -121,10 +121,8 @@ resource "aws_ecs_service" "operation_stacked_api" {
 
 data "aws_ssm_parameter" "operationstacked_db_password" {
   name = "operationstacked-dbpassword"
-  depends_on = [aws_ssm_parameter.operationstacked_db_password]
 }
 
 data "aws_ssm_parameter" "operationstacked_connection_string" {
   name = "operationstacked-connectionstring"
-  depends_on = [aws_ssm_parameter.operationstacked_connection_string]
 }
