@@ -9,6 +9,9 @@ variable "ecr_image_uri" {
 resource "aws_ecs_cluster" "operation_stacked_api" {
   name = "operation-stacked-api"
 }
+resource "aws_vpc" "operation_stacked_vpc" {
+  cidr_block = "10.0.0.0/16"
+}
 
 resource "aws_ecs_task_definition" "operation_stacked_api" {
   family                   = "operation-stacked-api"
@@ -16,8 +19,8 @@ resource "aws_ecs_task_definition" "operation_stacked_api" {
   network_mode             = "awsvpc"
   cpu                      = "256"
   memory                   = "512"
-  execution_role_arn       = aws_iam_role.execution_role.arn
-  task_role_arn            = aws_iam_role.task_role.arn
+  execution_role_arn       = local.execution_role_arn
+  task_role_arn            = local.task_role_arn
 
   container_definitions = jsonencode([{
     name  = "operation-stacked-api"
@@ -43,9 +46,13 @@ resource "aws_ecs_task_definition" "operation_stacked_api" {
   }
 }
 
+
 resource "aws_subnet" "operation_stacked_subnet" {
+  vpc_id     = aws_vpc.operation_stacked_vpc.id
   cidr_block = "10.0.0.0/24"
 }
+
+
 
 resource "aws_iam_role" "execution_role" {
   name_prefix = "ecs_execution_role"
@@ -92,7 +99,13 @@ resource "aws_ecs_service" "operation_stacked_api" {
   task_definition = aws_ecs_task_definition.operation_stacked_api.arn
   desired_count   = 1
   launch_type     = "FARGATE"
+
+  network_configuration {
+    subnets         = [aws_subnet.operation_stacked_subnet.id]
+    security_groups = [aws_security_group.ecs_security_group.id]
+  }
 }
+
 
 data "aws_ssm_parameter" "operationstacked_db_password" {
   name = "operationstacked-dbpassword"
@@ -107,9 +120,8 @@ data "aws_security_group" "existing_ecs_sg" {
 }
 
 resource "aws_security_group" "ecs_security_group" {
-  count = data.aws_security_group.existing_ecs_sg.id != null ? 0 : 1
-
   name_prefix = "ecs-sg"
+  vpc_id      = aws_vpc.operation_stacked_vpc.id
 
   ingress {
     from_port   = 0
@@ -117,7 +129,6 @@ resource "aws_security_group" "ecs_security_group" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
   egress {
     from_port   = 0
     to_port     = 65535
@@ -125,4 +136,5 @@ resource "aws_security_group" "ecs_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
 
