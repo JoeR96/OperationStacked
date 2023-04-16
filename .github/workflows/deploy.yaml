@@ -23,8 +23,8 @@ jobs:
 
     - name: Build and test
       run: |
-        dotnet build -c Release OperationStacked/OperationStacked.csproj
-        dotnet test OperationStacked/OperationStacked.csproj
+        dotnet build -c Release OperationStackedTests/OperationStackedTests.csproj
+        dotnet test OperationStackedTests/OperationStackedTests.csproj
 
     - name: Publish
       run: dotnet publish -c Release -o published OperationStacked/OperationStacked.csproj
