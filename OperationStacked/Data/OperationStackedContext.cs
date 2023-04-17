@@ -16,7 +16,6 @@ namespace OperationStacked.Data
             _connectionString = connectionStringOptions.Value.ConnectionString;
         }
 
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
