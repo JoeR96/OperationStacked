@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using OperationStacked.Data;
 
 namespace OperationStackedTests.Helpers
@@ -13,7 +14,9 @@ namespace OperationStackedTests.Helpers
             builder.UseInMemoryDatabase(databaseName: "OperationStackedTestDB");
 
             var dbContextOptions = builder.Options;
-            _dataContext = new OperationStackedContext(dbContextOptions);
+            var options = Options.Create(new ConnectionStringOptions { ConnectionString = "your_connection_string_here" });
+
+            _dataContext = new OperationStackedContext(dbContextOptions, options);
             _dataContext.Database.EnsureDeleted();
             _dataContext.Database.EnsureCreated();
         }
