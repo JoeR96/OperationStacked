@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
 using Amazon.Runtime;
-var connectionString = await GetConnectionStringFromParameterStore();
+var connectionString = RemovePortFromServer(await GetConnectionStringFromParameterStore());
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -78,6 +78,20 @@ async Task<string> GetConnectionStringFromParameterStore()
     return response.Parameter.Value;
 }
 
+string RemovePortFromServer(string connectionString)
+{
+    const string port = ":3306";
+    var serverKey = "server=";
+    var serverStartIndex = connectionString.IndexOf(serverKey) + serverKey.Length;
+    var portIndex = connectionString.IndexOf(port, serverStartIndex);
+
+    if (portIndex != -1)
+    {
+        connectionString = connectionString.Remove(portIndex, port.Length);
+    }
+
+    return connectionString;
+}
 
 public partial class Program { }
 
@@ -85,3 +99,4 @@ public class ConnectionStringOptions
 {
     public string ConnectionString { get; set; }
 }
+
