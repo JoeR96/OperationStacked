@@ -50,7 +50,7 @@ builder.Services.AddCors(options =>
         }
     )
 );
-ConfigureSecret();
+await ConfigureSecret();
 
 async Task ConfigureSecret()
 {
