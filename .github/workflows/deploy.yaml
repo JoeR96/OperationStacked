@@ -1,4 +1,4 @@
-name: Deploy to AWS Fargate
+name: Deploy to ECR
 
 on:
   push:
@@ -49,36 +49,3 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: eu-west-1
-
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
-      with:
-        terraform_version: '1.0.0'
-
-    - name: Terraform Init
-      run: terraform init
-      working-directory: ./Terraform
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_EC2_METADATA_DISABLED: true
-
-    - name: Terraform Validate
-      run: terraform validate
-      working-directory: ./Terraform
-
-    - name: Terraform Plan
-      run: terraform plan -out=tfplan -var="ecr_image_uri=${{ secrets.ECR_REPOSITORY_URI }}:latest"
-      working-directory: ./Terraform
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_EC2_METADATA_DISABLED: true
-
-    - name: Terraform Apply
-      run: terraform apply -auto-approve -var="ecr_image_uri=${{ secrets.ECR_REPOSITORY_URI }}:latest"
-      working-directory: ./Terraform
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_EC2_METADATA_DISABLED: true
