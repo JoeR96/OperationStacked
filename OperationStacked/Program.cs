@@ -54,7 +54,11 @@ await ConfigureSecret();
 
 async Task ConfigureSecret()
 {
-    var clientsecret = new AmazonSecretsManagerClient(Amazon.RegionEndpoint.EUWest2);
+  
+    var secret = Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY");
+    var access = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
+    var awsCredentials = new BasicAWSCredentials(access, secret);
+    var clientsecret = new AmazonSecretsManagerClient(awsCredentials,Amazon.RegionEndpoint.EUWest2);
 
     var request1 = new GetSecretValueRequest
     {
@@ -146,7 +150,7 @@ async Task<string> GetConnectionStringFromParameterStore()
 
     var request1 = new GetSecretValueRequest
     {
-        SecretId = "AWS_SECRET_ACCESS_KEY"
+        SecretId = "AWS_ACCESS_KEY_ID"
     };
 
     var response1 = await clientsecret.GetSecretValueAsync(request1);
@@ -157,7 +161,7 @@ async Task<string> GetConnectionStringFromParameterStore()
 
     var request2 = new GetSecretValueRequest
     {
-        SecretId = "AWS_ACCESS_KEY_ID"
+        SecretId = "AWS_SECRET_ACCESS_KEY"
     };
 
     var response2 = await clientsecret.GetSecretValueAsync(request2);
@@ -171,7 +175,7 @@ async Task<string> GetConnectionStringFromParameterStore()
     Environment.SetEnvironmentVariable("AWS_SECRET_ACCESS_KEY", secret2.FirstOrDefault().Value);
     var secret = Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY");
     var access = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
-    var awsCredentials = new BasicAWSCredentials(secret, access);
+    var awsCredentials = new BasicAWSCredentials(access, secret);
     var client = new AmazonSimpleSystemsManagementClient(awsCredentials, Amazon.RegionEndpoint.EUWest2);
     var request = new GetParameterRequest
     {
