@@ -1,9 +1,6 @@
-﻿using Amazon.Runtime;
-using Amazon.SimpleSystemsManagement.Model;
-using Amazon.SimpleSystemsManagement;
-using Microsoft.EntityFrameworkCore;
-using OperationStacked.Entities;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using OperationStacked.Entities;
 
 namespace OperationStacked.Data
 {

@@ -10,9 +10,11 @@ using OperationStacked.Services.ExerciseProgressionService;
 using OperationStacked.Services.ExerciseCreationService;
 using OperationStacked.Entities;
 using OperationStacked.Services.ExerciseRetrievalService;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OperationStacked.Controllers
 {
+    [Authorize]
     [ApiController]
     [DisplayName("Workout Generation")]
     [Route("workout-creation/")]
@@ -52,7 +54,7 @@ namespace OperationStacked.Controllers
         [ProducesResponseType(200, Type = typeof(GetWorkoutResult))]
         [ProducesResponseType(400, Type = typeof(GetWorkoutResult))]
         public async Task<IActionResult> GetWorkout(
-            [FromRoute] int userId, 
+            [FromRoute] string userId, 
             [FromRoute] int week,
             [FromRoute] int day, 
             [FromRoute] bool completed)
@@ -62,7 +64,7 @@ namespace OperationStacked.Controllers
 
         [HttpGet]
         [Route("dummydata")]
-        public Task<IActionResult> Dummydata(int userId)
+        public Task<IActionResult> Dummydata(string userId)
         {
 
             
@@ -81,7 +83,7 @@ namespace OperationStacked.Controllers
                 .ToActionResultAsync(this);
         }
 
-        private List<CreateExerciseModel> CreateLegsOne(int userId, string v1, int v2)
+        private List<CreateExerciseModel> CreateLegsOne(string userId, string v1, int v2)
         {
             var Squats = new Faker<CreateExerciseModel>()
                             .RuleFor(x => x.Category, "Legs")
@@ -161,7 +163,7 @@ namespace OperationStacked.Controllers
             return new List<CreateExerciseModel> { Squats, adductor, abductor, legCurl, legExtension};
         }
 
-        private static List<CreateExerciseModel> CreatePushOne(int userId)
+        private static List<CreateExerciseModel> CreatePushOne(string userId)
         {
             var ohp = new Faker<CreateExerciseModel>()
                             .RuleFor(x => x.Category, "Shoulders")
@@ -242,7 +244,7 @@ namespace OperationStacked.Controllers
             return new List<CreateExerciseModel> { ohp, chestFly, inclineSmithPress, dumbBellLatRaise, tricepRopePushDown };
         }
 
-        private List<CreateExerciseModel> CreatePullOne(int id, string category, int day )
+        private List<CreateExerciseModel> CreatePullOne(string id, string category, int day )
         {
             var deadlift = new Faker<CreateExerciseModel>()
                     .RuleFor(x => x.Category, category)
@@ -326,7 +328,7 @@ namespace OperationStacked.Controllers
 
             return new List<CreateExerciseModel> { deadlift, unilateralPulldown, cableCurls, assistedPullups };
         }
-        private static List<CreateExerciseModel> CreatePushTwo(int userId)
+        private static List<CreateExerciseModel> CreatePushTwo(string userId)
         {
             var ohp = new Faker<CreateExerciseModel>()
                             .RuleFor(x => x.Category, "Chest")
@@ -404,7 +406,7 @@ namespace OperationStacked.Controllers
 
             return new List<CreateExerciseModel> { ohp, chestFly, inclineSmithPress, dumbBellLatRaise, tricepRopePushDown };
         }
-        private List<CreateExerciseModel> CreatePullLegs(int userId, string v1, int v2)
+        private List<CreateExerciseModel> CreatePullLegs(string userId, string v1, int v2)
         {
             var frontSquat = new Faker<CreateExerciseModel>()
                             .RuleFor(x => x.Category, "Legs")

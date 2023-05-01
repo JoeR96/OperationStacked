@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using OperationStacked.Requests;
 using OperationStacked.Services.UserAccountsService;
 using System.ComponentModel;
 
 namespace OperationStacked.Controllers
 {
+    [Authorize]
     [ApiController]
     [DisplayName("Workout Generation")]
     [Route("user/")]
@@ -18,15 +21,17 @@ namespace OperationStacked.Controllers
 
         [Route("update")]
         [HttpPost]
-        public async Task<IActionResult> UpdateUserWeekAndDay([FromBody]int userid)
-        => Ok(await _userAccountService.ProgressWeekAndDay(userid));
+        public async Task<IActionResult> UpdateUserWeekAndDay([FromBody] string cognitoUserId)
+        => Ok(await _userAccountService.ProgressWeekAndDay(cognitoUserId));
 
 
-        [Route("week-and-day/{userId:int}")]
+        [Route("week-and-day/{userId}")]
         [HttpGet]
-        public async Task<IActionResult> GetCurrentWeekAndDay([FromRoute] int userId)
+        public async Task<IActionResult> GetCurrentWeekAndDay([FromRoute] string userId)
             => Ok(_userAccountService.GetWeekAndDay(userId));
-        
-        
+
+        [HttpPost("update-create-user")]
+        [AllowAnonymous]
+        public async Task UpdateUser([FromBody] CreateUser request) => await _userAccountService.CreateUser(request);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OperationStacked.Data;
 using OperationStacked.Entities;
+using OperationStacked.Requests;
 using OperationStacked.Services.UserAccountsService;
 
 namespace OperationStacked.Services.UserAccountsService
@@ -17,14 +18,14 @@ namespace OperationStacked.Services.UserAccountsService
             => await _context.Users.Where(x => x.UserName == username)?
             .FirstOrDefaultAsync();
 
-        public async Task<User> GetUserByEmail(string email) => await _context.Users.Where(x => x.Email == email)?
+        public async Task<User> GetUserByCognitoUserId(string cognitoUserId) => await _context.Users.Where(x => x.CognitoUserId == cognitoUserId)?
                 .FirstOrDefaultAsync();
 
-        public async Task<User> GetUserById(int userid)
-        => await _context.Users?.Where(x => x.UserId == userid)?
+        public async Task<User> GetUserById(string CognitoUserId)
+        => await _context.Users?.Where(x => x.CognitoUserId == CognitoUserId)?
         .FirstOrDefaultAsync();
 
-        public async Task<WeekAndDayResponse> ProgressWeekAndDay(int userid)
+        public async Task<WeekAndDayResponse> ProgressWeekAndDay(string userid)
         {
             var user = await GetUserById(userid);
 
@@ -52,9 +53,32 @@ namespace OperationStacked.Services.UserAccountsService
 
         }
 
-        public WeekAndDayResponse GetWeekAndDay(int userId) => GetUserById(userId).Result.GetWeekAndDayResponse();
+        public WeekAndDayResponse GetWeekAndDay(string cognitoUserId) => GetUserById(cognitoUserId).Result.GetWeekAndDayResponse();
 
+        public async Task CreateUser(CreateUser request)
+        {
+            // Check if a user with the same CognitoUserId or UserName already exists
+            var existingUser = await _context.Users.SingleOrDefaultAsync(u => u.CognitoUserId == request.CognitoUserId);
+            var existingUserName = await _context.Users.SingleOrDefaultAsync(u => u.UserName == request.UserName);
 
+            if (existingUser != null || existingUserName != null)
+            {
+                // Gracefully fail - you can log an error message or throw a custom exception here, depending on your application's requirements
+                // For example, throw new UserAlreadyExistsException("A user with the same CognitoUserId or UserName already exists.");
+                return;
+            }
+
+            // If no existing user is found, create a new one
+            var newUser = new User
+            {
+                CognitoUserId = request.CognitoUserId,
+                UserName = request.UserName,
+                WorkoutDaysInWeek = request.WorkoutDaysInweek
+            };
+
+            _context.Users.Add(newUser);
+            await _context.SaveChangesAsync();
+        }
 
     }
 }

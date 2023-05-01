@@ -7,8 +7,6 @@ using OperationStacked.Services.A2S;
 using OperationStacked.Services.ExerciseCreationService;
 using OperationStacked.Services.ExerciseProgressionService;
 using OperationStacked.Services.ExerciseRetrievalService;
-using OperationStacked.Services.JwtService;
-using OperationStacked.Services.LoginService;
 using OperationStacked.Services.UserAccountsService;
 using OperationStacked.Strategy;
 
@@ -44,9 +42,6 @@ namespace OperationStacked.Extensions.ServiceExtensions
             .AddTransient<IExerciseCreationService, ExerciseCreationService>()
             .AddTransient<IExerciseRetrievalService, ExerciseRetrievalService>()
             .AddTransient<IUserAccountService, UserAccountService>()
-            .AddTransient<ILoginService, LoginService>()
-            .AddTransient<IPasswordHasherService, PasswordHasherService>()
-            .AddTransient<ITokenHandlerService, TokenHandlerService>()
             .AddDbContext<OperationStackedContext>();
 
         public static IServiceCollection AddExerciseStrategy(this IServiceCollection services) =>

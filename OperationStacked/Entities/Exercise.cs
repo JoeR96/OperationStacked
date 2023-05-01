@@ -20,7 +20,7 @@ namespace OperationStacked.Entities
         public int LiftDay { get; set; } = 1;
         public int LiftOrder { get; set; } = 1;
         public int LiftWeek { get; set; } = 1;
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public decimal WorkingWeight { get; set; }
         public Guid ParentId { get; set; }
         public bool Completed { get; set; }

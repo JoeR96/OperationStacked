@@ -8,10 +8,11 @@ namespace OperationStacked.Services.UserAccountsService
     public interface IUserAccountService
     {
         public Task<User> GetUserByUserName(string username);
+        public Task<User> GetUserByCognitoUserId(string cognitoUserId);
+        public Task<WeekAndDayResponse> ProgressWeekAndDay(string cognitoUserId);
+        public WeekAndDayResponse GetWeekAndDay(string cognitoUserId);
+        public Task CreateUser(CreateUser request);
 
-        public Task<User> GetUserByEmail(string email);
-        public Task<WeekAndDayResponse> ProgressWeekAndDay(int userid);
-        public WeekAndDayResponse GetWeekAndDay(int userId);
     }
 
     public class WeekAndDayResponse

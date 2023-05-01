@@ -12,7 +12,7 @@ namespace OperationStacked.Services.ExerciseRetrievalService
         {
             _exerciseRepository = exerciseRepository;
         }
-        public async Task<Result<GetWorkoutResult>> GetWorkout(int userId, int week, int day, bool completed)
+        public async Task<Result<GetWorkoutResult>> GetWorkout(string userId, int week, int day, bool completed)
         => Result.Create(new GetWorkoutResult(await _exerciseRepository.GetExercises(userId, week, day, completed)));
 
 

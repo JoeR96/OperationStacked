@@ -14,7 +14,7 @@ namespace OperationStacked.Extensions.TemplateExtensions
             decimal intensity,
             int repsPerSet,
             int a2sWeek,
-            int userId)
+            string userId)
            => new A2SHypertrophyExercise
            {
                TrainingMax = trainingMax,

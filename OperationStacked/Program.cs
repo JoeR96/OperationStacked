@@ -2,15 +2,21 @@ using OperationStacked.Communication;
 using OperationStacked.Data;
 using OperationStacked.Extensions.FactoryExtensions;
 using OperationStacked.Extensions.ServiceExtensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
 using Amazon.Runtime;
+
+// Add the following using statements:
+using System.IdentityModel.Tokens.Jwt;
+using System.Threading.Tasks;
+
 var connectionString = RemovePortFromServer(await GetConnectionStringFromParameterStore());
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
-var connectionStrings = Environment.GetEnvironmentVariables();
 builder.Services.Configure<ConnectionStringOptions>(options =>
 {
     options.ConnectionString = connectionString;
@@ -41,11 +47,44 @@ builder.Services.AddCors(options =>
     )
 );
 
+// Configure JWT authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    var region = Environment.GetEnvironmentVariable("AWS_DEFAULT_REGION");
+    var userPoolId = Environment.GetEnvironmentVariable("AWS_UserPoolId");
+    options.Authority = $"https://cognito-idp.{region}.amazonaws.com/{userPoolId}";
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = false,
+        ValidateLifetime = true
+    };
+
+    // Handle the token received event
+    options.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = async context =>
+        {
+            // You can add custom logic here, for example:
+            // - Check if the token is revoked
+            // - Perform additional user-specific validations
+        },
+        OnAuthenticationFailed = async context =>
+        {
+            // You can log the exception for debugging purposes
+        }
+    };
+});
+
 builder.Services.AddDbContext<OperationStackedContext>(options =>
 {
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 29)));
 });
-
 
 var app = builder.Build();
 app.MapHealthChecks("/health");
@@ -57,20 +96,23 @@ using (var scope = app.Services.CreateScope())
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseHttpsRedirection();
+    app.UseAuthentication(); // Add this line
+    app.UseAuthorization();
     app.MapControllers();
     await dbContext.Database.EnsureCreatedAsync();
     app.Run();
 }
 
 
-
 async Task<string> GetConnectionStringFromParameterStore()
 {
-    var awsCredentials = new BasicAWSCredentials("AKIARSRO64ZCHOPL376V", "VI28IOUpT5HMrb1k6R2ynSTjC/uhQaqMspK/7v5z");
-    var client = new AmazonSimpleSystemsManagementClient(awsCredentials, Amazon.RegionEndpoint.EUWest1);
+    var access = Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY");
+    var secret = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
+    var awsCredentials = new BasicAWSCredentials(secret, access);
+    var client = new AmazonSimpleSystemsManagementClient(awsCredentials, Amazon.RegionEndpoint.EUWest2);
     var request = new GetParameterRequest
     {
-        Name = "operationstacked-connectionstring",
+        Name = "operation-stacked-connection-string",
         WithDecryption = true
     };
 
