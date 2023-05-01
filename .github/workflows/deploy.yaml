@@ -7,7 +7,7 @@ on:
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
-  ECR_REPOSITORY: your-ecr-repo
+  ECR_REPOSITORY: operation-stacked-workout
 
 jobs:
   deploy:
@@ -33,7 +33,7 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ steps.login-ecr.outputs.registry }}/operation-stacked:latest
+        tags: ${{ steps.login-ecr.outputs.registry }}/operation-stacked-workout:latest
 
     - name: Install AWS CLI
       run: |
