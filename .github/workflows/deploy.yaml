@@ -1,3 +1,5 @@
+name: Deploy Workout App to Amazon ECR and Lightsail
+
 on:
   push:
     branches:
@@ -39,13 +41,13 @@ jobs:
         # You can use a tool like jq or a script to perform the update
 
     - name: Set AWS credentials as environment variables
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ${{ secrets.AWS_REGION }}
+      run: |
+        echo "export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+        echo "export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+        echo "export AWS_REGION=${{ secrets.AWS_REGION }}" >> $GITHUB_ENV
 
     - name: Deploy to Lightsail Container Service
       run: |
         aws lightsail create-container-service-deployment \
           --service-name operation-stacked \
-          --containers file://containers.json \
+          --containers file://containers.json
