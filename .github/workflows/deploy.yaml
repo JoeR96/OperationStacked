@@ -33,7 +33,7 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ steps.login-ecr.outputs.registry }}/operation-stacked-workout:latest
+        tags: ${{ steps.login-ecr.outputs.registry }}/operation-stacked-workout:latest  
 
     - name: Configure AWS CLI
       run: |
@@ -51,4 +51,3 @@ jobs:
         aws lightsail create-container-service-deployment \
           --service-name operation-stacked \
           --containers file://containers.json \
-          --public-endpoints file://public-endpoints.json
