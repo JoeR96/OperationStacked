@@ -12,6 +12,10 @@ using Amazon.Runtime;
 // Add the following using statements:
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Amazon.SecretsManager;
+using Amazon.SecretsManager.Model;
+
 Console.WriteLine(Environment.GetEnvironmentVariables());
 var connectionString = RemovePortFromServer(await GetConnectionStringFromParameterStore());
 
@@ -106,8 +110,35 @@ using (var scope = app.Services.CreateScope())
 
 async Task<string> GetConnectionStringFromParameterStore()
 {
-    var access = Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY");
-    var secret = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
+    var clientsecret = new AmazonSecretsManagerClient(Amazon.RegionEndpoint.EUWest2);
+
+    var request1 = new GetSecretValueRequest
+    {
+        SecretId = "AWS_SECRET_ACCESS_KEY"
+    };
+
+    var response1 = await clientsecret.GetSecretValueAsync(request1);
+
+    var secretJson = response1.SecretString;
+
+    var secret1 = JsonConvert.DeserializeObject<Dictionary<string, string>>(secretJson);
+
+    var request2 = new GetSecretValueRequest
+    {
+        SecretId = "AWS_ACCESS_KEY_ID"
+    };
+
+    var response2 = await clientsecret.GetSecretValueAsync(request2);
+
+    var secretJson2 = response2.SecretString;
+
+    var secret2 = JsonConvert.DeserializeObject<Dictionary<string, string>>(secretJson2);
+
+
+    Environment.SetEnvironmentVariable("AWS_ACCESS_KEY_ID", secret1.FirstOrDefault().Value);
+    Environment.SetEnvironmentVariable("AWS_SECRET_ACCESS_KEY", secret2.FirstOrDefault().Value);
+    var secret = Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY");
+    var access = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
     var awsCredentials = new BasicAWSCredentials(secret, access);
     var client = new AmazonSimpleSystemsManagementClient(awsCredentials, Amazon.RegionEndpoint.EUWest2);
     var request = new GetParameterRequest
