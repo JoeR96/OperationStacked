@@ -12,7 +12,7 @@ using Amazon.Runtime;
 // Add the following using statements:
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
-
+Console.WriteLine(Environment.GetEnvironmentVariables());
 var connectionString = RemovePortFromServer(await GetConnectionStringFromParameterStore());
 
 var builder = WebApplication.CreateBuilder(args);
