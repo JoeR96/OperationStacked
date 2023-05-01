@@ -9,7 +9,7 @@ COPY ["OperationStacked/OperationStacked.csproj","OperationStacked/"]
 RUN dotnet restore "OperationStacked/OperationStacked.csproj"
 COPY . .
 WORKDIR "/src/OperationStacked"
-RUN dotnet build "OperationStacked.csproj" -c Release -o /app/bild
+RUN dotnet build "OperationStacked.csproj" -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish "OperationStacked.csproj" -c Release -o /app/publish
@@ -17,4 +17,4 @@ RUN dotnet publish "OperationStacked.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "OperationStacked.dll"] 
+CMD ["dotnet", "OperationStacked.dll"]
