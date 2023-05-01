@@ -46,9 +46,9 @@ jobs:
         echo "export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
         echo "export AWS_REGION=${{ secrets.AWS_REGION }}" >> $GITHUB_ENV
 
-    - name: Replace environment variables in container-service.json
+    - name: Replace environment variables in containers.json
       run: |
-        envsubst < container-service.json > container-service_updated.json
+        envsubst < containers.json > containers_updated.json
 
     - name: Deploy to Lightsail Container Service
       env:
@@ -58,4 +58,4 @@ jobs:
       run: |
         aws lightsail create-container-service-deployment \
           --service-name operation-stacked \
-          --containers file://containers.json
+          --containers file://containers_updated.json
