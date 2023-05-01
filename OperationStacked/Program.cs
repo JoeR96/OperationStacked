@@ -50,6 +50,38 @@ builder.Services.AddCors(options =>
         }
     )
 );
+ConfigureSecret();
+
+async Task ConfigureSecret()
+{
+    var clientsecret = new AmazonSecretsManagerClient(Amazon.RegionEndpoint.EUWest2);
+
+    var request1 = new GetSecretValueRequest
+    {
+        SecretId = "AWS_DEFAULT_REGION"
+    };
+
+    var response1 = await clientsecret.GetSecretValueAsync(request1);
+
+    var secretJson = response1.SecretString;
+
+    var secret1 = JsonConvert.DeserializeObject<Dictionary<string, string>>(secretJson);
+
+    var request2 = new GetSecretValueRequest
+    {
+        SecretId = "AWS_UserPoolId"
+    };
+
+    var response2 = await clientsecret.GetSecretValueAsync(request2);
+
+    var secretJson2 = response2.SecretString;
+
+    var secret2 = JsonConvert.DeserializeObject<Dictionary<string, string>>(secretJson2);
+
+
+    Environment.SetEnvironmentVariable("AWS_DEFAULT_REGION", secret1.FirstOrDefault().Value);
+    Environment.SetEnvironmentVariable("AWS_UserPoolId", secret2.FirstOrDefault().Value);
+}
 
 // Configure JWT authentication
 builder.Services.AddAuthentication(options =>
