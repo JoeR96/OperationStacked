@@ -3,11 +3,11 @@ name: Deploy Workout App to Amazon ECR and Lightsail
 on:
   push:
     branches:
-      - master
+      - main
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
-  ECR_REPOSITORY: operation-stacked-workout
+  ECR_REPOSITORY: operation-stacked-auth
 
 jobs:
   deploy:
@@ -46,16 +46,24 @@ jobs:
         echo "export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
         echo "export AWS_REGION=${{ secrets.AWS_REGION }}" >> $GITHUB_ENV
 
-    - name: Replace environment variables in containers.json
-      run: |
-        envsubst < containers.json > containers_updated.json
+    - name: SSH into EC2 and deploy new container
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        script: |
+          # Stop and remove the existing container
+          sudo docker stop operation-stacked-workout
+          sudo docker rm operation-stacked-workout
 
-    - name: Deploy to Lightsail Container Service
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ${{ secrets.AWS_REGION }}
-      run: |
-        aws lightsail create-container-service-deployment \
-          --service-name operation-stacked \
-          --containers file://containers_updated.json
+          # Pull the latest image from ECR
+          sudo docker pull ${{ secrets.ECR_URL }}/operation-stacked-workout:latest
+
+          # Start the new container
+          sudo docker run -d -p 5001:80 \
+          -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
+          -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+          -e AWS_DEFAULT_REGION=${{ secrets.AWS_REGION }} \
+          --name operation-stacked-workout \
+          ${{ secrets.ECR_URL }}/operation-stacked-workout:latest
