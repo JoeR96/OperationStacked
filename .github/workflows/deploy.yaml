@@ -54,8 +54,7 @@ jobs:
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         script: |
           # Stop and remove the existing container
-          sudo docker stop operation-stacked-workout
-          sudo docker rm operation-stacked-workout
+          
 
           # Pull the latest image from ECR
           sudo docker pull ${{ secrets.ECR_URL }}/operation-stacked-workout:latest
