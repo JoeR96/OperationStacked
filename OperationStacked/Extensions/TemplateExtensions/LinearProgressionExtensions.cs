@@ -13,7 +13,7 @@ namespace OperationStacked.Extensions.TemplateExtensions
 
         public static bool IsLastAttemptBeforeDeload(this LinearProgressionExercise e)
             => e.CurrentAttempt >= e.AttemptsBeforeDeload;
-        public static LinearProgressionExercise GenerateNextExercise(this LinearProgressionExercise e, int weightIndex, int attemptModifier)
+        public static LinearProgressionExercise GenerateNextExercise(this LinearProgressionExercise e, int weightIndex, int attemptModifier,string user)
             => new LinearProgressionExercise
             {
                 MinimumReps = e.MinimumReps,
@@ -37,6 +37,7 @@ namespace OperationStacked.Extensions.TemplateExtensions
                 CurrentAttempt = e.CurrentAttempt += attemptModifier,
                 WorkingWeight = WorkingWeight(e.WorkingWeight, weightIndex, e.WeightProgression),
                 EquipmentType = e.EquipmentType,
+                UserId = user
             };
 
         private static decimal WorkingWeight(decimal workingWeight, int weightIndex, decimal weightProgression)

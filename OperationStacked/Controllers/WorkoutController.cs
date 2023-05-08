@@ -61,7 +61,6 @@ namespace OperationStacked.Controllers
             => Ok(Newtonsoft.Json.JsonConvert.SerializeObject(
                 await _exerciseRetrievalService.GetWorkout(userId, week, day,completed)));
 
-
         [HttpGet]
         [Route("dummydata")]
         public Task<IActionResult> Dummydata(string userId)
