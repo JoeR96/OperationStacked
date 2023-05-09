@@ -134,11 +134,7 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<OperationStackedContext>();
     app.UseCors("MyPolicy");
     app.UseSwagger();
-app.UseSwaggerUI(options =>
-{
-    options.RoutePrefix = "workout/swagger";
-    options.SwaggerEndpoint("/workout/swagger/v1/swagger.json", "My API V1");
-});
+    app.UseSwaggerUI();
     app.UseHttpsRedirection();
     app.UseAuthentication(); // Add this line
     app.UseAuthorization();
