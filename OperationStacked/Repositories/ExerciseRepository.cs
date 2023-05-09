@@ -26,6 +26,7 @@ namespace OperationStacked.Repositories
 
         public async Task InsertExercise(Exercise nextExercise)
         {
+            Console.WriteLine(nextExercise.UserId);
             await _context.Exercises.AddAsync(nextExercise);
             await _context.SaveChangesAsync();
         }
