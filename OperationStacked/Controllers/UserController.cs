@@ -21,8 +21,8 @@ namespace OperationStacked.Controllers
 
         [Route("update")]
         [HttpPost]
-        public async Task<IActionResult> UpdateUserWeekAndDay([FromBody] string cognitoUserId)
-        => Ok(await _userAccountService.ProgressWeekAndDay(cognitoUserId));
+        public async Task<IActionResult> UpdateUserWeekAndDay([FromBody] UserIdRequest request)
+            => Ok(await _userAccountService.ProgressWeekAndDay(request.CognitoUserId));
 
         [Route("week-and-day/{userId}")]
         [HttpGet]
