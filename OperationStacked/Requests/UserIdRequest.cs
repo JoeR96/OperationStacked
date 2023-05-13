@@ -4,5 +4,4 @@
     {
         public string CognitoUserId { get; set; }
     }
-
 }
