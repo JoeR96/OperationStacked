@@ -409,7 +409,7 @@ namespace OperationStacked.Controllers
             var frontSquat = new Faker<CreateExerciseModel>()
                             .RuleFor(x => x.Category, "Legs")
                             .RuleFor(x => x.ExerciseName, "Front Squat")
-                            .RuleFor(x => x.Template, ExerciseTemplate.A2SHypertrophy)
+                            .RuleFor(x => x.Template, ExerciseTemplate.LinearProgression)
                             .RuleFor(x => x.PrimaryLift, true)
                             .RuleFor(x => x.Username, "JoeR96")
                             .RuleFor(x => x.LiftDay, 5)
@@ -417,14 +417,13 @@ namespace OperationStacked.Controllers
                             .RuleFor(x => x.UserId, userId)
                             .RuleFor(x => x.TrainingMax, 87.5m)
                             .RuleFor(x => x.WeightIndex, 0)
-                            .RuleFor(x => x.Block, Enums.A2SBlocks.Hypertrophy)
                             .RuleFor(x => x.EquipmentType, Enums.EquipmentType.Barbell)
                             .RuleFor(x => x.WeightProgression, 2.5m);
 
             var romanianDeadlift = new Faker<CreateExerciseModel>()
                             .RuleFor(x => x.Category, "Legs")
                             .RuleFor(x => x.ExerciseName, "Romanian Deadlift")
-                            .RuleFor(x => x.Template, ExerciseTemplate.A2SHypertrophy)
+                            .RuleFor(x => x.Template, ExerciseTemplate.LinearProgression)
                             .RuleFor(x => x.PrimaryLift, false)
                             .RuleFor(x => x.Username, "JoeR96")
                             .RuleFor(x => x.LiftDay, 5)
@@ -432,7 +431,6 @@ namespace OperationStacked.Controllers
                             .RuleFor(x => x.UserId, userId)
                             .RuleFor(x => x.TrainingMax, 120)
                             .RuleFor(x => x.WeightIndex, 0)
-                            .RuleFor(x => x.Block, Enums.A2SBlocks.Hypertrophy)
                             .RuleFor(x => x.EquipmentType, Enums.EquipmentType.Barbell)
                             .RuleFor(x => x.WeightProgression, 5m);
 
