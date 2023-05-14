@@ -152,7 +152,7 @@ namespace OperationStacked.Controllers
             var ohp = new Faker<CreateExerciseModel>()
                             .RuleFor(x => x.Category, "Shoulders")
                             .RuleFor(x => x.ExerciseName, "Overhead Press")
-                              .RuleFor(x => x.Template, ExerciseTemplate.LinearProgression)
+                               .RuleFor(x => x.Template, ExerciseTemplate.LinearProgression)
                                 .RuleFor(x => x.Username, "JoeR96")
                                 .RuleFor(x => x.LiftDay, 2)
                                 .RuleFor(x => x.LiftOrder, 1)
