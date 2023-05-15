@@ -13,7 +13,7 @@ namespace OperationStacked.Extensions.TemplateExtensions
 
         public static bool IsLastAttemptBeforeDeload(this LinearProgressionExercise e)
             => e.CurrentAttempt >= e.AttemptsBeforeDeload;
-        public static LinearProgressionExercise GenerateNextExercise(this LinearProgressionExercise e, int weightIndex, int attemptModifier)
+        public static LinearProgressionExercise GenerateNextExercise(this LinearProgressionExercise e, int weightIndexModifier, int attemptModifier)
             => new LinearProgressionExercise
             {
                 MinimumReps = e.MinimumReps,
@@ -21,7 +21,7 @@ namespace OperationStacked.Extensions.TemplateExtensions
                 TargetSets = e.TargetSets,
                 StartingSets = e.TargetSets,
                 CurrentSets = e.CurrentSets,
-                WeightIndex = e.WeightIndex += weightIndex,
+                WeightIndex = e.WeightIndex += weightIndexModifier,
                 PrimaryExercise = e.PrimaryExercise,
                 StartingWeight = e.StartingWeight,
                 WeightProgression = e.WeightProgression,
@@ -35,12 +35,25 @@ namespace OperationStacked.Extensions.TemplateExtensions
                 LiftWeek = e.LiftWeek += 1,
                 ParentId = e.Id,
                 CurrentAttempt = e.CurrentAttempt += attemptModifier,
-                WorkingWeight = WorkingWeight(e.WorkingWeight, weightIndex, e.WeightProgression),
+                WorkingWeight = WorkingWeight(e.WorkingWeight, weightIndexModifier, e.WeightIndex, e.WeightProgression),
                 EquipmentType = e.EquipmentType,
                 UserId = e.UserId
             };
 
-        private static decimal WorkingWeight(decimal workingWeight, int weightIndex, decimal weightProgression)
-            => workingWeight + weightIndex * weightProgression;
+        private static decimal WorkingWeight(decimal workingWeight, int weightIndexModifier, int oldWeightIndex, decimal weightProgression)
+        {
+            if(weightIndexModifier > 0)
+            {
+                return workingWeight += weightProgression;
+            }
+            else if(weightIndexModifier == 0)
+            {
+                return workingWeight;
+            }
+            else
+            {
+                return workingWeight -= weightProgression;
+            }
+        }
     }
 }

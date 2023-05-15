@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace OperationStacked.Controllers
 {
-    [Authorize]
     [ApiController]
     [DisplayName("Workout Generation")]
     [Route("workout-creation/")]

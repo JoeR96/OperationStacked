@@ -27,7 +27,7 @@ namespace OperationStackedTests.Functional
                 .RuleFor(x => x.Username, "ChickenLegTim")
                 .RuleFor(x => x.LiftDay, 1)
                 .RuleFor(x => x.LiftOrder, 1)
-                .RuleFor(x => x.UserId, 1)
+                .RuleFor(x => x.UserId, "1")
                 .RuleFor(x => x.StartingWeight, 40)
                 .RuleFor(x => x.WeightIndex, 0)
                 .RuleFor(x => x.TargetSets, 3)
@@ -39,7 +39,7 @@ namespace OperationStackedTests.Functional
               
             var request = new CreateWorkoutRequest();
             request.ExerciseDaysAndOrders = exercises;
-            request.userId = 1;
+            request.userId = "1";
 
             var response = await _client.PostAsJsonAsync(url
                , request);
@@ -71,7 +71,7 @@ namespace OperationStackedTests.Functional
                 .RuleFor(x => x.Username, "ChickenLegTim")
                 .RuleFor(x => x.PrimaryLift, false)
                 .RuleFor(x => x.LiftOrder, 1)
-                .RuleFor(x => x.UserId, 1)
+                .RuleFor(x => x.UserId, "1")
                 .RuleFor(x => x.TrainingMax, 40)
                 .RuleFor(x => x.EquipmentType, EquipmentType.Barbell)
                 .RuleFor(x => x.Block, A2SBlocks.Hypertrophy)
@@ -81,7 +81,7 @@ namespace OperationStackedTests.Functional
 
             var request = new CreateWorkoutRequest();
             request.ExerciseDaysAndOrders = exercises;
-            request.userId = 1;
+            request.userId = "1";
 
             var response = await _client.PostAsJsonAsync(url
                , request);

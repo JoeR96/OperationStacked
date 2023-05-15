@@ -19,14 +19,16 @@ namespace OperationStackedTests.Functional
         {
             var id = Guid.NewGuid();
             Faker<LinearProgressionExercise> exercise = FakeExercise(id);
-
+            exercise.RuleFor(x => x.WorkingWeight, 28);
+            exercise.RuleFor(x => x.UserId, "420");
+            exercise.RuleFor(x => x.WeightProgression, 2);
             _context.Exercises.Add(exercise);
             _context.SaveChanges();
             // Act          
             var request = new CompleteExerciseRequest()
             {
                 Id = id,
-                Reps = new int[] { 12, 12, 12 },
+                Reps = new int[] { 12, 12, 12, 12, 13 },
                 Sets = 5
             };
 
@@ -35,7 +37,7 @@ namespace OperationStackedTests.Functional
             var result = _context.LinearProgressionExercises.Where(x => x.ParentId == id).FirstOrDefault();
             result.LiftWeek.Should().Be(2);
             result.WeightIndex.Should().Be(2);
-
+            result.WorkingWeight.Should().Be(30);
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
 
@@ -67,6 +69,7 @@ namespace OperationStackedTests.Functional
                 .RuleFor(i => i.MinimumReps, 8)
                 .RuleFor(i => i.TargetSets, 5)
                 .RuleFor(i => i.StartingSets, 3)
+                .RuleFor(i => i.UserId, "420")
                 .RuleFor(i => i.CurrentSets, 5)
                 .RuleFor(i => i.Id, id)
                 .RuleFor(i => i.ExerciseName, "Squats")
@@ -110,6 +113,7 @@ namespace OperationStackedTests.Functional
                 .RuleFor(i => i.StartingSets, 3)
                 .RuleFor(i => i.CurrentSets, 5)
                 .RuleFor(i => i.Id, id)
+                .RuleFor(i => i.UserId, "420")
                 .RuleFor(i => i.ExerciseName, "Squats")
                 .RuleFor(i => i.Category, "Legs")
                 .RuleFor(i => i.Username, "Tim420")
@@ -151,6 +155,7 @@ namespace OperationStackedTests.Functional
                 .RuleFor(i => i.MinimumReps, 8)
                 .RuleFor(i => i.TargetSets, 5)
                 .RuleFor(i => i.StartingSets, 3)
+                .RuleFor(i => i.UserId, "420")
                 .RuleFor(i => i.CurrentSets, 5)
                 .RuleFor(i => i.Id, id)
                 .RuleFor(i => i.ExerciseName, "Squats")
@@ -194,6 +199,7 @@ namespace OperationStackedTests.Functional
                 .RuleFor(i => i.StartingSets, 3)
                 .RuleFor(i => i.CurrentSets, 5)
                 .RuleFor(i => i.Id, id)
+                .RuleFor(i => i.UserId,"420")
                 .RuleFor(i => i.ExerciseName, "Squats")
                 .RuleFor(i => i.Category, "Legs")
                 .RuleFor(i => i.Username, "Tim420")

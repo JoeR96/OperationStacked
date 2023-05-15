@@ -6,7 +6,6 @@ using System.ComponentModel;
 
 namespace OperationStacked.Controllers
 {
-    [Authorize]
     [ApiController]
     [DisplayName("Workout Generation")]
     [Route("user/")]

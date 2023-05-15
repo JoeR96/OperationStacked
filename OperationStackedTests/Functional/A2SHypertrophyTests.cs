@@ -30,6 +30,7 @@ namespace OperationStackedTests.Functional
         public async Task TrainingMaxCalculatesForA2SHypertrophyBlockPrimary(int reps,decimal expectedTrainingMax, decimal expectedWorkingWeight)
         {
             var exercise = FakeExercise().Generate();
+            
             _context.Exercises.Add(exercise);
             _context.SaveChanges();
 
@@ -78,7 +79,8 @@ namespace OperationStackedTests.Functional
             .RuleFor(i => i.AmrapRepTarget, 5)
             .RuleFor(i => i.TrainingMax, 100.00m)
             .RuleFor(i => i.PrimaryLift, true)
-            .RuleFor(i => i.RoundingValue, 5m);
+            .RuleFor(i => i.RoundingValue, 5m)
+            .RuleFor(i => i.UserId, "HELLO");
         [TearDown]
         public void Teardown()
         {

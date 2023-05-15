@@ -81,8 +81,9 @@ namespace OperationStacked.Factories
                 //Log to the logger here
                 //We should not have got here
             }
-            var nextExercise = exercise.GenerateNextExercise(weightIndexModifier, attemptModifier);
-            await _exerciseRepository.InsertExercise(nextExercise);
+            var nextExercise = exercise.GenerateNextExercise( weightIndexModifier, attemptModifier);
+            
+            await _exerciseRepository.InsertExercise(nextExercise); 
             return (nextExercise, status);
         }
     }
