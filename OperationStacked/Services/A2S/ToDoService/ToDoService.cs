@@ -22,7 +22,6 @@ namespace OperationStacked.Services.A2S.ToDoService
                 Description = request.Description,
                 Username = request.Username,
                 Completed = false,
-                Category = request.Category
             };
 
             await _context.ToDos.AddAsync(toDo);
