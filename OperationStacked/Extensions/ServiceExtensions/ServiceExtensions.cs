@@ -4,6 +4,7 @@ using OperationStacked.Data;
 using OperationStacked.Repositories;
 using OperationStacked.Services;
 using OperationStacked.Services.A2S;
+using OperationStacked.Services.A2S.ToDoService;
 using OperationStacked.Services.ExerciseCreationService;
 using OperationStacked.Services.ExerciseProgressionService;
 using OperationStacked.Services.ExerciseRetrievalService;
@@ -41,6 +42,8 @@ namespace OperationStacked.Extensions.ServiceExtensions
             .AddTransient<IExerciseProgressionService, ExerciseProgressionService>()
             .AddTransient<IExerciseCreationService, ExerciseCreationService>()
             .AddTransient<IExerciseRetrievalService, ExerciseRetrievalService>()
+            .AddTransient<IToDoRepository, ToDoRepsitory>()
+            .AddTransient<IToDoService, ToDoService>()
             .AddTransient<IUserAccountService, UserAccountService>()
             .AddDbContext<OperationStackedContext>();
 

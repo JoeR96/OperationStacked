@@ -27,5 +27,6 @@ namespace OperationStacked.Data
         public virtual DbSet<A2SHypertrophyExercise> A2SHypertrophyExercises { get; set; }
         public virtual DbSet<Exercise> Exercises { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<ToDo> ToDos { get; set; }
     }
 }

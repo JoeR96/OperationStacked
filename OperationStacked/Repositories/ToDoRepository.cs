@@ -1,0 +1,32 @@
+﻿using OperationStacked.Data;
+using OperationStacked.Entities;
+
+namespace OperationStacked.Repositories
+{
+    public class ToDoRepsitory : IToDoRepository
+    {
+        private readonly OperationStackedContext _context;
+
+        public ToDoRepsitory(OperationStackedContext context)
+        {
+            _context = context;
+        }
+
+        public async Task InsertToDo(ToDo toDo)
+        {
+            _context.ToDos.Add(toDo);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task CompleteToDo(int id)
+        {
+            var toDo = _context.ToDos.Where(x => x.Id == id).FirstOrDefault();
+            toDo.Completed = true;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<ToDo>> GetToDosForUser(string username)
+            => _context.ToDos.Where(x => x.Username == username).ToList();
+
+    }
+}
