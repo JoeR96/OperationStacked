@@ -36,7 +36,8 @@ namespace OperationStacked.Controllers
         [HttpPost]
         public async Task<IActionResult> Complete(int id)
         {
-            return Ok(_toDoRepository.CompleteToDo(id));
+            await  _toDoRepository.CompleteToDo(id);
+            return Ok();
         }
         [Route("get-to-do-list")]
         [HttpPost]

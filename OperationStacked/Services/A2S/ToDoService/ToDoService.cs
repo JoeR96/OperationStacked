@@ -26,7 +26,6 @@ namespace OperationStacked.Services.A2S.ToDoService
 
             await _context.ToDos.AddAsync(toDo);
             await _context.SaveChangesAsync();
-
         }
     }
 }

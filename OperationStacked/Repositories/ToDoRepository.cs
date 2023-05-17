@@ -22,6 +22,7 @@ namespace OperationStacked.Repositories
         {
             var toDo = _context.ToDos.Where(x => x.Id == id).FirstOrDefault();
             toDo.Completed = true;
+            _context.ToDos.Update(toDo);
             await _context.SaveChangesAsync();
         }
 
