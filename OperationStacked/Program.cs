@@ -41,6 +41,10 @@ builder.Services.AddSingleton(signingConfigurations);
 builder.Services.AddExerciseFactory();
 builder.Services.AddHealthChecks();
 builder.Services.AddRepositories();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+});
 builder.Services.AddCors(options =>
     options.AddPolicy("MyPolicy",
         builder => {
