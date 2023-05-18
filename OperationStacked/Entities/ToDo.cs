@@ -12,6 +12,8 @@ namespace OperationStacked.Entities
         public string Description { get; set; }
         public string Username { get; set; }
         public bool Completed { get; set; }
-        
+        public DateTime CompletedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
+
     }
 }

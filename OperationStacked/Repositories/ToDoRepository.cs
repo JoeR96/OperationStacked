@@ -14,6 +14,7 @@ namespace OperationStacked.Repositories
 
         public async Task InsertToDo(ToDo toDo)
         {
+            toDo.CreatedDate = DateTime.Now;
             _context.ToDos.Add(toDo);
             await _context.SaveChangesAsync();
         }
@@ -22,6 +23,7 @@ namespace OperationStacked.Repositories
         {
             var toDo = _context.ToDos.Where(x => x.Id == id).FirstOrDefault();
             toDo.Completed = true;
+            toDo.CompletedDate = DateTime.Now;
             _context.ToDos.Update(toDo);
             await _context.SaveChangesAsync();
         }
