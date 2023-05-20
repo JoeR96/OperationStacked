@@ -29,7 +29,7 @@ namespace OperationStacked.Services.A2S.ToDoService
             }
             catch (Exception e)
             {
-                ThrowHelper.ThrowArgumentNullException("Error:");
+                ThrowHelper.ThrowArgumentNullException(e.Message);
             }
         }
     }
