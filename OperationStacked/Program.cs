@@ -8,6 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
 using Amazon.Runtime;
+using Serilog;
+using Serilog.Events;
+using Serilog.Formatting.Compact;
+using Amazon.CloudWatchLogs;
+using Serilog.Sinks.AwsCloudWatch;
 
 // Add the following using statements:
 using System.IdentityModel.Tokens.Jwt;
@@ -18,8 +23,26 @@ using Amazon.SecretsManager.Model;
 
 Console.WriteLine(Environment.GetEnvironmentVariables());
 var connectionString = RemovePortFromServer(await GetConnectionStringFromParameterStore());
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.AmazonCloudWatch(new CloudWatchSinkOptions
+    {
+        LogGroupName = "operation-stacked",
+        CreateLogGroup = true,
+        TextFormatter = new CompactJsonFormatter(),
+        MinimumLogEventLevel = LogEventLevel.Verbose,
+        BatchSizeLimit = 100,
+        QueueSizeLimit = 10000,
+        Period = TimeSpan.FromSeconds(2),
+        RetryAttempts = 5
+    }, new AmazonCloudWatchLogsClient())
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog(Log.Logger);
 var config = builder.Configuration;
 builder.Services.Configure<ConnectionStringOptions>(options =>
 {
@@ -28,7 +51,7 @@ builder.Services.Configure<ConnectionStringOptions>(options =>
 
 var tokenOptions = config.GetSection("TokenOptions").Get<TokenOptions>();
 var signingConfigurations = new SigningConfigurations(tokenOptions.Secret);
-
+builder.Services.AddLogging(builder => builder.AddSerilog(Log.Logger));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
@@ -124,7 +147,6 @@ builder.Services.AddAuthentication(options =>
         }
     };
 });
-
 builder.Services.AddDbContext<OperationStackedContext>(options =>
 {
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 29)));

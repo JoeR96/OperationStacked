@@ -95,6 +95,12 @@ namespace OperationStacked.Migrations
                     b.Property<bool>("Completed")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<DateTime>("CompletedDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("longtext");
