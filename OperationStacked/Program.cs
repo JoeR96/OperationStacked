@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
+using Microsoft.OpenApi.Models;
 
 Console.WriteLine(Environment.GetEnvironmentVariables());
 var connectionString = RemovePortFromServer(await GetConnectionStringFromParameterStore());
@@ -154,13 +155,20 @@ builder.Services.AddDbContext<OperationStackedContext>(options =>
 
 var app = builder.Build();
 app.MapHealthChecks("/health");
-
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<OperationStackedContext>();
+    app.UsePathBase("/auth");
     app.UseCors("MyPolicy");
+
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/workout/swagger/v1/swagger.json", "Operation Stacked API");
+
+        // Set the base path for Swagger UI
+        c.RoutePrefix = "workout/swagger";
+    });
     app.UseHttpsRedirection();
     app.UseAuthentication(); // Add this line
     app.UseAuthorization();
