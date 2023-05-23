@@ -158,7 +158,7 @@ app.MapHealthChecks("/health");
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<OperationStackedContext>();
-    app.UsePathBase("/auth");
+    app.UsePathBase("/workout");
     app.UseCors("MyPolicy");
 
     app.UseSwagger();
