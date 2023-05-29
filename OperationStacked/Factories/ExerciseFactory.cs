@@ -25,7 +25,6 @@ namespace OperationStacked.Factories
             _exercise = new T()
             {
                 ExerciseName = _createExerciseModel.ExerciseName,
-                Username = _createExerciseModel.Username,
                 Category = _createExerciseModel.Category,
                 Template = _createExerciseModel.Template,
                 LiftDay = _createExerciseModel.LiftDay,
@@ -37,7 +36,7 @@ namespace OperationStacked.Factories
             };
 
         }
-        public abstract IExercise CreateExercise(CreateExerciseModel createExerciseModel);
+        public abstract Task<IExercise> CreateExercise(CreateExerciseModel createExerciseModel);
         public abstract bool AppliesTo(Type type);
 
         public abstract Task<(Exercise, ExerciseCompletedStatus)> ProgressExercise(CompleteExerciseRequest request);

@@ -1,5 +1,4 @@
-﻿using OperationStacked.Entities;
-using OperationStacked.Requests;
+﻿using OperationStacked.Requests;
 
 namespace OperationStacked.Abstractions
 {

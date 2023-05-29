@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using OperationStacked.Enums;
 
 namespace OperationStacked.Entities
 {
@@ -17,6 +18,9 @@ namespace OperationStacked.Entities
         public decimal WeightProgression { get; set; }
         public int AttemptsBeforeDeload { get; set; }
         public int CurrentAttempt { get; set; } = 1;
+        public Guid EquipmentStackId { get; set; }
+
+        
 
     }
 }

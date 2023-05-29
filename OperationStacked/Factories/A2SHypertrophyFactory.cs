@@ -1,4 +1,5 @@
-﻿using OperationStacked.Entities;
+﻿using OperationStacked.Abstractions;
+using OperationStacked.Entities;
 using OperationStacked.Extensions.TemplateExtensions;
 using OperationStacked.Models;
 using OperationStacked.Repositories;
@@ -18,7 +19,7 @@ namespace OperationStacked.Factories
 
         public override bool AppliesTo(Type type) => typeof(A2SHypertrophyExercise).Equals(type);
        
-        public override A2SHypertrophyExercise CreateExercise(CreateExerciseModel createExerciseModel)
+        public override async Task<IExercise> CreateExercise(CreateExerciseModel createExerciseModel)
         {
             CreateBaseExercise(createExerciseModel);
             _exercise.TrainingMax = _createExerciseModel.TrainingMax;

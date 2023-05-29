@@ -3,7 +3,6 @@ using OperationStacked.Entities;
 using OperationStacked.Factories;
 using OperationStacked.Models;
 using OperationStacked.Requests;
-using Org.BouncyCastle.Crypto;
 
 namespace OperationStacked.Strategy
 {
@@ -16,7 +15,7 @@ namespace OperationStacked.Strategy
             this._exerciseFactories = exerciseFactories ?? throw new ArgumentNullException(nameof(exerciseFactories));
         }
 
-        public IExercise CreateExercise(Type type, Models.CreateExerciseModel exercise)
+        public async Task<IExercise> CreateExercise(Type type, CreateExerciseModel exercise)
         {
             var exerciseFactory = _exerciseFactories
                 .FirstOrDefault(factory => factory.AppliesTo(type));
@@ -26,7 +25,7 @@ namespace OperationStacked.Strategy
                 throw new InvalidOperationException($"{type} not registered");
             }
 
-            return exerciseFactory.CreateExercise(exercise);
+            return await exerciseFactory.CreateExercise(exercise);
         }
         
         public async Task<(Exercise, ExerciseCompletedStatus)> ProgressExercise(Type type, CompleteExerciseRequest request, Exercise exercise)

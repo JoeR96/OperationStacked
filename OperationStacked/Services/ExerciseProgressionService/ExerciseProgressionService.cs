@@ -1,7 +1,6 @@
-﻿using FluentResult;
-using Microsoft.EntityFrameworkCore;
-using OperationStacked.Data;
+﻿using OperationStacked.Data;
 using OperationStacked.Entities;
+using OperationStacked.Enums;
 using OperationStacked.Models;
 using OperationStacked.Requests;
 using OperationStacked.Response;
@@ -22,21 +21,21 @@ namespace OperationStacked.Services.ExerciseProgressionService
             _operationStackedContext = operationStackedContext;
         }
 
-        public async Task<Result<ExerciseCompletionResult>> CompleteExercise(CompleteExerciseRequest request)
+        public async Task<ExerciseCompletionResult> CompleteExercise(CompleteExerciseRequest request)
         {
             var exercise = GetExercise(request.Id);
             var strategy = _exerciseStrategyResolver.CreateStrategy();
             var (status,nextExercise) = await strategy.ProgressExercise(ResolveType(exercise.Template), request, exercise);
-            return Result.Create(new ExerciseCompletionResult(nextExercise, status));
+            return new ExerciseCompletionResult(nextExercise, status);
 
         }
-
         private Exercise GetExercise(Guid id)
             => _operationStackedContext
                 .Exercises
                 .Where(x => x.Id == id)
                 .FirstOrDefault();
 
+  
         private Type ResolveType(ExerciseTemplate template)
         {
             switch (template)

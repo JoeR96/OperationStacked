@@ -1,234 +1,301 @@
-﻿using Bogus;
+﻿using Concise.Steps;
 using FluentAssertions;
 using NUnit.Framework;
 using OperationStacked.Entities;
-using OperationStacked.Enums;
-using OperationStacked.Models;
-using OperationStacked.Requests;
-using System.Net.Http.Json;
+using OperationStacked.TestLib;
+using OperationStackedAuth.Tests;
+using EquipmentStack = OperationStacked.TestLib.EquipmentStack;
+using Exercise = OperationStacked.TestLib.Exercise;
 
 namespace OperationStackedTests.Functional
 {
     [TestFixture]
-    public class LinearProgressionProgressTests : BaseApiTest
+    [NonParallelizable]
+    public class LinearProgressionProgressTests 
     {
-        private const string completeExerciseUrl = "/workout-creation/complete";
+        public Guid userId;
+        public WorkoutClient workoutClient;
+        public List<Exercise> workout;
 
-        [Test]
-        public async Task ExerciseProgressesWhenSetCountAndMaximumRepCountAreMet()
+        [OneTimeSetUp]
+        public async Task InitiateClient()
         {
-            var id = Guid.NewGuid();
-            Faker<LinearProgressionExercise> exercise = FakeExercise(id);
-            exercise.RuleFor(x => x.WorkingWeight, 28);
-            exercise.RuleFor(x => x.UserId, "420");
-            exercise.RuleFor(x => x.WeightProgression, 2);
-            _context.Exercises.Add(exercise);
-            _context.SaveChanges();
-            // Act          
-            var request = new CompleteExerciseRequest()
+            var (client, _userId) = await ApiClientFactory.CreateWorkoutClientAsync(true);
+            workoutClient = client;
+            userId = _userId;
+        }
+        [StepTest, Order(1)]
+        public async Task LinearProgression_WorkoutCreatesWithAllEquipmentTypes()
+        {
+           
+            // var createEquipmentStackRequest = new CreateEquipmentStackRequest()
+            // {
+            //     StartWeight = 1.10,
+            //     IncrementValue = 2.30,
+            //     IncrementCount = 18,
+            //     InitialIncrements = new decimal[] {  },
+            //     EquipmentStackKey = "TheGymGroupCable",
+            //     UserID = userId
+            // };
+            // await "The stack is created is retrieved".__(async () =>
+            // {
+            //     var createResponse = await workoutClient.CreateAsync(createEquipmentStackRequest);
+            //    
+            //     var response = await workoutClient.EquipmentStackGETAsync( createResponse.Stack.Id);
+            //
+            //     response.Stack.Id.Should().Be(createResponse.Stack.Id);
+            // });
+            var request = new CreateWorkoutRequest
             {
-                Id = id,
-                Reps = new int[] { 12, 12, 12, 12, 13 },
-                Sets = 5
+                UserId = userId,
+                ExerciseDaysAndOrders = new List<CreateExerciseModel>()
+                {
+                    new CreateExerciseModel()
+                    {
+                        Template = ExerciseTemplate._0,
+                        LiftDay = 1,
+                        LiftOrder = 1,
+                        UserId = userId,
+                        EquipmentType = EquipmentType._0,
+                        ExerciseName = "Back Squat",
+                        Category = "Legs",
+                        MinimumReps = 8,
+                        MaximumReps = 12,
+                        TargetSets = 3,
+                        PrimaryExercise = true,
+                        StartingWeight = 10.00,
+                        WeightProgression = 5,
+                        AttemptsBeforeDeload = 2,
+                        Week = 1
+                     },
+                    new CreateExerciseModel()
+                    {
+                        Template = ExerciseTemplate._0,
+                        LiftDay = 1,
+                        LiftOrder = 2,
+                        UserId = userId,
+                        EquipmentType = EquipmentType._1,
+                        ExerciseName = "Incline Smith Press",
+                        Category = "Legs",
+                        MinimumReps = 8,
+                        MaximumReps = 12,
+                        TargetSets = 3,
+                        PrimaryExercise = false,
+                        StartingWeight = 10,
+                        WeightProgression = 2.5,
+                        AttemptsBeforeDeload = 2
+                    },
+                    new CreateExerciseModel()
+                    {
+                        Template = ExerciseTemplate._0,
+                        LiftDay = 1,
+                        LiftOrder = 3,
+                        UserId = userId,
+                        EquipmentType = EquipmentType._2,
+                        ExerciseName = "Bicep Curl",
+                        Category = "Arms",
+                        MinimumReps = 8,
+                        MaximumReps = 12,
+                        TargetSets = 3,
+                        PrimaryExercise = false,
+                        StartingWeight = 8.00,
+                        AttemptsBeforeDeload = 2
+                    },
+                    new CreateExerciseModel()
+                    {
+                        Template = ExerciseTemplate._0,
+                        LiftDay = 1,
+                        LiftOrder = 4,
+                        UserId = userId,
+                        EquipmentType = EquipmentType._2,
+                        ExerciseName = "Hammer Curl",
+                        Category = "Arms",
+                        MinimumReps = 8,
+                        MaximumReps = 12,
+                        TargetSets = 3,
+                        PrimaryExercise = false,
+                        StartingWeight = 10.00,
+                        AttemptsBeforeDeload = 2
+                     },
+                     new CreateExerciseModel()
+                    {
+                        Template = ExerciseTemplate._0,
+                        LiftDay = 1,
+                        LiftOrder = 5,
+                        UserId = userId,
+                        EquipmentType = EquipmentType._3,
+                        ExerciseName = "Low Row",
+                        Category = "Back",
+                        MinimumReps = 8,
+                        MaximumReps = 12,
+                        TargetSets = 3,
+                        PrimaryExercise = false,
+                        AttemptsBeforeDeload = 2,
+                        WeightIndex = 1,
+                        EquipmentStack = new CreateEquipmentStackRequest()
+                        {
+                            StartWeight = 4.5,
+                            IncrementValue = 7.00,
+                            IncrementCount = 15,
+                            InitialIncrements = new decimal[] { 6.5m },
+                            UserID = userId,
+                            EquipmentStackKey = "The Gym Low Row"
+                        }
+                    },
+                     new CreateExerciseModel()
+                    {
+                        Template = ExerciseTemplate._0,
+                        LiftDay = 1,
+                        LiftOrder = 6,
+                        UserId = userId,
+                        EquipmentType = EquipmentType._4,
+                        ExerciseName = "Pec Fly",
+                        Category = "Chest",
+                        MinimumReps = 8,
+                        MaximumReps = 12,
+                        TargetSets = 3,
+                        PrimaryExercise = false,
+                        AttemptsBeforeDeload = 2,
+                        WeightIndex = 1,
+                        EquipmentStackKey = EquipmentStackKey._2
+                    },
+                }
             };
 
-            var response = await _client.PostAsJsonAsync(completeExerciseUrl
-               , request);
-            var result = _context.LinearProgressionExercises.Where(x => x.ParentId == id).FirstOrDefault();
-            result.LiftWeek.Should().Be(2);
-            result.WeightIndex.Should().Be(2);
-            result.WorkingWeight.Should().Be(30);
-            // Assert
-            response.EnsureSuccessStatusCode(); // Status Code 200-299
-
-        }
-
-        private static Faker<LinearProgressionExercise> FakeExercise(Guid id)
-        {
-            return new Faker<LinearProgressionExercise>()
-                            .RuleFor(i => i.MaximumReps, 12)
-                            .RuleFor(i => i.MinimumReps, 8)
-                            .RuleFor(i => i.TargetSets, 5)
-                            .RuleFor(i => i.StartingSets, 3)
-                            .RuleFor(i => i.CurrentSets, 5)
-                            .RuleFor(i => i.Id, id)
-                            .RuleFor(i => i.ExerciseName, "Squats")
-                            .RuleFor(i => i.Category, "Legs")
-                            .RuleFor(i => i.Username, "Tim420")
-                            .RuleFor(i => i.WeightIndex, 1)
-                            .RuleFor(i => i.EquipmentType, EquipmentType.Barbell)
-                .RuleFor(i => i.Template, ExerciseTemplate.LinearProgression);
-        }
-
-        [Test]
-        public async Task ExercisesFailsFirstTimeSetsOnly()
-        {
-            var id = Guid.NewGuid();
-            var exercise = new Faker<LinearProgressionExercise>()
-                .RuleFor(i => i.MaximumReps, 12)
-                .RuleFor(i => i.MinimumReps, 8)
-                .RuleFor(i => i.TargetSets, 5)
-                .RuleFor(i => i.StartingSets, 3)
-                .RuleFor(i => i.UserId, "420")
-                .RuleFor(i => i.CurrentSets, 5)
-                .RuleFor(i => i.Id, id)
-                .RuleFor(i => i.ExerciseName, "Squats")
-                .RuleFor(i => i.Category, "Legs")
-                .RuleFor(i => i.Username, "Tim420")
-                .RuleFor(i => i.WeightIndex, 1)
-            .RuleFor(i => i.CurrentAttempt, 1)
-                .RuleFor(i => i.AttemptsBeforeDeload, 2)
-                .RuleFor(i => i.EquipmentType, EquipmentType.Barbell)
-                .RuleFor(i => i.Template, ExerciseTemplate.LinearProgression);
-
-            _context.Exercises.Add(exercise);
-            _context.SaveChanges();
-            // Act          
-            var request = new CompleteExerciseRequest()
+            await "The exercise is created and returned.".__(async () =>
             {
-                Id = id,
-                Reps = new int[] { 12, 12, 12 },
-                Sets = 4
-            };
-
-            var response = await _client.PostAsJsonAsync(completeExerciseUrl
-               , request);
-            var result = _context.LinearProgressionExercises.Where(x => x.ParentId == id).FirstOrDefault();
-
-            result.LiftWeek.Should().Be(2);
-            result.WeightIndex.Should().Be(1);
-            result.CurrentAttempt.Should().Be(2);
-            response.EnsureSuccessStatusCode(); // Status Code 200-299
-
+                var createWorkoutResponse = await workoutClient.WorkoutCreationPOSTAsync(request);
+                createWorkoutResponse.Exercises.Count.Should().Be(6);
+            });
         }
 
-        [Test]
-        public async Task ExercisesFailsRepsAndSets()
+        [StepTest, Order(2)]
+        public async Task LinearProgression_WorkoutIsRetrieved()
         {
-            var id = Guid.NewGuid();
-            var exercise = new Faker<LinearProgressionExercise>()
-                .RuleFor(i => i.MaximumReps, 12)
-                .RuleFor(i => i.MinimumReps, 8)
-                .RuleFor(i => i.TargetSets, 5)
-                .RuleFor(i => i.StartingSets, 3)
-                .RuleFor(i => i.CurrentSets, 5)
-                .RuleFor(i => i.Id, id)
-                .RuleFor(i => i.UserId, "420")
-                .RuleFor(i => i.ExerciseName, "Squats")
-                .RuleFor(i => i.Category, "Legs")
-                .RuleFor(i => i.Username, "Tim420")
-                .RuleFor(i => i.WeightIndex, 1)
-                .RuleFor(i => i.CurrentAttempt, 1)
-                .RuleFor(i => i.AttemptsBeforeDeload, 2)
-                .RuleFor(i => i.EquipmentType, EquipmentType.Barbell)
-                .RuleFor(i => i.Template, ExerciseTemplate.LinearProgression);
-
-            _context.Exercises.Add(exercise);
-            _context.SaveChanges();
-            // Act          
-            var request = new CompleteExerciseRequest()
+            await "The workout is retrieved".__(async () =>
             {
-                Id = id,
-                Reps = new int[] { 7, 8, 8 },
-                Sets = 4
-            };
-            var response = await _client.PostAsJsonAsync(completeExerciseUrl
-               , request);
-            var result = _context.LinearProgressionExercises.Where(x => x.ParentId == id).FirstOrDefault();
-            result.LiftWeek.Should().Be(2);
-            result.WeightIndex.Should().Be(1);
-            result.CurrentAttempt.Should().Be(2);
-            response.EnsureSuccessStatusCode(); // Status Code 200-299
+                var getWorkoutResponse = await workoutClient.WorkoutCreationGETAsync(userId, 1, 1, false);
+                workout = getWorkoutResponse.Exercises.ToList();
 
-            // Assert
-
-
-
+                workout.Count().Should().Be(6);
+            });
+        }
+        [StepTest, Order(3)]
+        public async Task LinearProgression_BarbellExerciseProgresses()
+        {
+            await "The exercise is completed and the response is the generated exercise for next week,".__(async () =>
+            {
+                var completionResponse = await workoutClient.CompleteAsync(new CompleteExerciseRequest()
+                {
+                    Id = workout[0].Id,
+                    Reps = new int[]{12,12,12},
+                    Sets = 3
+                });
+                
+                completionResponse.Exercise.LiftWeek.Should().Be(2);
+                completionResponse.Exercise.WorkingWeight.Should().Be(15);
+                completionResponse.Exercise.ParentId.Should().Be(workout[0].Id);
+            });
+        }
+        [StepTest, Order(4)]
+        public async Task LinearProgression_SmithMachineExerciseProgresses()
+        {
+            await "The exercise is completed and the response is the generated exercise for next week,".__(async () =>
+            {
+                var completionResponse = await workoutClient.CompleteAsync(new CompleteExerciseRequest()
+                {
+                    Id = workout[1].Id,
+                    Reps = new int[]{12,12,12},
+                    Sets = 3
+                });
+                
+                completionResponse.Exercise.LiftWeek.Should().Be(2);
+                completionResponse.Exercise.WorkingWeight.Should().Be(12.5);
+                completionResponse.Exercise.ParentId.Should().Be(workout[1].Id);
+            });
         }
 
-        [Test]
-        public async Task ExercisesFailsFirstTimeRepsOnly()
+        [StepTest, Order(5)]
+        public async Task LinearProgression_DumbbellProgressesBy1KGWhenWorkingWeightIsBelow9KG()
         {
-            var id = Guid.NewGuid();
-            var exercise = new Faker<LinearProgressionExercise>()
-                .RuleFor(i => i.MaximumReps, 12)
-                .RuleFor(i => i.MinimumReps, 8)
-                .RuleFor(i => i.TargetSets, 5)
-                .RuleFor(i => i.StartingSets, 3)
-                .RuleFor(i => i.UserId, "420")
-                .RuleFor(i => i.CurrentSets, 5)
-                .RuleFor(i => i.Id, id)
-                .RuleFor(i => i.ExerciseName, "Squats")
-                .RuleFor(i => i.Category, "Legs")
-                .RuleFor(i => i.Username, "Tim420")
-                .RuleFor(i => i.WeightIndex, 1)
-                .RuleFor(i => i.CurrentAttempt, 1)
-                .RuleFor(i => i.AttemptsBeforeDeload, 2)
-                .RuleFor(i => i.EquipmentType, EquipmentType.Barbell)
-                .RuleFor(i => i.Template, ExerciseTemplate.LinearProgression);
-
-            _context.Exercises.Add(exercise);
-            _context.SaveChanges();
-            // Act          
-            var request = new CompleteExerciseRequest()
+            await "The exercise is completed and the response is the generated exercise for next week,".__(async () =>
             {
-                Id = id,
-                Reps = new int[] { 7, 8, 8 },
-                Sets = 5
-            };
-            var response = await _client.PostAsJsonAsync(completeExerciseUrl
-               , request);
-            var result = _context.LinearProgressionExercises.Where(x => x.ParentId == id).FirstOrDefault();
-
-            result.LiftWeek.Should().Be(2);
-            result.WeightIndex.Should().Be(1);
-            result.CurrentAttempt.Should().Be(2);
-            response.EnsureSuccessStatusCode(); // Status Code 200-299
-
-            // Assert
-
+                var completionResponse = await workoutClient.CompleteAsync(new CompleteExerciseRequest()
+                {
+                    Id = workout[2].Id,
+                    Reps = new int[]{12,12,12},
+                    Sets = 3
+                });
+                
+                completionResponse.Exercise.LiftWeek.Should().Be(2);
+                completionResponse.Exercise.WorkingWeight.Should().Be(9);
+                completionResponse.Exercise.ParentId.Should().Be(workout[2].Id);
+            });
         }
-        [Test]
-        public async Task ExerciseDeloadsAfterfail()
+        
+        [StepTest, Order(6)]
+        public async Task LinearProgression_DumbbellProgressesBy2KGWhenWorkingWeightIsAbove9KG()
         {
-            var id = Guid.NewGuid();
-            var exercise = new Faker<LinearProgressionExercise>()
-                .RuleFor(i => i.MaximumReps, 12)
-                .RuleFor(i => i.MinimumReps, 8)
-                .RuleFor(i => i.TargetSets, 5)
-                .RuleFor(i => i.StartingSets, 3)
-                .RuleFor(i => i.CurrentSets, 5)
-                .RuleFor(i => i.Id, id)
-                .RuleFor(i => i.UserId,"420")
-                .RuleFor(i => i.ExerciseName, "Squats")
-                .RuleFor(i => i.Category, "Legs")
-                .RuleFor(i => i.Username, "Tim420")
-                .RuleFor(i => i.WeightIndex, 2)
-                .RuleFor(i => i.CurrentAttempt, 2)
-                .RuleFor(i => i.AttemptsBeforeDeload, 2)
-                .RuleFor(i => i.EquipmentType, EquipmentType.Barbell)
-                .RuleFor(i => i.Template, ExerciseTemplate.LinearProgression);
-
-            _context.Exercises.Add(exercise);
-            _context.SaveChanges();
-            // Act          
-            var request = new CompleteExerciseRequest()
+            await "The exercise is completed and the response is the generated exercise for next week,".__(async () =>
             {
-                Id = id,
-                Reps = new int[] { 7, 8, 8 },
-                Sets = 5
-            };
+                var completionResponse = await workoutClient.CompleteAsync(new CompleteExerciseRequest()
+                {
+                    Id = workout[3].Id,
+                    Reps = new int[]{12,12,12},
+                    Sets = 3
+                });
+                
+                completionResponse.Exercise.LiftWeek.Should().Be(2);
+                completionResponse.Exercise.WorkingWeight.Should().Be(12);
+                completionResponse.Exercise.ParentId.Should().Be(workout[3].Id);
+            });
+        }
 
-            var response = await _client.PostAsJsonAsync(completeExerciseUrl
-               , request);
-            var result = _context.LinearProgressionExercises.Where(x => x.ParentId == id).FirstOrDefault();
-            result.LiftWeek.Should().Be(2);
-            result.WeightIndex.Should().Be(1);
-            result.CurrentAttempt.Should().Be(2);
-            response.EnsureSuccessStatusCode(); // Status Code 200-299
+        [StepTest, Order(7)]
+        public async Task LinearProgression_MachineIndexProgress()
+        {
+            await "The exercise is completed and the response is the generated exercise for next week,".__(async () =>
+            {
+                var completionResponse = await workoutClient.CompleteAsync(new CompleteExerciseRequest()
+                {
+                    Id = workout[4].Id,
+                    Reps = new int[]{12,12,12},
+                    Sets = 3
+                });
+                
+                completionResponse.Exercise.LiftWeek.Should().Be(2);
+                completionResponse.Exercise.WorkingWeight.Should().Be(11);
+                completionResponse.Exercise.ParentId.Should().Be(workout[4].Id);
+                
+            });
+        }
 
-            // Assert
-
+        [StepTest, Order(8)]
+        public async Task LinearProgression_CableIndexProgress()
+        {
+            await "The exercise is completed and the response is the generated exercise for next week,".__(async () =>
+            {
+                var completionResponse = await workoutClient.CompleteAsync(new CompleteExerciseRequest()
+                {
+                    Id = workout[5].Id,
+                    Reps = new int[]{12,12,12},
+                    Sets = 3
+                });
+                
+                completionResponse.Exercise.LiftWeek.Should().Be(2);
+                completionResponse.Exercise.WorkingWeight.Should().Be(3.40);
+                completionResponse.Exercise.ParentId.Should().Be(workout[5].Id);
+            });
+        }
+        [StepTest, Order(9)]
+        public async Task LinearProgression_AllExercisesDelete()
+        {
+            await "The exercises should all be deleted.".__(async () =>
+             {
+                 var deleteResponse = await workoutClient.DeleteAllAsync(userId);
+                 deleteResponse.Should().BeTrue();
+            });
         }
     }
 }
+

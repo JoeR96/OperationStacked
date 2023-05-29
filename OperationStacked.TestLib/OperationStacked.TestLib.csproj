@@ -5,5 +5,18 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="6.11.0" />
+    <PackageReference Include="NSwag.ApiDescription.Client" Version="13.19.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <OpenApiReference Include="openAPIs/workoutSwagger.json" SourceUrl="https://localhost:44382/swagger/v1/swagger.json" ClassName="WorkoutClient" OutputPath="WorkoutClient.cs" />
+    <OpenApiReference Include="openAPIs/authSwagger.json" SourceUrl="https://localhost:44375/swagger/v1/swagger.json" ClassName="AuthClient" OutputPath="AuthClient.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OperationStacked\OperationStacked.csproj" />
+  </ItemGroup>
 </Project>

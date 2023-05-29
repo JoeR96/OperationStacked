@@ -14,19 +14,18 @@ namespace OperationStacked.Extensions.TemplateExtensions
             decimal intensity,
             int repsPerSet,
             int a2sWeek,
-            string userId)
+            Guid userId)
            => new A2SHypertrophyExercise
            {
                TrainingMax = trainingMax,
                PrimaryLift = e.PrimaryLift,
-               Block = block,
+               // Block = block,
                AmrapRepTarget = amrapRepTarget,
                AmrapRepResult = 0,
                Intensity = intensity,
                Sets = e.Sets,
                RepsPerSet = repsPerSet,
                ExerciseName = e.ExerciseName,
-               Username = e.Username,
                Category = e.Category,
                Template = e.Template,
                LiftDay = e.LiftDay,

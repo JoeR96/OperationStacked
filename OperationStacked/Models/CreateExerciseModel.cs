@@ -1,5 +1,7 @@
 ﻿using OperationStacked.Enums;
 using System.ComponentModel.DataAnnotations;
+using OperationStacked.Entities;
+using OperationStacked.Requests;
 
 namespace OperationStacked.Models
 {
@@ -7,8 +9,6 @@ namespace OperationStacked.Models
     {
         [Required]
         public string ExerciseName { get; set; } = string.Empty;
-        [Required]
-        public string Username { get; set; } = string.Empty;
         [Required]
         public string Category { get; set; } = string.Empty;
         [Required]
@@ -22,14 +22,12 @@ namespace OperationStacked.Models
         public int MinimumReps { get; set; }
         public int MaximumReps { get; set; }
         public int TargetSets { get; set; }
-        public int StartingSets { get; set; }
-        public int CurrentSets { get; set; }
         public int WeightIndex { get; set; }
         public bool PrimaryExercise { get; set; } = false;
         public decimal StartingWeight { get; set; }
         public decimal WeightProgression { get; set; }
         public int AttemptsBeforeDeload { get; set; }
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
         public bool PrimaryLift { get; set; }
         public A2SBlocks Block { get; set; }
         public decimal TrainingMax { get; set; }
@@ -38,5 +36,8 @@ namespace OperationStacked.Models
         public int RepsPerSet { get; set; }
         public int Week { get; set; }
         public Guid ParentId { get; set; }
+        public EquipmentStackKey? EquipmentStackKey { get; set; }
+        public CreateEquipmentStackRequest? EquipmentStack { get; set; }
+       
     }
 }

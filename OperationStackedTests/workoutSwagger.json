@@ -1,0 +1,808 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OperationStacked",
+    "version": "1.0"
+  },
+  "paths": {
+    "/workout-creation": {
+      "post": {
+        "tags": [
+          "Exercise"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWorkoutRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWorkoutRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWorkoutRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkoutCreationResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkoutCreationResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkoutCreationResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkoutCreationResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkoutCreationResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkoutCreationResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workout-creation/complete": {
+      "post": {
+        "tags": [
+          "Exercise"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteExerciseRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteExerciseRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteExerciseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExerciseCompletionResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExerciseCompletionResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExerciseCompletionResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExerciseCompletionResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExerciseCompletionResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExerciseCompletionResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workout-creation/{userId}/{week}/{day}/{completed}": {
+      "get": {
+        "tags": [
+          "Exercise"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "week",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "day",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "completed",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWorkoutResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWorkoutResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWorkoutResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWorkoutResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWorkoutResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWorkoutResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workout-creation/{exerciseId}/delete": {
+      "post": {
+        "tags": [
+          "Exercise"
+        ],
+        "parameters": [
+          {
+            "name": "exerciseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/workout-creation/{exerciseId}": {
+      "get": {
+        "tags": [
+          "Exercise"
+        ],
+        "parameters": [
+          {
+            "name": "exerciseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/user/create-to-do": {
+      "post": {
+        "tags": [
+          "ToDo"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateToDoRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateToDoRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateToDoRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/user/complete-to-do": {
+      "post": {
+        "tags": [
+          "ToDo"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/user/get-to-do-list": {
+      "post": {
+        "tags": [
+          "ToDo"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/user/update": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserIdRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserIdRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserIdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/user/week-and-day/{userId}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/user/update-create-user": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUser"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUser"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/user/name": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "name": "cognitoUserId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "A2SBlocks": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "CompleteExerciseRequest": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "Reps": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          },
+          "Sets": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateExerciseModel": {
+        "required": [
+          "Category",
+          "EquipmentType",
+          "ExerciseName",
+          "LiftDay",
+          "LiftOrder",
+          "Template",
+          "Username"
+        ],
+        "type": "object",
+        "properties": {
+          "ExerciseName": {
+            "type": "string"
+          },
+          "Username": {
+            "type": "string"
+          },
+          "Category": {
+            "type": "string"
+          },
+          "Template": {
+            "$ref": "#/components/schemas/ExerciseTemplate"
+          },
+          "EquipmentType": {
+            "$ref": "#/components/schemas/EquipmentType"
+          },
+          "LiftDay": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "LiftOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "MinimumReps": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "MaximumReps": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "TargetSets": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "StartingSets": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "CurrentSets": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "WeightIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "PrimaryExercise": {
+            "type": "boolean"
+          },
+          "StartingWeight": {
+            "type": "number",
+            "format": "double"
+          },
+          "WeightProgression": {
+            "type": "number",
+            "format": "double"
+          },
+          "AttemptsBeforeDeload": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "UserId": {
+            "type": "string",
+            "nullable": true
+          },
+          "PrimaryLift": {
+            "type": "boolean"
+          },
+          "Block": {
+            "$ref": "#/components/schemas/A2SBlocks"
+          },
+          "TrainingMax": {
+            "type": "number",
+            "format": "double"
+          },
+          "Intensity": {
+            "type": "number",
+            "format": "double"
+          },
+          "Sets": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "RepsPerSet": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Week": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ParentId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateToDoRequest": {
+        "type": "object",
+        "properties": {
+          "Description": {
+            "type": "string",
+            "nullable": true
+          },
+          "Title": {
+            "type": "string",
+            "nullable": true
+          },
+          "Username": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateUser": {
+        "type": "object",
+        "properties": {
+          "CognitoUserId": {
+            "type": "string",
+            "nullable": true
+          },
+          "UserName": {
+            "type": "string",
+            "nullable": true
+          },
+          "WorkoutDaysInweek": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateWorkoutRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "ExerciseDaysAndOrders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateExerciseModel"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EquipmentType": {
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "Exercise": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ExerciseName": {
+            "type": "string",
+            "nullable": true
+          },
+          "Username": {
+            "type": "string",
+            "nullable": true
+          },
+          "Category": {
+            "type": "string",
+            "nullable": true
+          },
+          "EquipmentType": {
+            "$ref": "#/components/schemas/EquipmentType"
+          },
+          "Template": {
+            "$ref": "#/components/schemas/ExerciseTemplate"
+          },
+          "LiftDay": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "LiftOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "LiftWeek": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "UserId": {
+            "type": "string",
+            "nullable": true
+          },
+          "WorkingWeight": {
+            "type": "number",
+            "format": "double"
+          },
+          "ParentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "Completed": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ExerciseCompletedStatus": {
+        "enum": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "ExerciseCompletionResult": {
+        "type": "object",
+        "properties": {
+          "Status": {
+            "$ref": "#/components/schemas/ExerciseCompletedStatus"
+          },
+          "exercise": {
+            "$ref": "#/components/schemas/Exercise"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ExerciseTemplate": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "GetWorkoutResult": {
+        "type": "object",
+        "properties": {
+          "Exercises": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Exercise"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "IExercise": {
+        "type": "object",
+        "properties": {
+          "Template": {
+            "$ref": "#/components/schemas/ExerciseTemplate"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserIdRequest": {
+        "type": "object",
+        "properties": {
+          "CognitoUserId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "WorkoutCreatedStatus": {
+        "enum": [
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "WorkoutCreationResult": {
+        "type": "object",
+        "properties": {
+          "Status": {
+            "$ref": "#/components/schemas/WorkoutCreatedStatus"
+          },
+          "Exercises": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IExercise"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

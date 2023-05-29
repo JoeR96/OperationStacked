@@ -21,7 +21,6 @@ namespace OperationStacked.Validators
             RuleFor(x => x.WeightProgression).NotEmpty();
             RuleFor(x => x.WeightIndex).NotEmpty();
             RuleFor(x => x.StartingWeight).NotEmpty();
-            RuleFor(x => x.Username).NotEmpty();
             RuleFor(x => x.PrimaryExercise).NotEmpty();
             RuleFor(x => x.TargetSets).NotEmpty();
         }

@@ -1,9 +1,14 @@
-﻿using OperationStacked.Entities;
+﻿using MoreLinq.Extensions;
+using OperationStacked.Entities;
+using OperationStacked.Migrations;
+using OperationStacked.Repositories;
+using EquipmentType = OperationStacked.Enums.EquipmentType;
 
 namespace OperationStacked.Extensions.TemplateExtensions
 {
     public static class LinearProgressExtensions
     {
+
         public static bool SetCountReached(this LinearProgressionExercise e, int sets)
             => sets >= e.TargetSets ? true : false;
         public static bool TargetRepCountReached(this LinearProgressionExercise e, int[] reps)
@@ -13,7 +18,7 @@ namespace OperationStacked.Extensions.TemplateExtensions
 
         public static bool IsLastAttemptBeforeDeload(this LinearProgressionExercise e)
             => e.CurrentAttempt >= e.AttemptsBeforeDeload;
-        public static LinearProgressionExercise GenerateNextExercise(this LinearProgressionExercise e, int weightIndexModifier, int attemptModifier)
+        public static LinearProgressionExercise GenerateNextExercise(this LinearProgressionExercise e,decimal workingWeight, int weightIndexModifier, int attemptModifier,IExerciseRepository exerciseRepository = null)
             => new LinearProgressionExercise
             {
                 MinimumReps = e.MinimumReps,
@@ -27,33 +32,71 @@ namespace OperationStacked.Extensions.TemplateExtensions
                 WeightProgression = e.WeightProgression,
                 AttemptsBeforeDeload = e.AttemptsBeforeDeload,
                 ExerciseName = e.ExerciseName,
-                Username = e.Username,
                 Category = e.Category,
                 Template = e.Template,
                 LiftDay = e.LiftDay,
                 LiftOrder = e.LiftOrder,
                 LiftWeek = e.LiftWeek += 1,
                 ParentId = e.Id,
+                WorkingWeight = workingWeight,
                 CurrentAttempt = e.CurrentAttempt += attemptModifier,
-                WorkingWeight = WorkingWeight(e.WorkingWeight, weightIndexModifier, e.WeightIndex, e.WeightProgression),
                 EquipmentType = e.EquipmentType,
                 UserId = e.UserId
             };
 
-        private static decimal WorkingWeight(decimal workingWeight, int weightIndexModifier, int oldWeightIndex, decimal weightProgression)
+        // private static decimal WorkingWeight(decimal workingWeight, int weightIndexModifier, int oldWeightIndex,
+        //     decimal weightProgression, EquipmentType equipmentType, IExerciseRepository exerciseRepository = null, Guid equipmentStackId = default)
+        // {
+        //     if (equipmentType is EquipmentType.Barbell or EquipmentType.SmithMachine)
+        //     {
+        //         if(weightIndexModifier > 0)
+        //         {
+        //             return workingWeight += weightProgression;
+        //         }
+        //         else if(weightIndexModifier == 0)
+        //         {
+        //             return workingWeight;
+        //         }
+        //         else
+        //         {
+        //             return workingWeight -= weightProgression;
+        //         }
+        //     }
+        //
+        //     if (equipmentType == EquipmentType.Dumbbell)
+        //     {
+        //         return workingWeight > 9 ? workingWeight += 2 : workingWeight += 1;
+        //     }
+        //
+        //     if (equipmentType is EquipmentType.Cable or EquipmentType.Machine)
+        //     {
+        //         var stack = exerciseRepository.GetEquipmentStack(equipmentStackId).Result.GenerateStack();
+        //         int index = Array.IndexOf(stack, workingWeight);
+        //         index += 1;
+        //         return (decimal)stack[index];
+        //
+        //     }
+        //     throw new NotImplementedException("EquipmentType is not supported");
+        // }
+
+        public static Decimal?[] GenerateStack(this EquipmentStack e)
         {
-            if(weightIndexModifier > 0)
+            List<Decimal?> stack = new List<Decimal?>();
+            stack.Add(e.StartWeight);
+
+            foreach (var increment in e.InitialIncrements)
             {
-                return workingWeight += weightProgression;
+                var t = stack.Last();
+                stack.Add(t += increment);
             }
-            else if(weightIndexModifier == 0)
+
+            for (int i = 0; i < e.IncrementCount; i++)
             {
-                return workingWeight;
+                var t = stack.Last();
+                stack.Add(t += e.IncrementValue);
             }
-            else
-            {
-                return workingWeight -= weightProgression;
-            }
+
+            return stack.ToArray();
         }
     }
 }

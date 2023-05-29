@@ -8,7 +8,7 @@ namespace OperationStacked.Factories
     public interface IExerciseFactory
     {
         bool AppliesTo(Type type);
-        IExercise CreateExercise(CreateExerciseModel exercise);
+        Task<IExercise> CreateExercise(CreateExerciseModel exercise);
         abstract Task<(Exercise, ExerciseCompletedStatus)> ProgressExercise(CompleteExerciseRequest request);
 
     }

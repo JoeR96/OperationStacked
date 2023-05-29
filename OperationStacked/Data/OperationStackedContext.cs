@@ -22,11 +22,22 @@ namespace OperationStacked.Data
             }
             base.OnConfiguring(optionsBuilder);
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<EquipmentStack>()
+                .Property(e => e.InitialIncrements)
+                .HasConversion(
+                    v => v != null ? string.Join(',', v) : null,
+                    v => v != null ? v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(x => (decimal?)decimal.Parse(x)).ToArray() : null);
+        }
+
+
 
         public virtual DbSet<LinearProgressionExercise> LinearProgressionExercises { get; set; }
         public virtual DbSet<A2SHypertrophyExercise> A2SHypertrophyExercises { get; set; }
         public virtual DbSet<Exercise> Exercises { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<ToDo> ToDos { get; set; }
+        public virtual DbSet< EquipmentStack> EquipmentStacks { get; set; }
     }
 }

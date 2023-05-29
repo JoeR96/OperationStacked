@@ -25,7 +25,7 @@ namespace OperationStacked.Controllers
 
         [Route("week-and-day/{userId}")]
         [HttpGet]
-        public async Task<IActionResult> GetCurrentWeekAndDay([FromRoute] string userId)
+        public IActionResult GetCurrentWeekAndDay([FromRoute] string userId)
             => Ok(_userAccountService.GetWeekAndDay(userId));
 
         [HttpPost("update-create-user")]

@@ -135,22 +135,13 @@ builder.Services.AddAuthentication(options =>
     // Handle the token received event
     options.Events = new JwtBearerEvents
     {
-        OnTokenValidated = async context =>
-        {
-            // You can add custom logic here, for example:
-            // - Check if the token is revoked
-            // - Perform additional user-specific validations
-        },
-        OnAuthenticationFailed = async context =>
-        {
-            // You can log the exception for debugging purposes
-        }
+     
     };
 });
 builder.Services.AddDbContext<OperationStackedContext>(options =>
 {
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 29)));
-});
+},ServiceLifetime.Transient);
 
 var app = builder.Build();
 app.MapHealthChecks("/health");
@@ -160,9 +151,9 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<OperationStackedContext>();
     app.UseCors("MyPolicy");
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Operation Stacked Workout V1"));
     app.UseHttpsRedirection();
-    app.UseAuthentication(); // Add this line
+    app.UseAuthentication(); 
     app.UseAuthorization();
     app.MapControllers();
     await dbContext.Database.EnsureCreatedAsync();

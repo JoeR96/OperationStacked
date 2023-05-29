@@ -1,4 +1,5 @@
-﻿using OperationStacked.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using OperationStacked.Data;
 using OperationStacked.Entities;
 
 namespace OperationStacked.Repositories
@@ -29,7 +30,7 @@ namespace OperationStacked.Repositories
         }
 
         public async Task<List<ToDo>> GetToDosForUser(string username)
-            => _context.ToDos.Where(x => x.Username == username).ToList();
+            => await _context.ToDos.Where(x => x.Username == username).ToListAsync();
 
     }
 }
