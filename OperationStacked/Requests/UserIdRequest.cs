@@ -2,6 +2,6 @@
 {
     public class UserIdRequest
     {
-        public string CognitoUserId { get; set; }
+        public Guid CognitoUserId { get; set; }
     }
 }

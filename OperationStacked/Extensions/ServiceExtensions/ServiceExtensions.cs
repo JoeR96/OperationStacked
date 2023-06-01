@@ -38,14 +38,13 @@ namespace OperationStacked.Extensions.ServiceExtensions
             => services.AddSingletonsByConvention(assembly, predicate, predicate);
 
         public static IServiceCollection AddServices(this IServiceCollection services)
-        => services
-            .AddTransient<IExerciseProgressionService, ExerciseProgressionService>()
-            .AddTransient<IExerciseCreationService, ExerciseCreationService>()
-            .AddTransient<IExerciseRetrievalService, ExerciseRetrievalService>()
-            .AddTransient<IToDoRepository, ToDoRepsitory>()
-            .AddTransient<IToDoService, ToDoService>()
-            .AddTransient<IUserAccountService, UserAccountService>()
-            .AddDbContext<OperationStackedContext>();
+            => services
+                .AddTransient<IExerciseProgressionService, ExerciseProgressionService>()
+                .AddTransient<IExerciseCreationService, ExerciseCreationService>()
+                .AddTransient<IExerciseRetrievalService, ExerciseRetrievalService>()
+                .AddTransient<IToDoRepository, ToDoRepsitory>()
+                .AddTransient<IToDoService, ToDoService>()
+                .AddTransient<IUserAccountService, UserAccountService>();
 
         public static IServiceCollection AddExerciseStrategy(this IServiceCollection services) =>
             services.AddTransient<IExerciseStrategyResolver, ExerciseStrategyResolver>();

@@ -496,24 +496,44 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserIdRequest"
+                "type": "string",
+                "format": "uuid"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserIdRequest"
+                "type": "string",
+                "format": "uuid"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/UserIdRequest"
+                "type": "string",
+                "format": "uuid"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeekAndDayResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeekAndDayResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeekAndDayResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -529,18 +549,36 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeekAndDayResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeekAndDayResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeekAndDayResponse"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/user/update-create-user": {
+    "/user/create-user": {
       "post": {
         "tags": [
           "User"
@@ -571,7 +609,7 @@
         }
       }
     },
-    "/user/name": {
+    "/user/create": {
       "get": {
         "tags": [
           "User"
@@ -581,7 +619,8 @@
             "name": "cognitoUserId",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -788,7 +827,7 @@
         "properties": {
           "CognitoUserId": {
             "type": "string",
-            "nullable": true
+            "format": "uuid"
           },
           "UserName": {
             "type": "string",
@@ -990,12 +1029,16 @@
         },
         "additionalProperties": false
       },
-      "UserIdRequest": {
+      "WeekAndDayResponse": {
         "type": "object",
         "properties": {
-          "CognitoUserId": {
-            "type": "string",
-            "nullable": true
+          "Week": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Day": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false

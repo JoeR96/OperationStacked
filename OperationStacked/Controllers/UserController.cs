@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using OperationStacked.Requests;
 using OperationStacked.Services.UserAccountsService;
 using System.ComponentModel;
+using OperationStacked.Response;
 
 namespace OperationStacked.Controllers
 {
@@ -20,20 +21,22 @@ namespace OperationStacked.Controllers
 
         [Route("update")]
         [HttpPost]
-        public async Task<IActionResult> UpdateUserWeekAndDay([FromBody] UserIdRequest request)
-            => Ok(await _userAccountService.ProgressWeekAndDay(request.CognitoUserId));
+        [ProducesResponseType(200, Type = typeof(WeekAndDayResponse))]
+        public async Task<IActionResult> UpdateUserWeekAndDay([FromBody] Guid cognitoUserId)
+            => Ok(await _userAccountService.ProgressWeekAndDay(cognitoUserId));
 
         [Route("week-and-day/{userId}")]
         [HttpGet]
-        public IActionResult GetCurrentWeekAndDay([FromRoute] string userId)
+        [ProducesResponseType(200, Type = typeof(WeekAndDayResponse))]
+        public IActionResult GetCurrentWeekAndDay([FromRoute] Guid userId)
             => Ok(_userAccountService.GetWeekAndDay(userId));
 
-        [HttpPost("update-create-user")]
+        [HttpPost("create-user")]
         [AllowAnonymous]
         public async Task UpdateUser([FromBody] CreateUser request) => await _userAccountService.CreateUser(request);
-        [Route("name")]
+        [Route("create")]
         [HttpGet]
-        public async Task<IActionResult> GetUsername(string cognitoUserId)
+        public async Task<IActionResult> GetUsername(Guid cognitoUserId)
         {
             var ua = await _userAccountService.GetUserByCognitoUserId(cognitoUserId);
             var t = ua.UserName;

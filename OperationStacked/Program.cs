@@ -55,7 +55,6 @@ builder.Services.AddLogging(builder => builder.AddSerilog(Log.Logger));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
-var assembly = typeof(Program).Assembly;
 builder.Services.AddServices();
 builder.Services.AddExerciseStrategy();
 builder.Services.Configure<TokenOptions>(config.GetSection("TokenOptions"));
@@ -139,6 +138,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 builder.Services.AddDbContext<OperationStackedContext>(options =>
+{
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 29)));
+},ServiceLifetime.Transient);
+builder.Services.AddDbContextFactory<OperationStackedContext>(options =>
 {
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 29)));
 },ServiceLifetime.Transient);

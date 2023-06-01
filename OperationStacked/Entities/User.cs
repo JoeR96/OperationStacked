@@ -14,7 +14,7 @@ namespace OperationStacked.Entities
         [Required]
         [DataType(DataType.EmailAddress)]
         [StringLength(255)]
-        public string CognitoUserId { get; set; }
+        public Guid CognitoUserId { get; set; }
         public int CurrentWeek { get; set; } = 1;
         public int CurrentDay { get; set; } = 1;
         public int WorkoutDaysInWeek { get; set; }

@@ -1,8 +1,4 @@
-﻿using MoreLinq.Extensions;
-using OperationStacked.Entities;
-using OperationStacked.Migrations;
-using OperationStacked.Repositories;
-using EquipmentType = OperationStacked.Enums.EquipmentType;
+﻿using OperationStacked.Entities;
 
 namespace OperationStacked.Extensions.TemplateExtensions
 {
@@ -18,7 +14,7 @@ namespace OperationStacked.Extensions.TemplateExtensions
 
         public static bool IsLastAttemptBeforeDeload(this LinearProgressionExercise e)
             => e.CurrentAttempt >= e.AttemptsBeforeDeload;
-        public static LinearProgressionExercise GenerateNextExercise(this LinearProgressionExercise e,decimal workingWeight, int weightIndexModifier, int attemptModifier,IExerciseRepository exerciseRepository = null)
+        public static LinearProgressionExercise GenerateNextExercise(this LinearProgressionExercise e,decimal workingWeight, int weightIndexModifier, int attemptModifier,EquipmentStack stack = null)
             => new LinearProgressionExercise
             {
                 MinimumReps = e.MinimumReps,
@@ -26,7 +22,7 @@ namespace OperationStacked.Extensions.TemplateExtensions
                 TargetSets = e.TargetSets,
                 StartingSets = e.TargetSets,
                 CurrentSets = e.CurrentSets,
-                WeightIndex = e.WeightIndex += weightIndexModifier,
+                WeightIndex = e.WeightIndex + weightIndexModifier,
                 PrimaryExercise = e.PrimaryExercise,
                 StartingWeight = e.StartingWeight,
                 WeightProgression = e.WeightProgression,
@@ -36,67 +32,40 @@ namespace OperationStacked.Extensions.TemplateExtensions
                 Template = e.Template,
                 LiftDay = e.LiftDay,
                 LiftOrder = e.LiftOrder,
-                LiftWeek = e.LiftWeek += 1,
+                EquipmentStackId = stack == null ? Guid.Empty : stack.Id,
+                LiftWeek = e.LiftWeek + 1,
                 ParentId = e.Id,
                 WorkingWeight = workingWeight,
-                CurrentAttempt = e.CurrentAttempt += attemptModifier,
+                CurrentAttempt = e.CurrentAttempt + attemptModifier,
                 EquipmentType = e.EquipmentType,
                 UserId = e.UserId
             };
 
-        // private static decimal WorkingWeight(decimal workingWeight, int weightIndexModifier, int oldWeightIndex,
-        //     decimal weightProgression, EquipmentType equipmentType, IExerciseRepository exerciseRepository = null, Guid equipmentStackId = default)
-        // {
-        //     if (equipmentType is EquipmentType.Barbell or EquipmentType.SmithMachine)
-        //     {
-        //         if(weightIndexModifier > 0)
-        //         {
-        //             return workingWeight += weightProgression;
-        //         }
-        //         else if(weightIndexModifier == 0)
-        //         {
-        //             return workingWeight;
-        //         }
-        //         else
-        //         {
-        //             return workingWeight -= weightProgression;
-        //         }
-        //     }
-        //
-        //     if (equipmentType == EquipmentType.Dumbbell)
-        //     {
-        //         return workingWeight > 9 ? workingWeight += 2 : workingWeight += 1;
-        //     }
-        //
-        //     if (equipmentType is EquipmentType.Cable or EquipmentType.Machine)
-        //     {
-        //         var stack = exerciseRepository.GetEquipmentStack(equipmentStackId).Result.GenerateStack();
-        //         int index = Array.IndexOf(stack, workingWeight);
-        //         index += 1;
-        //         return (decimal)stack[index];
-        //
-        //     }
-        //     throw new NotImplementedException("EquipmentType is not supported");
-        // }
-
         public static Decimal?[] GenerateStack(this EquipmentStack e)
         {
-            List<Decimal?> stack = new List<Decimal?>();
-            stack.Add(e.StartWeight);
-
-            foreach (var increment in e.InitialIncrements)
+            try
             {
-                var t = stack.Last();
-                stack.Add(t += increment);
-            }
+                List<Decimal?> stack = new List<Decimal?>();
+                stack.Add(e.StartWeight);
 
-            for (int i = 0; i < e.IncrementCount; i++)
+                foreach (var increment in e.InitialIncrements)
+                {
+                    var t = stack.Last();
+                    stack.Add(t += increment);
+                }
+
+                for (int i = 0; i < e.IncrementCount; i++)
+                {
+                    var t = stack.Last();
+                    stack.Add(t += e.IncrementValue);
+                }
+
+                return stack.ToArray();
+            }
+            catch (Exception exc)
             {
-                var t = stack.Last();
-                stack.Add(t += e.IncrementValue);
+                throw exc;
             }
-
-            return stack.ToArray();
         }
     }
 }

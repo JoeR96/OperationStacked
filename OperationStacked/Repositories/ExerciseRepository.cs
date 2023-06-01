@@ -8,11 +8,14 @@ namespace OperationStacked.Repositories
 {
     public class ExerciseRepository : IExerciseRepository
     {
-        private readonly OperationStackedContext _operationStackedContext
-            ;
-        public ExerciseRepository(OperationStackedContext context)
+        private readonly OperationStackedContext _operationStackedContext;
+        private readonly IDbContextFactory<OperationStackedContext> _contextFactory;
+
+
+        public ExerciseRepository(OperationStackedContext context, IDbContextFactory<OperationStackedContext> contextFactory)
         {
             _operationStackedContext = context;
+            _contextFactory = contextFactory;
         }
 
         public async Task<List<Exercise>> GetExercises(Guid userId, int week, int day, bool completed) => 
@@ -29,7 +32,6 @@ namespace OperationStacked.Repositories
 
         public async Task InsertExercise(Exercise nextExercise)
         {
-            Console.WriteLine(nextExercise.UserId);
             await _operationStackedContext.Exercises.AddAsync(nextExercise);
             await _operationStackedContext.SaveChangesAsync();
         }
@@ -42,6 +44,7 @@ namespace OperationStacked.Repositories
 
         public async Task<bool> DeleteAllExercisesForUser(Guid userId)
         {
+
             var entity = _operationStackedContext.Exercises.Where(x => x.UserId == userId);
 
             if (!entity.Any())
@@ -88,9 +91,24 @@ namespace OperationStacked.Repositories
 
         public async Task<EquipmentStack> GetEquipmentStack(Guid equipmentStackId)
         {
-            var equipmentStack = await _operationStackedContext.EquipmentStacks.FirstOrDefaultAsync(x => x.Id == equipmentStackId);
+            try 
+            {
+                EquipmentStack equipmentStack;
+                using (var context = _contextFactory.CreateDbContext())
+                {
+                    // use 'context' here
+                    equipmentStack = await context.EquipmentStacks.FirstOrDefaultAsync(x => x.Id == equipmentStackId);
+                }
+                return equipmentStack;
+            }
+            catch (Exception e)
+            {
+                // Log or print the exception
+                Console.WriteLine(e);
+                throw; // rethrowing the exception
+            }
+
             
-            return equipmentStack;
         }
 
 

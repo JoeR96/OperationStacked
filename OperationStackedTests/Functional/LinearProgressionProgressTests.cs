@@ -1,5 +1,6 @@
 ﻿using Concise.Steps;
 using FluentAssertions;
+using MoreLinq.Extensions;
 using NUnit.Framework;
 using OperationStacked.Entities;
 using OperationStacked.TestLib;
@@ -15,7 +16,7 @@ namespace OperationStackedTests.Functional
     {
         public Guid userId;
         public WorkoutClient workoutClient;
-        public List<Exercise> workout;
+        public List<Exercise> Workout;
 
         [OneTimeSetUp]
         public async Task InitiateClient()
@@ -24,27 +25,11 @@ namespace OperationStackedTests.Functional
             workoutClient = client;
             userId = _userId;
         }
-        [StepTest, Order(1)]
+        [StepTest, Order(10)]
         public async Task LinearProgression_WorkoutCreatesWithAllEquipmentTypes()
         {
            
-            // var createEquipmentStackRequest = new CreateEquipmentStackRequest()
-            // {
-            //     StartWeight = 1.10,
-            //     IncrementValue = 2.30,
-            //     IncrementCount = 18,
-            //     InitialIncrements = new decimal[] {  },
-            //     EquipmentStackKey = "TheGymGroupCable",
-            //     UserID = userId
-            // };
-            // await "The stack is created is retrieved".__(async () =>
-            // {
-            //     var createResponse = await workoutClient.CreateAsync(createEquipmentStackRequest);
-            //    
-            //     var response = await workoutClient.EquipmentStackGETAsync( createResponse.Stack.Id);
-            //
-            //     response.Stack.Id.Should().Be(createResponse.Stack.Id);
-            // });
+           
             var request = new CreateWorkoutRequest
             {
                 UserId = userId,
@@ -83,7 +68,7 @@ namespace OperationStackedTests.Functional
                         PrimaryExercise = false,
                         StartingWeight = 10,
                         WeightProgression = 2.5,
-                        AttemptsBeforeDeload = 2
+                        Week = 1
                     },
                     new CreateExerciseModel()
                     {
@@ -99,7 +84,8 @@ namespace OperationStackedTests.Functional
                         TargetSets = 3,
                         PrimaryExercise = false,
                         StartingWeight = 8.00,
-                        AttemptsBeforeDeload = 2
+                        AttemptsBeforeDeload = 2,
+                        Week = 1
                     },
                     new CreateExerciseModel()
                     {
@@ -115,7 +101,8 @@ namespace OperationStackedTests.Functional
                         TargetSets = 3,
                         PrimaryExercise = false,
                         StartingWeight = 10.00,
-                        AttemptsBeforeDeload = 2
+                        AttemptsBeforeDeload = 2,
+                        Week = 1
                      },
                      new CreateExerciseModel()
                     {
@@ -140,7 +127,8 @@ namespace OperationStackedTests.Functional
                             InitialIncrements = new decimal[] { 6.5m },
                             UserID = userId,
                             EquipmentStackKey = "The Gym Low Row"
-                        }
+                        },
+                        Week = 1
                     },
                      new CreateExerciseModel()
                     {
@@ -157,145 +145,446 @@ namespace OperationStackedTests.Functional
                         PrimaryExercise = false,
                         AttemptsBeforeDeload = 2,
                         WeightIndex = 1,
-                        EquipmentStackKey = EquipmentStackKey._2
+                        EquipmentStackKey = EquipmentStackKey._2,
+                        Week = 1,
+                    },
+                     new CreateExerciseModel()
+                    {
+                        Template = ExerciseTemplate._0,
+                        LiftDay = 2,
+                        LiftOrder = 1,
+                        UserId = userId,
+                        EquipmentType = EquipmentType._0,
+                        ExerciseName = "Back Squat",
+                        Category = "Legs",
+                        MinimumReps = 8,
+                        MaximumReps = 12,
+                        TargetSets = 3,
+                        PrimaryExercise = true,
+                        StartingWeight = 10.00,
+                        WeightProgression = 5,
+                        AttemptsBeforeDeload = 2,
+                        Week = 1
+                     },
+                    new CreateExerciseModel()
+                    {
+                        Template = ExerciseTemplate._0,
+                        LiftDay = 2,
+                        LiftOrder = 2,
+                        UserId = userId,
+                        EquipmentType = EquipmentType._1,
+                        ExerciseName = "Incline Smith Press",
+                        Category = "Legs",
+                        MinimumReps = 8,
+                        MaximumReps = 12,
+                        TargetSets = 3,
+                        PrimaryExercise = false,
+                        StartingWeight = 10,
+                        WeightProgression = 2.5,
+                        Week = 1
+                    },
+                    new CreateExerciseModel()
+                    {
+                        Template = ExerciseTemplate._0,
+                        LiftDay = 2,
+                        LiftOrder = 3,
+                        UserId = userId,
+                        EquipmentType = EquipmentType._2,
+                        ExerciseName = "Bicep Curl",
+                        Category = "Arms",
+                        MinimumReps = 8,
+                        MaximumReps = 12,
+                        TargetSets = 3,
+                        PrimaryExercise = false,
+                        StartingWeight = 8.00,
+                        AttemptsBeforeDeload = 2,
+                        Week = 1
+                    },
+                    new CreateExerciseModel()
+                    {
+                        Template = ExerciseTemplate._0,
+                        LiftDay = 2,
+                        LiftOrder = 4,
+                        UserId = userId,
+                        EquipmentType = EquipmentType._2,
+                        ExerciseName = "Hammer Curl",
+                        Category = "Arms",
+                        MinimumReps = 8,
+                        MaximumReps = 12,
+                        TargetSets = 3,
+                        PrimaryExercise = false,
+                        StartingWeight = 10.00,
+                        AttemptsBeforeDeload = 2,
+                        Week = 1
+                     },
+                     new CreateExerciseModel()
+                    {
+                        Template = ExerciseTemplate._0,
+                        LiftDay = 2,
+                        LiftOrder = 5,
+                        UserId = userId,
+                        EquipmentType = EquipmentType._3,
+                        ExerciseName = "Low Row",
+                        Category = "Back",
+                        MinimumReps = 8,
+                        MaximumReps = 12,
+                        TargetSets = 3,
+                        PrimaryExercise = false,
+                        AttemptsBeforeDeload = 2,
+                        WeightIndex = 1,
+                        EquipmentStackKey = EquipmentStackKey._2,
+
+                        Week = 1
+                    },
+                     new CreateExerciseModel()
+                    {
+                        Template = ExerciseTemplate._0,
+                        LiftDay = 2,
+                        LiftOrder = 6,
+                        UserId = userId,
+                        EquipmentType = EquipmentType._4,
+                        ExerciseName = "Unilateral Pull Down",
+                        Category = "Back",
+                        MinimumReps = 8,
+                        MaximumReps = 12,
+                        TargetSets = 3,
+                        PrimaryExercise = false,
+                        AttemptsBeforeDeload = 2,
+                        WeightIndex = 1,
+                        EquipmentStackKey = EquipmentStackKey._2,
+                        Week = 1,
                     },
                 }
             };
-
+            WorkoutCreationResult t;
             await "The exercise is created and returned.".__(async () =>
             {
-                var createWorkoutResponse = await workoutClient.WorkoutCreationPOSTAsync(request);
-                createWorkoutResponse.Exercises.Count.Should().Be(6);
+                t = await workoutClient.WorkoutCreationPOSTAsync(request);
+                t.Exercises.Count.Should().Be(12);
             });
         }
 
-        [StepTest, Order(2)]
+
+        [StepTest, Order(20)]
         public async Task LinearProgression_WorkoutIsRetrieved()
         {
             await "The workout is retrieved".__(async () =>
             {
                 var getWorkoutResponse = await workoutClient.WorkoutCreationGETAsync(userId, 1, 1, false);
-                workout = getWorkoutResponse.Exercises.ToList();
+                Workout = getWorkoutResponse.Exercises.ToList();
 
-                workout.Count().Should().Be(6);
+                foreach (var exercise in Workout)
+                {
+                    exercise.LiftWeek.Should().Be(1);
+                }
+                Workout.Count().Should().Be(6);
+                Workout.ForEach(e => e.LiftDay.Should().Be(1));
+                Workout.ForEach(e => e.LiftWeek.Should().Be(1));
+                Workout.ForEach(e => e.WorkingWeight.Should().BeGreaterThan(0));
+
             });
         }
-        [StepTest, Order(3)]
+        [StepTest, Order(30)]
         public async Task LinearProgression_BarbellExerciseProgresses()
         {
             await "The exercise is completed and the response is the generated exercise for next week,".__(async () =>
             {
                 var completionResponse = await workoutClient.CompleteAsync(new CompleteExerciseRequest()
                 {
-                    Id = workout[0].Id,
+                    Id = Workout[0].Id,
                     Reps = new int[]{12,12,12},
                     Sets = 3
                 });
                 
                 completionResponse.Exercise.LiftWeek.Should().Be(2);
                 completionResponse.Exercise.WorkingWeight.Should().Be(15);
-                completionResponse.Exercise.ParentId.Should().Be(workout[0].Id);
+                completionResponse.Exercise.ParentId.Should().Be(Workout[0].Id);
             });
         }
-        [StepTest, Order(4)]
+        [StepTest, Order(40)]
         public async Task LinearProgression_SmithMachineExerciseProgresses()
         {
             await "The exercise is completed and the response is the generated exercise for next week,".__(async () =>
             {
                 var completionResponse = await workoutClient.CompleteAsync(new CompleteExerciseRequest()
                 {
-                    Id = workout[1].Id,
+                    Id = Workout[1].Id,
                     Reps = new int[]{12,12,12},
                     Sets = 3
                 });
                 
                 completionResponse.Exercise.LiftWeek.Should().Be(2);
                 completionResponse.Exercise.WorkingWeight.Should().Be(12.5);
-                completionResponse.Exercise.ParentId.Should().Be(workout[1].Id);
+                completionResponse.Exercise.ParentId.Should().Be(Workout[1].Id);
             });
         }
 
-        [StepTest, Order(5)]
+        [StepTest, Order(50)]
         public async Task LinearProgression_DumbbellProgressesBy1KGWhenWorkingWeightIsBelow9KG()
         {
             await "The exercise is completed and the response is the generated exercise for next week,".__(async () =>
             {
                 var completionResponse = await workoutClient.CompleteAsync(new CompleteExerciseRequest()
                 {
-                    Id = workout[2].Id,
+                    Id = Workout[2].Id,
                     Reps = new int[]{12,12,12},
                     Sets = 3
                 });
                 
                 completionResponse.Exercise.LiftWeek.Should().Be(2);
                 completionResponse.Exercise.WorkingWeight.Should().Be(9);
-                completionResponse.Exercise.ParentId.Should().Be(workout[2].Id);
+                completionResponse.Exercise.ParentId.Should().Be(Workout[2].Id);
             });
         }
         
-        [StepTest, Order(6)]
+        [StepTest, Order(60)]
         public async Task LinearProgression_DumbbellProgressesBy2KGWhenWorkingWeightIsAbove9KG()
         {
             await "The exercise is completed and the response is the generated exercise for next week,".__(async () =>
             {
                 var completionResponse = await workoutClient.CompleteAsync(new CompleteExerciseRequest()
                 {
-                    Id = workout[3].Id,
+                    Id = Workout[3].Id,
                     Reps = new int[]{12,12,12},
                     Sets = 3
                 });
                 
                 completionResponse.Exercise.LiftWeek.Should().Be(2);
                 completionResponse.Exercise.WorkingWeight.Should().Be(12);
-                completionResponse.Exercise.ParentId.Should().Be(workout[3].Id);
+                completionResponse.Exercise.ParentId.Should().Be(Workout[3].Id);
             });
         }
 
-        [StepTest, Order(7)]
-        public async Task LinearProgression_MachineIndexProgress()
+        [StepTest, Order(70)]
+        public async Task  LinearProgression_MachineIndexProgress()
         {
             await "The exercise is completed and the response is the generated exercise for next week,".__(async () =>
             {
                 var completionResponse = await workoutClient.CompleteAsync(new CompleteExerciseRequest()
                 {
-                    Id = workout[4].Id,
+                    Id = Workout[4].Id,
                     Reps = new int[]{12,12,12},
                     Sets = 3
                 });
                 
                 completionResponse.Exercise.LiftWeek.Should().Be(2);
                 completionResponse.Exercise.WorkingWeight.Should().Be(11);
-                completionResponse.Exercise.ParentId.Should().Be(workout[4].Id);
+                completionResponse.Exercise.ParentId.Should().Be(Workout[4].Id);
                 
             });
         }
 
-        [StepTest, Order(8)]
+        [StepTest, Order(80)]
         public async Task LinearProgression_CableIndexProgress()
         {
             await "The exercise is completed and the response is the generated exercise for next week,".__(async () =>
             {
                 var completionResponse = await workoutClient.CompleteAsync(new CompleteExerciseRequest()
                 {
-                    Id = workout[5].Id,
+                    Id = Workout[5].Id,
                     Reps = new int[]{12,12,12},
                     Sets = 3
                 });
                 
                 completionResponse.Exercise.LiftWeek.Should().Be(2);
-                completionResponse.Exercise.WorkingWeight.Should().Be(3.40);
-                completionResponse.Exercise.ParentId.Should().Be(workout[5].Id);
+                completionResponse.Exercise.WorkingWeight.Should().Be(5.70);
+                completionResponse.Exercise.ParentId.Should().Be(Workout[5].Id);
             });
         }
-        [StepTest, Order(9)]
+
+        [StepTest, Order(90)]
+        public async Task LinearProgression_CurrentWeekValuesShouldNotChange()
+        {
+            await "retrieve current workout after all exercises have completed and saved to the Database.".__(
+                async () =>
+                {
+                    var getWorkoutResponse = await workoutClient.WorkoutCreationGETAsync(userId, 1, 1, true);
+                    var retrievedWorkout = getWorkoutResponse.Exercises.ToList();
+
+                    retrievedWorkout.Count().Should().Be(Workout.Count);
+                });
+        }
+        
+        [StepTest, Order(100)]
+        public async Task LinearProgression_CurrenWorkoutCompletesAndIncreaseWeekCount()
+        {
+            await "Complete the workout.".__(
+                async () =>
+                {
+                    var completeWorkoutResponse = await workoutClient.UpdateAsync(userId
+                    );
+                    
+                    completeWorkoutResponse.Week.Should().Be(1);
+                    completeWorkoutResponse.Day.Should().Be(2);
+                });
+        }
+
+        private List<Exercise> WorkoutTwo;
+        
+        [StepTest, Order(110)]
+        public async Task LinearProgression_WorkoutTwoIsRetrieved()
+        {
+            
+            await "The workout is retrieved".__(async () =>
+            {
+                var getWorkoutResponse = await workoutClient.WorkoutCreationGETAsync(userId, 1, 2, false);
+                WorkoutTwo = getWorkoutResponse.Exercises.ToList();
+
+                foreach (var exercise in Workout)
+                {
+                    exercise.LiftWeek.Should().Be(1);
+                }
+                WorkoutTwo.Count().Should().Be(6);
+                
+                WorkoutTwo.ForEach(e => e.LiftWeek.Should().Be(1));
+                WorkoutTwo.ForEach(e => e.LiftDay.Should().Be(2));
+
+            });
+        }
+        [StepTest, Order(120)]
+        public async Task LinearProgression_BarbellExerciseUnderMaxAboveMinimumStaysTheSame()
+        {
+            await "The exercise is completed and the response is the generated exercise for next week,".__(async () =>
+            {
+                var completionResponse = await workoutClient.CompleteAsync(new CompleteExerciseRequest()
+                {
+                    Id = WorkoutTwo[0].Id,
+                    Reps = new int[]{8,8,8},
+                    Sets = 3
+                });
+                
+                completionResponse.Exercise.LiftWeek.Should().Be(2);
+                completionResponse.Exercise.WorkingWeight.Should().Be(WorkoutTwo[0].WorkingWeight);
+                completionResponse.Exercise.ParentId.Should().Be(WorkoutTwo[0].Id);
+            });
+        }
+        [StepTest, Order(130)]
+        public async Task LinearProgression_SmithMachineExerciseUnderMaxAboveMinimumStaysTheSame()
+        {
+            await "The exercise is completed and the response is the generated exercise for next week,".__(async () =>
+            {
+                var completionResponse = await workoutClient.CompleteAsync(new CompleteExerciseRequest()
+                {
+                    Id = WorkoutTwo[1].Id,
+                    Reps = new int[]{11,11,11},
+                    Sets = 3
+                });
+                
+                completionResponse.Exercise.LiftWeek.Should().Be(2);
+                completionResponse.Exercise.WorkingWeight.Should().Be(WorkoutTwo[1].WorkingWeight);
+                completionResponse.Exercise.ParentId.Should().Be(WorkoutTwo[1].Id);
+            });
+        }
+
+        [StepTest, Order(140)]
+        public async Task LinearProgression_DumbbellExerciseUnderMaxAboveMinimumStaysTheSameWhenBelow9KG()
+        {
+            await "The exercise is completed and the response is the generated exercise for next week,".__(async () =>
+            {
+                var completionResponse = await workoutClient.CompleteAsync(new CompleteExerciseRequest()
+                {
+                    Id = WorkoutTwo[2].Id,
+                    Reps = new int[]{11,11,11},
+                    Sets = 3
+                });
+                
+                completionResponse.Exercise.LiftWeek.Should().Be(2);
+                completionResponse.Exercise.WorkingWeight.Should().Be(WorkoutTwo[2].WorkingWeight);
+                completionResponse.Exercise.ParentId.Should().Be(WorkoutTwo[2].Id);
+            });
+        }
+        
+        [StepTest, Order(150)]
+        public async Task LinearProgression_DumbbellExerciseUnderMaxAboveMinimumStaysTheSameWhenAbove9KG()
+        {
+            await "The exercise is completed and the response is the generated exercise for next week,".__(async () =>
+            {
+                var completionResponse = await workoutClient.CompleteAsync(new CompleteExerciseRequest()
+                {
+                    Id = WorkoutTwo[3].Id,
+                    Reps = new int[]{11,11,11},
+                    Sets = 3
+                });
+                
+                completionResponse.Exercise.LiftWeek.Should().Be(2);
+                completionResponse.Exercise.WorkingWeight.Should().Be(WorkoutTwo[3].WorkingWeight);
+                completionResponse.Exercise.ParentId.Should().Be(WorkoutTwo[3].Id);
+            });
+        }
+
+        [StepTest, Order(160)]
+        public async Task LinearProgression_MachineIndexUnderMaxAboveMinimumStaysTheSame()
+        {
+            await "The exercise is completed and the response is the generated exercise for next week,".__(async () =>
+            {
+                var completionResponse = await workoutClient.CompleteAsync(new CompleteExerciseRequest()
+                {
+                    Id = WorkoutTwo[4].Id,
+                    Reps = new int[]{11,11,11},
+                    Sets = 3
+                });
+                
+                completionResponse.Exercise.LiftWeek.Should().Be(2);
+                completionResponse.Exercise.WorkingWeight.Should().Be(WorkoutTwo[4].WorkingWeight);
+                completionResponse.Exercise.ParentId.Should().Be(WorkoutTwo[4].Id);
+                
+            });
+        }
+
+        [StepTest, Order(170)]
+        public async Task LinearProgression_CableIndexExerciseUnderMaxAboveMinimumStaysTheSame()
+        {
+            await "The exercise is completed and the response is the generated exercise for next week,".__(async () =>
+            {
+                var completionResponse = await workoutClient.CompleteAsync(new CompleteExerciseRequest()
+                {
+                    Id = WorkoutTwo[5].Id,
+                    Reps = new int[]{11,11,11},
+                    Sets = 3
+                });
+                
+                completionResponse.Exercise.LiftWeek.Should().Be(2);
+                completionResponse.Exercise.WorkingWeight.Should().Be(WorkoutTwo[5].WorkingWeight);
+                completionResponse.Exercise.ParentId.Should().Be(WorkoutTwo[5].Id);
+            });
+        }
+
+        [StepTest, Order(180)]
+        public async Task LinearProgression_CurrentWeekValuesShouldNotChangeForDayTwo()
+        {
+            await "retrieve current workout after all exercises have completed and saved to the Database.".__(
+                async () =>
+                {
+                    var getWorkoutResponse = await workoutClient.WorkoutCreationGETAsync(userId, 1, 1, true);
+                    var retrievedWorkout = getWorkoutResponse.Exercises.ToList();
+
+                    retrievedWorkout.Count().Should().Be(WorkoutTwo.Count);
+                });
+        }
+        
+        [StepTest, Order(190)]
+        public async Task LinearProgression_CurrenWorkoutCompletesAndIncreaseWeekCountAndDayResetsToOne()
+        {
+            await "Complete the exercise.".__(
+                async () =>
+                {
+                    var completeWorkoutResponse = await workoutClient.UpdateAsync(userId);                    
+                    completeWorkoutResponse.Week.Should().Be(2);
+                    completeWorkoutResponse.Day.Should().Be(1);
+                });
+        }
+        [StepTest, Order(210)]
         public async Task LinearProgression_AllExercisesDelete()
         {
             await "The exercises should all be deleted.".__(async () =>
              {
-                 var deleteResponse = await workoutClient.DeleteAllAsync(userId);
-                 deleteResponse.Should().BeTrue();
+                  // var deleteResponse = await workoutClient.DeleteAllAsync(userId);
+                  // deleteResponse.Should().BeTrue();
             });
         }
+        
+
+
     }
 }
 

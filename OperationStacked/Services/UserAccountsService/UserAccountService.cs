@@ -2,7 +2,7 @@
 using OperationStacked.Data;
 using OperationStacked.Entities;
 using OperationStacked.Requests;
-using OperationStacked.Services.UserAccountsService;
+using OperationStacked.Response;
 
 namespace OperationStacked.Services.UserAccountsService
 {
@@ -18,14 +18,14 @@ namespace OperationStacked.Services.UserAccountsService
             => await _context.Users.Where(x => x.UserName == username)?
             .FirstOrDefaultAsync();
 
-        public async Task<User> GetUserByCognitoUserId(string cognitoUserId) => await _context.Users.Where(x => x.CognitoUserId == cognitoUserId)?
+        public async Task<User> GetUserByCognitoUserId(Guid cognitoUserId) => await _context.Users.Where(x => x.CognitoUserId == cognitoUserId)?
                 .FirstOrDefaultAsync();
 
-        public async Task<User> GetUserById(string CognitoUserId)
+        public async Task<User> GetUserById(Guid CognitoUserId)
         => await _context.Users?.Where(x => x.CognitoUserId == CognitoUserId)?
         .FirstOrDefaultAsync();
 
-        public async Task<WeekAndDayResponse> ProgressWeekAndDay(string userid)
+        public async Task<WeekAndDayResponse> ProgressWeekAndDay(Guid userid)
         {
             var user = await GetUserById(userid);
 
@@ -45,15 +45,12 @@ namespace OperationStacked.Services.UserAccountsService
             }
             await _context.SaveChangesAsync();
 
-            return new WeekAndDayResponse
-            {
-                Day = user.CurrentDay,
-                Week = user.CurrentWeek
-            };
+            return new WeekAndDayResponse(
+                user.CurrentWeek, user.CurrentDay);
 
         }
 
-        public WeekAndDayResponse GetWeekAndDay(string cognitoUserId) => GetUserById(cognitoUserId).Result.GetWeekAndDayResponse();
+        public WeekAndDayResponse GetWeekAndDay(Guid cognitoUserId) => GetUserById(cognitoUserId).Result.GetWeekAndDayResponse();
 
         public async Task CreateUser(CreateUser request)
         {
@@ -84,10 +81,7 @@ namespace OperationStacked.Services.UserAccountsService
 }
 public static class UserExtensions
 {
-    public static WeekAndDayResponse GetWeekAndDayResponse(this User user) => new WeekAndDayResponse
-    {
-        Week = user.CurrentWeek,
-        Day = user.CurrentDay
-    };
+    public static WeekAndDayResponse GetWeekAndDayResponse(this User user) =>
+        new (user.CurrentWeek, user.CurrentDay);
 }
 

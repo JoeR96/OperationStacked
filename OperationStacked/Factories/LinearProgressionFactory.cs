@@ -35,13 +35,21 @@ namespace OperationStacked.Factories
                 {
                     var equipmentStack = await _exerciseRepository.InsertEquipmentStack(createExerciseModel.EquipmentStack);
                     _exercise.EquipmentStackId = equipmentStack.Stack.Id;
-                    var stack = await CreateStack(Guid.Empty,0,_exercise.WeightIndex,_exerciseRepository,_exercise.EquipmentStackId);
+                    var stack = CreateStack(Guid.Empty,0,_exercise.WeightIndex,equipmentStack.Stack);
                     _exercise.StartingWeight = stack;
+                    _exercise.WorkingWeight = stack;
+
                 }
                 else
                 {
                     //mapped to cables atm will need to map it to other enum types another day
-                    _exercise.EquipmentStackId = Guid.Parse("08db6084-b7f8-4b35-86f1-6c7b1e003d51");
+                     _exercise.EquipmentStackId = Guid.Parse("08db6084-b7f8-4b35-86f1-6c7b1e003d51");
+                      var equipmentStack = await _exerciseRepository.GetEquipmentStack(_exercise.EquipmentStackId);
+                      _exercise.EquipmentStackId = _exercise.EquipmentStackId;
+                      var stack = CreateStack(Guid.Empty,0,_exercise.WeightIndex,equipmentStack);
+                      _exercise.StartingWeight = stack;
+                      _exercise.WorkingWeight = stack;
+
                 }
             }
 
@@ -53,7 +61,7 @@ namespace OperationStacked.Factories
             var exercise = (LinearProgressionExercise)await _exerciseRepository.GetExerciseById(request.Id);
             exercise.Completed = true;
             await _exerciseRepository.UpdateAsync(exercise);
-            ExerciseCompletedStatus status = ExerciseCompletedStatus.Active;
+            ExerciseCompletedStatus status;
             int weightIndexModifier = 0;
             int attemptModifier = 0;
             //if rep target  and set count reached
@@ -62,9 +70,6 @@ namespace OperationStacked.Factories
                 exercise.TargetRepCountReached(request.Reps) &&
                 exercise.WithinRepRange(request.Reps))
             {
-                //get next weeks exercise
-                //increase weight index
-                //save game
                 status = ExerciseCompletedStatus.Progressed;
                 weightIndexModifier++;
             }
@@ -92,16 +97,25 @@ namespace OperationStacked.Factories
             else
             {
                 status = ExerciseCompletedStatus.Failed;
-                //Log to the logger here
-                //We should not have got here
             }
 
-            var nextExercise = exercise.GenerateNextExercise(await WorkingWeight(exercise.ParentId,exercise.WorkingWeight, weightIndexModifier,
-                    exercise.WeightProgression
-                    , exercise.EquipmentType, exercise.WeightIndex,
-                    _exerciseRepository,
-                    exercise.EquipmentStackId),
-                weightIndexModifier, attemptModifier);
+            LinearProgressionExercise nextExercise;
+            if (exercise.EquipmentType is EquipmentType.Cable or EquipmentType.Machine)
+            {
+                var stack = await _exerciseRepository.GetEquipmentStack(exercise.EquipmentStackId);
+                nextExercise = exercise.GenerateNextExercise(await WorkingWeight(exercise.ParentId,exercise.WorkingWeight, weightIndexModifier,
+                        exercise.WeightProgression
+                        , exercise.EquipmentType, exercise.WeightIndex,stack),
+                    weightIndexModifier, attemptModifier,stack);
+            }
+            else
+            {
+                nextExercise = exercise.GenerateNextExercise(await WorkingWeight(exercise.ParentId,exercise.WorkingWeight, weightIndexModifier,
+                        exercise.WeightProgression
+                        , exercise.EquipmentType, exercise.WeightIndex),
+                    weightIndexModifier, attemptModifier);
+            }
+            
             await _exerciseRepository.InsertExercise(nextExercise); 
             return (nextExercise, status);
         }
@@ -109,8 +123,7 @@ namespace OperationStacked.Factories
         private static async Task<decimal> WorkingWeight(Guid exerciseParentId, decimal workingWeight,
             int weightIndexModifier,
             decimal weightProgression, EquipmentType equipmentType, int startIndex,
-            IExerciseRepository exerciseRepository = null,
-            Guid equipmentStackId = default)
+            EquipmentStack stack = null)
         {
             if (equipmentType is EquipmentType.Barbell or EquipmentType.SmithMachine)
             {
@@ -130,20 +143,30 @@ namespace OperationStacked.Factories
 
             if (equipmentType == EquipmentType.Dumbbell)
             {
-                return workingWeight > 9 ? workingWeight += 2 : workingWeight += 1;
+                if(weightIndexModifier > 0)
+                {
+                    return workingWeight > 9 ? workingWeight += 2 : workingWeight += 1;
+                }
+                else if(weightIndexModifier == 0)
+                {
+                    return workingWeight;
+                }
             }
 
+            if (equipmentType is EquipmentType.Cable)
+            {
+                return CreateStack(exerciseParentId, workingWeight, startIndex, stack);
+            }            
             if (equipmentType is EquipmentType.Cable or EquipmentType.Machine)
             {
-                return await CreateStack(exerciseParentId, workingWeight, startIndex, exerciseRepository, equipmentStackId);
+                return CreateStack(exerciseParentId, workingWeight, startIndex, stack);
             }
             throw new NotImplementedException("EquipmentType is not supported");
         }
 
-        private static async Task<decimal> CreateStack(Guid exerciseParentId, decimal workingWeight, int startIndex,
-            IExerciseRepository exerciseRepository, Guid equipmentStackId)
+        private static decimal CreateStack(Guid exerciseParentId, decimal workingWeight, int startIndex,
+            EquipmentStack stack)
         {
-            var stack = await exerciseRepository.GetEquipmentStack(equipmentStackId);
             var generatedStack = stack.GenerateStack();
             int index;
 
