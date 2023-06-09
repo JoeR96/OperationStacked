@@ -18,6 +18,11 @@ namespace OperationStacked.Controllers
         {
             _userAccountService = userAccountService;
         }
+        [Route("updateWeekAndDay")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(WeekAndDayResponse))]
+        public async Task<IActionResult> UpdateUserWeekAndDay([FromBody] UpdateWeekAndDayRequest request)
+            => Ok(await _userAccountService.UpdateWeekAndDay(request));
 
         [Route("update")]
         [HttpPost]

@@ -5,6 +5,132 @@
     "version": "1.0"
   },
   "paths": {
+    "/equipment-stack/create": {
+      "post": {
+        "tags": [
+          "EquipmentStack"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEquipmentStackRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEquipmentStackRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEquipmentStackRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EquipmentStackResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EquipmentStackResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EquipmentStackResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/equipment-stack/{equipmentStackId}": {
+      "get": {
+        "tags": [
+          "EquipmentStack"
+        ],
+        "parameters": [
+          {
+            "name": "equipmentStackId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EquipmentStackResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EquipmentStackResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EquipmentStackResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "EquipmentStack"
+        ],
+        "parameters": [
+          {
+            "name": "equipmentStackId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/workout-creation": {
       "post": {
         "tags": [
@@ -32,26 +158,6 @@
         "responses": {
           "200": {
             "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/WorkoutCreationResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/WorkoutCreationResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/WorkoutCreationResult"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
             "content": {
               "text/plain": {
                 "schema": {
@@ -117,26 +223,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ExerciseCompletionResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ExerciseCompletionResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ExerciseCompletionResult"
-                }
-              }
-            }
           }
         }
       }
@@ -152,7 +238,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -202,32 +289,12 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetWorkoutResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetWorkoutResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetWorkoutResult"
-                }
-              }
-            }
           }
         }
       }
     },
     "/workout-creation/{exerciseId}/delete": {
-      "post": {
+      "delete": {
         "tags": [
           "Exercise"
         ],
@@ -244,7 +311,64 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workout-creation/{userId}/delete-all": {
+      "delete": {
+        "tags": [
+          "Exercise"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
           }
         }
       }
@@ -267,7 +391,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetExerciseResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetExerciseResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetExerciseResult"
+                }
+              }
+            }
           }
         }
       }
@@ -346,6 +487,54 @@
         }
       }
     },
+    "/user/updateWeekAndDay": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWeekAndDayRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWeekAndDayRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWeekAndDayRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeekAndDayResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeekAndDayResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeekAndDayResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/user/update": {
       "post": {
         "tags": [
@@ -355,24 +544,44 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserIdRequest"
+                "type": "string",
+                "format": "uuid"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserIdRequest"
+                "type": "string",
+                "format": "uuid"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/UserIdRequest"
+                "type": "string",
+                "format": "uuid"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeekAndDayResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeekAndDayResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeekAndDayResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -388,18 +597,36 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeekAndDayResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeekAndDayResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeekAndDayResponse"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/user/update-create-user": {
+    "/user/create-user": {
       "post": {
         "tags": [
           "User"
@@ -430,7 +657,7 @@
         }
       }
     },
-    "/user/name": {
+    "/user/create": {
       "get": {
         "tags": [
           "User"
@@ -440,7 +667,8 @@
             "name": "cognitoUserId",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -485,6 +713,40 @@
         },
         "additionalProperties": false
       },
+      "CreateEquipmentStackRequest": {
+        "type": "object",
+        "properties": {
+          "StartWeight": {
+            "type": "number",
+            "format": "double"
+          },
+          "InitialIncrements": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "double"
+            },
+            "nullable": true
+          },
+          "IncrementValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "IncrementCount": {
+            "type": "number",
+            "format": "double"
+          },
+          "EquipmentStackKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "UserID": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
       "CreateExerciseModel": {
         "required": [
           "Category",
@@ -492,15 +754,11 @@
           "ExerciseName",
           "LiftDay",
           "LiftOrder",
-          "Template",
-          "Username"
+          "Template"
         ],
         "type": "object",
         "properties": {
           "ExerciseName": {
-            "type": "string"
-          },
-          "Username": {
             "type": "string"
           },
           "Category": {
@@ -532,14 +790,6 @@
             "type": "integer",
             "format": "int32"
           },
-          "StartingSets": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "CurrentSets": {
-            "type": "integer",
-            "format": "int32"
-          },
           "WeightIndex": {
             "type": "integer",
             "format": "int32"
@@ -561,7 +811,7 @@
           },
           "UserId": {
             "type": "string",
-            "nullable": true
+            "format": "uuid"
           },
           "PrimaryLift": {
             "type": "boolean"
@@ -592,6 +842,12 @@
           "ParentId": {
             "type": "string",
             "format": "uuid"
+          },
+          "EquipmentStackKey": {
+            "$ref": "#/components/schemas/EquipmentStackKey"
+          },
+          "EquipmentStack": {
+            "$ref": "#/components/schemas/CreateEquipmentStackRequest"
           }
         },
         "additionalProperties": false
@@ -619,7 +875,7 @@
         "properties": {
           "CognitoUserId": {
             "type": "string",
-            "nullable": true
+            "format": "uuid"
           },
           "UserName": {
             "type": "string",
@@ -637,7 +893,7 @@
         "properties": {
           "userId": {
             "type": "string",
-            "nullable": true
+            "format": "uuid"
           },
           "ExerciseDaysAndOrders": {
             "type": "array",
@@ -645,6 +901,62 @@
               "$ref": "#/components/schemas/CreateExerciseModel"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EquipmentStack": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "StartWeight": {
+            "type": "number",
+            "format": "double"
+          },
+          "InitialIncrements": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "double"
+            },
+            "nullable": true
+          },
+          "IncrementValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "IncrementCount": {
+            "type": "number",
+            "format": "double"
+          },
+          "EquipmentStackKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "UserID": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EquipmentStackKey": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "EquipmentStackResponse": {
+        "type": "object",
+        "properties": {
+          "Stack": {
+            "$ref": "#/components/schemas/EquipmentStack"
           }
         },
         "additionalProperties": false
@@ -668,10 +980,6 @@
             "format": "uuid"
           },
           "ExerciseName": {
-            "type": "string",
-            "nullable": true
-          },
-          "Username": {
             "type": "string",
             "nullable": true
           },
@@ -699,7 +1007,7 @@
           },
           "UserId": {
             "type": "string",
-            "nullable": true
+            "format": "uuid"
           },
           "WorkingWeight": {
             "type": "number",
@@ -747,6 +1055,15 @@
         "type": "integer",
         "format": "int32"
       },
+      "GetExerciseResult": {
+        "type": "object",
+        "properties": {
+          "Exercises": {
+            "$ref": "#/components/schemas/Exercise"
+          }
+        },
+        "additionalProperties": false
+      },
       "GetWorkoutResult": {
         "type": "object",
         "properties": {
@@ -760,21 +1077,34 @@
         },
         "additionalProperties": false
       },
-      "IExercise": {
+      "UpdateWeekAndDayRequest": {
         "type": "object",
         "properties": {
-          "Template": {
-            "$ref": "#/components/schemas/ExerciseTemplate"
+          "Week": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Day": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "UserId": {
+            "type": "string",
+            "format": "uuid"
           }
         },
         "additionalProperties": false
       },
-      "UserIdRequest": {
+      "WeekAndDayResponse": {
         "type": "object",
         "properties": {
-          "CognitoUserId": {
-            "type": "string",
-            "nullable": true
+          "Week": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Day": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -796,7 +1126,7 @@
           "Exercises": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/IExercise"
+              "$ref": "#/components/schemas/Exercise"
             },
             "nullable": true
           }

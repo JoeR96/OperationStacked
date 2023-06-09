@@ -103,7 +103,7 @@ namespace OperationStacked.Factories
             if (exercise.EquipmentType is EquipmentType.Cable or EquipmentType.Machine)
             {
                 var stack = await _exerciseRepository.GetEquipmentStack(exercise.EquipmentStackId);
-                nextExercise = exercise.GenerateNextExercise(await WorkingWeight(exercise.ParentId,exercise.WorkingWeight, weightIndexModifier,
+                nextExercise = exercise.GenerateNextExercise(await WorkingWeight(exercise.ParentId,exercise.WorkingWeight,exercise.WeightIndex + weightIndexModifier,
                         exercise.WeightProgression
                         , exercise.EquipmentType, exercise.WeightIndex,stack),
                     weightIndexModifier, attemptModifier,stack);
@@ -155,7 +155,7 @@ namespace OperationStacked.Factories
 
             if (equipmentType is EquipmentType.Cable)
             {
-                return CreateStack(exerciseParentId, workingWeight, startIndex, stack);
+                return CreateStack(exerciseParentId, workingWeight, weightIndexModifier, stack);
             }            
             if (equipmentType is EquipmentType.Cable or EquipmentType.Machine)
             {

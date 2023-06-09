@@ -487,6 +487,54 @@
         }
       }
     },
+    "/user/updateWeekAndDay": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWeekAndDayRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWeekAndDayRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWeekAndDayRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeekAndDayResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeekAndDayResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeekAndDayResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/user/update": {
       "post": {
         "tags": [
@@ -1025,6 +1073,24 @@
               "$ref": "#/components/schemas/Exercise"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateWeekAndDayRequest": {
+        "type": "object",
+        "properties": {
+          "Week": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Day": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "UserId": {
+            "type": "string",
+            "format": "uuid"
           }
         },
         "additionalProperties": false

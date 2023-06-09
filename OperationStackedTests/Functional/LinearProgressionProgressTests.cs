@@ -411,8 +411,7 @@ namespace OperationStackedTests.Functional
             await "Complete the workout.".__(
                 async () =>
                 {
-                    var completeWorkoutResponse = await workoutClient.UpdateAsync(userId
-                    );
+                    var completeWorkoutResponse = await workoutClient.UpdateAsync(userId);
                     
                     completeWorkoutResponse.Week.Should().Be(1);
                     completeWorkoutResponse.Day.Should().Be(2);
@@ -573,18 +572,37 @@ namespace OperationStackedTests.Functional
                     completeWorkoutResponse.Day.Should().Be(1);
                 });
         }
-        [StepTest, Order(210)]
+        [StepTest, Order(200)]
         public async Task LinearProgression_AllExercisesDelete()
         {
             await "The exercises should all be deleted.".__(async () =>
              {
-                  // var deleteResponse = await workoutClient.DeleteAllAsync(userId);
-                  // deleteResponse.Should().BeTrue();
+                   var deleteResponse = await workoutClient.DeleteAllAsync(userId);
+                   deleteResponse.Should().BeTrue();
             });
         }
-        
 
+        [StepTest, Order(210)]
+        public async Task User_WeekAndDaySetTo1()
+        {
+            await "The user's week and day should reset to 1.".__(async () =>
+            {
+                var userWeekAndDAyResponse = await workoutClient.WeekAndDayAsync(userId);
+                userWeekAndDAyResponse.Week.Should().NotBe(1);
+                userWeekAndDAyResponse.Day.Should().Be(1);
 
+                var request = new UpdateWeekAndDayRequest()
+                {
+                    Day = 1,
+                    UserId = userId,
+                    Week = 1
+                };
+                var updateWeekAndDayResponse = await workoutClient.UpdateWeekAndDayAsync(request);
+
+                updateWeekAndDayResponse.Week.Should().Be(1);
+                updateWeekAndDayResponse.Day.Should().Be(1);
+            });
+        }
     }
 }
 

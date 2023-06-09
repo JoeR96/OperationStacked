@@ -77,6 +77,17 @@ namespace OperationStacked.Services.UserAccountsService
             await _context.SaveChangesAsync();
         }
 
+        public async Task<WeekAndDayResponse> UpdateWeekAndDay(UpdateWeekAndDayRequest request)
+        {
+            var user = await GetUserById(request.UserId);
+
+                user.CurrentDay = 1;
+                user.CurrentWeek = 1;
+            await _context.SaveChangesAsync();
+
+            return new WeekAndDayResponse(
+                user.CurrentWeek, user.CurrentDay);
+        }
     }
 }
 public static class UserExtensions
