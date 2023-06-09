@@ -39,7 +39,6 @@ namespace OperationStacked.Controllers
         [HttpPost("create-user")]
         [AllowAnonymous]
         public async Task UpdateUser([FromBody] CreateUser request) => await _userAccountService.CreateUser(request);
-        [Route("create")]
         [HttpGet]
         public async Task<IActionResult> GetUsername(Guid cognitoUserId)
         {
