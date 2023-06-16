@@ -1,11 +1,8 @@
 ﻿using Concise.Steps;
 using FluentAssertions;
-using MoreLinq.Extensions;
 using NUnit.Framework;
-using OperationStacked.Entities;
 using OperationStacked.TestLib;
 using OperationStackedAuth.Tests;
-using EquipmentStack = OperationStacked.TestLib.EquipmentStack;
 using Exercise = OperationStacked.TestLib.Exercise;
 
 namespace OperationStackedTests.Functional
@@ -42,14 +39,14 @@ namespace OperationStackedTests.Functional
                         LiftOrder = 1,
                         UserId = userId,
                         EquipmentType = EquipmentType._0,
-                        ExerciseName = "Back Squat",
-                        Category = "Legs",
+                        ExerciseName = "Bench Press",
+                        Category = "Chest",
                         MinimumReps = 8,
                         MaximumReps = 12,
                         TargetSets = 3,
                         PrimaryExercise = true,
-                        StartingWeight = 10.00,
-                        WeightProgression = 5,
+                        StartingWeight = 60.00,
+                        WeightProgression = 2.50,
                         AttemptsBeforeDeload = 2,
                         Week = 1
                      },
@@ -59,14 +56,14 @@ namespace OperationStackedTests.Functional
                         LiftDay = 1,
                         LiftOrder = 2,
                         UserId = userId,
-                        EquipmentType = EquipmentType._1,
-                        ExerciseName = "Incline Smith Press",
-                        Category = "Legs",
+                        EquipmentType = EquipmentType._0,
+                        ExerciseName = "Barbell Row",
+                        Category = "Back",
                         MinimumReps = 8,
                         MaximumReps = 12,
                         TargetSets = 3,
                         PrimaryExercise = false,
-                        StartingWeight = 10,
+                        StartingWeight = 60,
                         WeightProgression = 2.5,
                         Week = 1
                     },
@@ -76,15 +73,16 @@ namespace OperationStackedTests.Functional
                         LiftDay = 1,
                         LiftOrder = 3,
                         UserId = userId,
-                        EquipmentType = EquipmentType._2,
-                        ExerciseName = "Bicep Curl",
-                        Category = "Arms",
+                        EquipmentType = EquipmentType._1,
+                        ExerciseName = "Incline Smith Press",
+                        Category = "Shoulders",
                         MinimumReps = 8,
-                        MaximumReps = 12,
+                        MaximumReps = 10,
                         TargetSets = 3,
                         PrimaryExercise = false,
-                        StartingWeight = 8.00,
+                        StartingWeight = 30.00,
                         AttemptsBeforeDeload = 2,
+                        WeightProgression = 2.5,
                         Week = 1
                     },
                     new CreateExerciseModel()
@@ -100,7 +98,7 @@ namespace OperationStackedTests.Functional
                         MaximumReps = 12,
                         TargetSets = 3,
                         PrimaryExercise = false,
-                        StartingWeight = 10.00,
+                        StartingWeight = 12.00,
                         AttemptsBeforeDeload = 2,
                         Week = 1
                      },
@@ -110,24 +108,16 @@ namespace OperationStackedTests.Functional
                         LiftDay = 1,
                         LiftOrder = 5,
                         UserId = userId,
-                        EquipmentType = EquipmentType._3,
-                        ExerciseName = "Low Row",
-                        Category = "Back",
-                        MinimumReps = 8,
-                        MaximumReps = 12,
+                        EquipmentType = EquipmentType._4,
+                        ExerciseName = "Tricep PullDown",
+                        Category = "Tricep",
+                        MinimumReps = 12,
+                        MaximumReps = 15,
                         TargetSets = 3,
                         PrimaryExercise = false,
                         AttemptsBeforeDeload = 2,
-                        WeightIndex = 1,
-                        EquipmentStack = new CreateEquipmentStackRequest()
-                        {
-                            StartWeight = 4.5,
-                            IncrementValue = 7.00,
-                            IncrementCount = 15,
-                            InitialIncrements = new decimal[] { 6.5m },
-                            UserID = userId,
-                            EquipmentStackKey = "The Gym Low Row"
-                        },
+                        WeightIndex = 5,
+                        EquipmentStackKey = EquipmentStackKey._2,
                         Week = 1
                     },
                      new CreateExerciseModel()
@@ -136,15 +126,15 @@ namespace OperationStackedTests.Functional
                         LiftDay = 1,
                         LiftOrder = 6,
                         UserId = userId,
-                        EquipmentType = EquipmentType._4,
-                        ExerciseName = "Pec Fly",
-                        Category = "Chest",
+                        EquipmentType = EquipmentType._2,
+                        ExerciseName = "Lateral Raise",
+                        Category = "Shoulder",
                         MinimumReps = 8,
                         MaximumReps = 12,
-                        TargetSets = 3,
+                        TargetSets = 4,
                         PrimaryExercise = false,
                         AttemptsBeforeDeload = 2,
-                        WeightIndex = 1,
+                        WeightIndex = 7,
                         EquipmentStackKey = EquipmentStackKey._2,
                         Week = 1,
                     },

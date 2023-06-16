@@ -74,5 +74,12 @@ namespace OperationStacked.Controllers
         [Route("{exerciseId}")]
         public async Task<IActionResult> GetExerciseById(
             [FromRoute] Guid exerciseId) => Ok(await _exerciseRepository.GetExerciseById(exerciseId));
+        
+        [HttpPut]
+        [ProducesResponseType(200,Type = typeof(bool))]
+        [Route("{exerciseId}/{weight}")]
+        public async Task<IActionResult> UpdateExerciseById(
+            [FromRoute] Guid exerciseId,
+            [FromRoute] decimal weight) => Ok(await _exerciseRepository.UpdateExerciseById(exerciseId,weight));
     }
 }

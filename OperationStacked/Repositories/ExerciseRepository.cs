@@ -107,8 +107,6 @@ namespace OperationStacked.Repositories
                 Console.WriteLine(e);
                 throw; // rethrowing the exception
             }
-
-            
         }
 
 
@@ -127,6 +125,17 @@ namespace OperationStacked.Repositories
             }
 
             _operationStackedContext.EquipmentStacks.Remove(equipmentStack);
+            var saveResult = await _operationStackedContext.SaveChangesAsync();
+
+            return saveResult > 0;
+        }
+
+        public async Task<bool> UpdateExerciseById(Guid exerciseId, decimal weight)
+        {
+            var exercise = await _operationStackedContext.Exercises.Where(x => x.Id == exerciseId).FirstOrDefaultAsync();
+            exercise.WorkingWeight = weight;
+
+            _operationStackedContext.Update(exercise);
             var saveResult = await _operationStackedContext.SaveChangesAsync();
 
             return saveResult > 0;

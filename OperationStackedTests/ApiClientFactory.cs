@@ -1,7 +1,9 @@
 ﻿using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Mvc.Testing;
 using OperationStacked;
+using OperationStacked.Requests;
 using OperationStacked.TestLib;
+using LoginRequest = OperationStacked.TestLib.LoginRequest;
 
 namespace OperationStackedAuth.Tests
 {

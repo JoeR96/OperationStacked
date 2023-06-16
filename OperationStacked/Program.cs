@@ -20,6 +20,9 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
+using OperationStacked.Entities;
+using OperationStacked.Repositories;
+using OperationStacked.Services.RecipeService;
 
 Console.WriteLine(Environment.GetEnvironmentVariables());
 var connectionString = RemovePortFromServer(await GetConnectionStringFromParameterStore());
@@ -76,6 +79,9 @@ builder.Services.AddCors(options =>
         }
     )
 );
+builder.Services.AddScoped<IRecipeService, RecipeService>();
+builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
+
 await ConfigureSecret();
 
 async Task ConfigureSecret()

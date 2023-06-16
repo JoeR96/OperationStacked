@@ -43,29 +43,23 @@ namespace OperationStacked.Extensions.TemplateExtensions
 
         public static Decimal?[] GenerateStack(this EquipmentStack e)
         {
-            try
+            
+            List<Decimal?> stack = new List<Decimal?>();
+            stack.Add(e.StartWeight);
+
+            foreach (var increment in e.InitialIncrements)
             {
-                List<Decimal?> stack = new List<Decimal?>();
-                stack.Add(e.StartWeight);
-
-                foreach (var increment in e.InitialIncrements)
-                {
-                    var t = stack.Last();
-                    stack.Add(t += increment);
-                }
-
-                for (int i = 0; i < e.IncrementCount; i++)
-                {
-                    var t = stack.Last();
-                    stack.Add(t += e.IncrementValue);
-                }
-
-                return stack.ToArray();
+                var t = stack.Last();
+                stack.Add(t += increment);
             }
-            catch (Exception exc)
+
+            for (int i = 0; i < e.IncrementCount; i++)
             {
-                throw exc;
+                var t = stack.Last();
+                stack.Add(t += e.IncrementValue);
             }
+
+            return stack.ToArray();
         }
     }
 }
