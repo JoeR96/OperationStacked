@@ -10,5 +10,5 @@ public class CreateRecipeRequest
 
     public List<string> Steps { get; set; }
     
-    public List<Ingredient> Ingredients { get; set; }
+    public List<RecipeIngredient> Ingredients { get; set; }
 }

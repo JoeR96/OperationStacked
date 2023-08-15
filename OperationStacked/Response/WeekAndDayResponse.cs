@@ -1,3 +1,3 @@
 ﻿namespace OperationStacked.Response;
 
-public record WeekAndDayResponse(int Week, int Day);
+public record WeekAndDayResponse(int Week, int Day, int workoutDaysInWeek);

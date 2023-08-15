@@ -8,14 +8,14 @@ namespace OperationStacked.Repositories
 {
     public class ExerciseRepository : IExerciseRepository
     {
-        private readonly OperationStackedContext _operationStackedContext;
+        private OperationStackedContext _operationStackedContext;
         private readonly IDbContextFactory<OperationStackedContext> _contextFactory;
 
 
-        public ExerciseRepository(OperationStackedContext context, IDbContextFactory<OperationStackedContext> contextFactory)
+        public ExerciseRepository( IDbContextFactory<OperationStackedContext> contextFactory)
         {
-            _operationStackedContext = context;
             _contextFactory = contextFactory;
+            _operationStackedContext = contextFactory.CreateDbContext();
         }
 
         public async Task<List<Exercise>> GetExercises(Guid userId, int week, int day, bool completed) => 
@@ -84,6 +84,7 @@ namespace OperationStacked.Repositories
                 StartWeight = equipmentStack.StartWeight,
                 
             };
+            _operationStackedContext = await _contextFactory.CreateDbContextAsync();
             _operationStackedContext.EquipmentStacks.Add(e);
             await _operationStackedContext.SaveChangesAsync();
             return new EquipmentStackResponse(e);

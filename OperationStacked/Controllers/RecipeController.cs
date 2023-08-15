@@ -24,4 +24,12 @@ public class RecipeController : ControllerBase
     {
         return Ok(await _recipeService.CreateRecipeAsync(request));
     }
+    
+    //[Route("/{userId}/{recipeId}")]
+    //[HttpGet]
+    //[ProducesResponseType(200, Type = typeof(Recipe))]
+    //public async Task<IActionResult> GetRecipeAsync([FromRoute] Guid userId,Guid recipeId)
+    //{
+    //    return Ok(await _recipeService.GetRecipeAsync(userId,recipeId));
+    //}
 }

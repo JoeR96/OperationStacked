@@ -1,5 +1,4 @@
 ﻿using OperationStacked.Abstractions;
-using OperationStacked.Data;
 using OperationStacked.Entities;
 using OperationStacked.Models;
 using OperationStacked.Repositories;
@@ -32,7 +31,8 @@ namespace OperationStacked.Factories
                 UserId = _createExerciseModel.UserId,
                 EquipmentType = _createExerciseModel.EquipmentType,
                 WorkingWeight = _createExerciseModel.StartingWeight,
-                ParentId = _createExerciseModel.ParentId
+                ParentId = _createExerciseModel.ParentId,
+                RestTimer = _createExerciseModel.RestTimer
             };
 
         }

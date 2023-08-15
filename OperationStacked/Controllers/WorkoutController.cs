@@ -1,16 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OperationStacked.Repositories;
 using OperationStacked.Requests;
 using OperationStacked.Response;
-using System.ComponentModel;
-using OperationStacked.Entities;
-using OperationStacked.Repositories;
-using OperationStacked.Services.ExerciseProgressionService;
 using OperationStacked.Services.ExerciseCreationService;
+using OperationStacked.Services.ExerciseProgressionService;
 using OperationStacked.Services.ExerciseRetrievalService;
+using System.ComponentModel;
 
 namespace OperationStacked.Controllers
 {
- 
+
 
     [ApiController]
     [DisplayName("Workout Generation")]

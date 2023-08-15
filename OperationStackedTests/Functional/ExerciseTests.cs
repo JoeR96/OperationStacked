@@ -67,6 +67,8 @@ public class ExerciseTests
             var updateResponse = await WorkoutClient.WorkoutCreationPUTAsync(exercise.Id, 15);
 
             updateResponse.Should().Be(true);
+            var updatedExercise = await WorkoutClient.WorkoutCreationGET2Async(exercise.Id);    
+            updatedExercise.Exercises.WorkingWeight.Should().Be(15);    
 
         });
         

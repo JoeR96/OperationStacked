@@ -23,6 +23,7 @@ namespace OperationStacked.Entities
         public decimal WorkingWeight { get; set; }
         public Guid ParentId { get; set; }
         public bool Completed { get; set; }
+        public int RestTimer { get; set; }
 
     }
 }

@@ -25,10 +25,14 @@ namespace OperationStacked.Services.RecipeService
                 UserId = request.UserId,
                 Ingredients = request.Ingredients
             };
-
+            
+            recipe.Ingredients.ForEach(x => x.RecipeId = recipe.Id);
             await _recipeRepository.AddRecipeAsync(recipe);
 
             return recipe;
         }
+        public Task<Recipe> GetRecipeAsync(Guid userId, Guid recipeId)
+        => _recipeRepository.GetRecipeAsync(userId, recipeId);
+        
     }
 }

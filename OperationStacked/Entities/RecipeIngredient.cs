@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OperationStacked.Entities;
 
-public class Ingredient
+public class RecipeIngredient
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -12,4 +12,5 @@ public class Ingredient
     public string Name { get; set; }
     public int Quantity { get; set; }
     public string Measurement { get; set; }
+    public Guid RecipeId { get; set; }
 }

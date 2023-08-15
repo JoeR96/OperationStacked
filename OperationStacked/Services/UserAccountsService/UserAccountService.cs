@@ -46,7 +46,7 @@ namespace OperationStacked.Services.UserAccountsService
             await _context.SaveChangesAsync();
 
             return new WeekAndDayResponse(
-                user.CurrentWeek, user.CurrentDay);
+                user.CurrentWeek, user.CurrentDay,user.WorkoutDaysInWeek);
 
         }
 
@@ -86,13 +86,13 @@ namespace OperationStacked.Services.UserAccountsService
             await _context.SaveChangesAsync();
 
             return new WeekAndDayResponse(
-                user.CurrentWeek, user.CurrentDay);
+                user.CurrentWeek, user.CurrentDay,user.WorkoutDaysInWeek);
         }
     }
 }
 public static class UserExtensions
 {
     public static WeekAndDayResponse GetWeekAndDayResponse(this User user) =>
-        new (user.CurrentWeek, user.CurrentDay);
+        new (user.CurrentWeek, user.CurrentDay, user.WorkoutDaysInWeek);
 }
 

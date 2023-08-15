@@ -22,11 +22,27 @@ namespace OperationStackedTests.Functional
             workoutClient = client;
             userId = _userId;
         }
+        [StepTest, Order(0)]
+        public async Task EquipmentStack_CreatesWithMultipleStartWeights()
+        {
+            var request = new CreateEquipmentStackRequest()
+            {
+                StartWeight = 1.1,
+                InitialIncrements = new double[] { 1.1 },
+                IncrementValue = 2.3,
+                IncrementCount = 20,
+                EquipmentStackKey = "The Gym Cable"
+            };
+
+            await "The Equipment Stack is created".__(async () =>
+            {
+                var response = await workoutClient.CreateAsync(request);
+            });
+        }
+
         [StepTest, Order(10)]
         public async Task LinearProgression_WorkoutCreatesWithAllEquipmentTypes()
         {
-           
-           
             var request = new CreateWorkoutRequest
             {
                 UserId = userId,
@@ -151,7 +167,7 @@ namespace OperationStackedTests.Functional
                         MaximumReps = 12,
                         TargetSets = 3,
                         PrimaryExercise = true,
-                        StartingWeight = 10.00,
+                        StartingWeight = 60.00,
                         WeightProgression = 5,
                         AttemptsBeforeDeload = 2,
                         Week = 1
@@ -162,15 +178,15 @@ namespace OperationStackedTests.Functional
                         LiftDay = 2,
                         LiftOrder = 2,
                         UserId = userId,
-                        EquipmentType = EquipmentType._1,
-                        ExerciseName = "Incline Smith Press",
+                        EquipmentType = EquipmentType._0,
+                        ExerciseName = "Romanian Deadlift",
                         Category = "Legs",
                         MinimumReps = 8,
                         MaximumReps = 12,
                         TargetSets = 3,
                         PrimaryExercise = false,
-                        StartingWeight = 10,
-                        WeightProgression = 2.5,
+                        StartingWeight = 80,
+                        WeightProgression = 5,
                         Week = 1
                     },
                     new CreateExerciseModel()
@@ -179,18 +195,25 @@ namespace OperationStackedTests.Functional
                         LiftDay = 2,
                         LiftOrder = 3,
                         UserId = userId,
-                        EquipmentType = EquipmentType._2,
-                        ExerciseName = "Bicep Curl",
+                        EquipmentType = EquipmentType._3,
+                        ExerciseName = "Leg Extension",
                         Category = "Arms",
                         MinimumReps = 8,
                         MaximumReps = 12,
                         TargetSets = 3,
                         PrimaryExercise = false,
-                        StartingWeight = 8.00,
                         AttemptsBeforeDeload = 2,
-                        Week = 1
-                    },
-                    new CreateExerciseModel()
+                        Week = 1,
+                        EquipmentStack = new CreateEquipmentStackRequest()
+                            {
+                                StartWeight = 4.5,
+                                InitialIncrements = new double[] { },
+                                IncrementValue = 4.3,
+                                IncrementCount = 20,
+                                EquipmentStackKey = "The Gym Leg Extension"
+                            }
+                      },
+                     new CreateExerciseModel()
                     {
                         Template = ExerciseTemplate._0,
                         LiftDay = 2,
@@ -203,34 +226,52 @@ namespace OperationStackedTests.Functional
                         MaximumReps = 12,
                         TargetSets = 3,
                         PrimaryExercise = false,
-                        StartingWeight = 10.00,
+                        StartingWeight = 12.00,
                         AttemptsBeforeDeload = 2,
                         Week = 1
                      },
-                     new CreateExerciseModel()
+                    //day3
+                    new CreateExerciseModel()
                     {
                         Template = ExerciseTemplate._0,
-                        LiftDay = 2,
-                        LiftOrder = 5,
+                        LiftDay = 3,
+                        LiftOrder = 1,
                         UserId = userId,
-                        EquipmentType = EquipmentType._3,
-                        ExerciseName = "Low Row",
+                        EquipmentType = EquipmentType._4,
+                        ExerciseName = "Unilateral Pull Down",
                         Category = "Back",
                         MinimumReps = 8,
                         MaximumReps = 12,
                         TargetSets = 3,
                         PrimaryExercise = false,
-                        AttemptsBeforeDeload = 2,
-                        WeightIndex = 1,
                         EquipmentStackKey = EquipmentStackKey._2,
-
+                        AttemptsBeforeDeload = 2,
+                        WeightIndex = 9,
                         Week = 1
+                     },
+                     new CreateExerciseModel()
+                    {
+                        Template = ExerciseTemplate._0,
+                        LiftDay = 3,
+                        LiftOrder = 2,
+                        UserId = userId,
+                        EquipmentType = EquipmentType._0,
+                        ExerciseName = "Overhead Press",
+                        Category = "Shoulders",
+                        MinimumReps = 8,
+                        MaximumReps = 12,
+                        TargetSets = 3,
+                        PrimaryExercise = false,
+                        AttemptsBeforeDeload = 2,
+                        StartingWeight = 35,
+                        Week = 1,
+                        WeightProgression = 2.5,
                     },
                      new CreateExerciseModel()
                     {
                         Template = ExerciseTemplate._0,
-                        LiftDay = 2,
-                        LiftOrder = 6,
+                        LiftDay = 3,
+                        LiftOrder = 3,
                         UserId = userId,
                         EquipmentType = EquipmentType._4,
                         ExerciseName = "Unilateral Pull Down",
@@ -244,6 +285,132 @@ namespace OperationStackedTests.Functional
                         EquipmentStackKey = EquipmentStackKey._2,
                         Week = 1,
                     },
+                     new CreateExerciseModel()
+                    {
+                        Template = ExerciseTemplate._0,
+                        LiftDay = 3,
+                        LiftOrder = 4,
+                        UserId = userId,
+                        EquipmentType = EquipmentType._2,
+                        ExerciseName = "Lateral Raise",
+                        Category = "Shoulders",
+                        MinimumReps = 8,
+                        MaximumReps = 12,
+                        TargetSets = 3,
+                        PrimaryExercise = false,
+                        StartingWeight = 6.00,
+                        AttemptsBeforeDeload = 2,
+                        Week = 1
+                     },
+                    new CreateExerciseModel()
+                    {
+                        Template = ExerciseTemplate._0,
+                        LiftDay = 3,
+                        LiftOrder = 5,
+                        UserId = userId,
+                        EquipmentType = EquipmentType._2,
+                        ExerciseName = "Bicep Curl",
+                        Category = "Arms",
+                        MinimumReps = 8,
+                        MaximumReps = 12,
+                        TargetSets = 3,
+                        PrimaryExercise = false,
+                        StartingWeight = 12.00,
+                        AttemptsBeforeDeload = 2,
+                        Week = 1
+                     },
+                     new CreateExerciseModel()
+                    {
+                        Template = ExerciseTemplate._0,
+                        LiftDay = 3,
+                        LiftOrder = 6,
+                        UserId = userId,
+                        EquipmentType = EquipmentType._4,
+                        ExerciseName = "Unilateral Tricep PullDown",
+                        Category = "Tricep",
+                        MinimumReps = 12,
+                        MaximumReps = 15,
+                        TargetSets = 3,
+                        PrimaryExercise = false,
+                        AttemptsBeforeDeload = 2,
+                        WeightIndex = 2,
+                        EquipmentStackKey = EquipmentStackKey._2,
+                        Week = 1
+                    },
+                      new CreateExerciseModel()
+                    {
+                        Template = ExerciseTemplate._0,
+                        LiftDay = 4,
+                        LiftOrder = 1,
+                        UserId = userId,
+                        EquipmentType = EquipmentType._2,
+                        ExerciseName = "Bulgarian Split Squat",
+                        Category = "Legs",
+                        MinimumReps = 8,
+                        MaximumReps = 12,
+                        TargetSets = 3,
+                        PrimaryExercise = false,
+                        StartingWeight = 10,
+                        Week = 1
+                    },
+                        new CreateExerciseModel()
+                    {
+                        Template = ExerciseTemplate._0,
+                        LiftDay = 4,
+                        LiftOrder = 2,
+                        UserId = userId,
+                        EquipmentType = EquipmentType._0,
+                        ExerciseName = "Leg Press",
+                        Category = "Legs",
+                        MinimumReps = 8,
+                        MaximumReps = 12,
+                        TargetSets = 3,
+                        PrimaryExercise = false,
+                        StartingWeight = 80,
+                        WeightProgression = 10,
+                        Week = 1
+                    },
+                    new CreateExerciseModel()
+                    {
+                        Template = ExerciseTemplate._0,
+                        LiftDay = 4,
+                        LiftOrder = 3,
+                        UserId = userId,
+                        EquipmentType = EquipmentType._3,
+                        ExerciseName = "Leg Curl",
+                        Category = "Arms",
+                        MinimumReps = 8,
+                        MaximumReps = 12,
+                        TargetSets = 3,
+                        PrimaryExercise = false,
+                        AttemptsBeforeDeload = 2,
+                        Week = 1,
+                        EquipmentStack = new CreateEquipmentStackRequest()
+                            {
+                                StartWeight = 4.5,
+                                InitialIncrements = new double[] { },
+                                IncrementValue = 4.3,
+                                IncrementCount = 20,
+                                EquipmentStackKey = "The Gym Leg Curl"
+                            }
+                      },
+                    new CreateExerciseModel()
+                    {
+                        Template = ExerciseTemplate._0,
+                        LiftDay = 4,
+                        LiftOrder = 4,
+                        UserId = userId,
+                        EquipmentType = EquipmentType._2,
+                        ExerciseName = "Bicep Curl",
+                        Category = "Arms",
+                        MinimumReps = 8,
+                        MaximumReps = 12,
+                        TargetSets = 3,
+                        PrimaryExercise = false,
+                        StartingWeight = 12.00,
+                        AttemptsBeforeDeload = 2,
+                        Week = 1
+                     },
                 }
             };
             WorkoutCreationResult t;
@@ -413,7 +580,6 @@ namespace OperationStackedTests.Functional
         [StepTest, Order(110)]
         public async Task LinearProgression_WorkoutTwoIsRetrieved()
         {
-            
             await "The workout is retrieved".__(async () =>
             {
                 var getWorkoutResponse = await workoutClient.WorkoutCreationGETAsync(userId, 1, 2, false);
@@ -430,6 +596,7 @@ namespace OperationStackedTests.Functional
 
             });
         }
+
         [StepTest, Order(120)]
         public async Task LinearProgression_BarbellExerciseUnderMaxAboveMinimumStaysTheSame()
         {

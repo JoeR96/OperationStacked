@@ -17,7 +17,7 @@ namespace OperationStacked.Factories
             _a2sHypertrophyService = a2SHypertrophyService;
         }
 
-        public override bool AppliesTo(Type type) => typeof(A2SHypertrophyExercise).Equals(type);
+        public override bool AppliesTo(Type type) => typeof(A2SHypertrophyExercise) == type;
        
         public override async Task<IExercise> CreateExercise(CreateExerciseModel createExerciseModel)
         {

@@ -1,28 +1,24 @@
+using Amazon.CloudWatchLogs;
+using Amazon.Runtime;
+using Amazon.SecretsManager;
+using Amazon.SecretsManager.Model;
+using Amazon.SimpleSystemsManagement;
+using Amazon.SimpleSystemsManagement.Model;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+// Add the following using statements:
+using Newtonsoft.Json;
 using OperationStacked.Communication;
 using OperationStacked.Data;
 using OperationStacked.Extensions.FactoryExtensions;
 using OperationStacked.Extensions.ServiceExtensions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.EntityFrameworkCore;
-using Amazon.SimpleSystemsManagement;
-using Amazon.SimpleSystemsManagement.Model;
-using Amazon.Runtime;
+using OperationStacked.Repositories;
+using OperationStacked.Services.RecipeService;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Compact;
-using Amazon.CloudWatchLogs;
 using Serilog.Sinks.AwsCloudWatch;
-
-// Add the following using statements:
-using System.IdentityModel.Tokens.Jwt;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Amazon.SecretsManager;
-using Amazon.SecretsManager.Model;
-using OperationStacked.Entities;
-using OperationStacked.Repositories;
-using OperationStacked.Services.RecipeService;
 
 Console.WriteLine(Environment.GetEnvironmentVariables());
 var connectionString = RemovePortFromServer(await GetConnectionStringFromParameterStore());

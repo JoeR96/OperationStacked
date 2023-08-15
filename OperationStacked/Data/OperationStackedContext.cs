@@ -31,8 +31,6 @@ namespace OperationStacked.Data
                     v => v != null ? v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(x => (decimal?)decimal.Parse(x)).ToArray() : null);
         }
 
-
-
         public virtual DbSet<LinearProgressionExercise> LinearProgressionExercises { get; set; }
         public virtual DbSet<A2SHypertrophyExercise> A2SHypertrophyExercises { get; set; }
         public virtual DbSet<Exercise> Exercises { get; set; }
@@ -40,7 +38,7 @@ namespace OperationStacked.Data
         public virtual DbSet<ToDo> ToDos { get; set; }
         public virtual DbSet<EquipmentStack> EquipmentStacks { get; set; }
         public virtual DbSet<Recipe> Recipes { get; set; }
-        public virtual DbSet<Ingredient> Ingredients { get; set; }
+        public virtual DbSet<RecipeIngredient> Ingredients { get; set; }
 
     }
 }

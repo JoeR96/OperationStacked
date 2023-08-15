@@ -1,5 +1,4 @@
 ﻿using OperationStacked.Entities;
-using OperationStacked.Migrations;
 
 namespace OperationStacked.Extensions.TemplateExtensions
 {

@@ -1,8 +1,6 @@
-﻿using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Mvc.Testing;
-using OperationStacked;
-using OperationStacked.Requests;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
 using OperationStacked.TestLib;
+using System.Net.Http.Headers;
 using LoginRequest = OperationStacked.TestLib.LoginRequest;
 
 namespace OperationStackedAuth.Tests
@@ -35,7 +33,7 @@ namespace OperationStackedAuth.Tests
         internal static  AuthClient CreateAuthClientAsync()
         {
             var client = new HttpClient();
-            const string baseUrl = "http://13.40.62.72:5001";
+            const string baseUrl = "http://3.10.176.181:5001";
             return new AuthClient(baseUrl, client);
         }
     }

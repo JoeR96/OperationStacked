@@ -38,6 +38,6 @@ namespace OperationStacked.Models
         public Guid ParentId { get; set; }
         public EquipmentStackKey? EquipmentStackKey { get; set; }
         public CreateEquipmentStackRequest? EquipmentStack { get; set; }
-       
+        public int RestTimer { get; internal set; }
     }
 }

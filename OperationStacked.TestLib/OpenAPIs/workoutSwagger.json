@@ -945,6 +945,11 @@
           },
           "EquipmentStack": {
             "$ref": "#/components/schemas/CreateEquipmentStackRequest"
+          },
+          "RestTimer": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
           }
         },
         "additionalProperties": false
@@ -970,7 +975,7 @@
           "Ingredients": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Ingredient"
+              "$ref": "#/components/schemas/RecipeIngredient"
             },
             "nullable": true
           }
@@ -1144,6 +1149,10 @@
           },
           "Completed": {
             "type": "boolean"
+          },
+          "RestTimer": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -1202,26 +1211,18 @@
         },
         "additionalProperties": false
       },
-      "Ingredient": {
-        "type": "object",
-        "properties": {
-          "Id": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "additionalProperties": false
-      },
       "Recipe": {
+        "required": [
+          "Name"
+        ],
         "type": "object",
         "properties": {
           "Id": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "uuid"
           },
           "Name": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "Steps": {
             "type": "string",
@@ -1234,9 +1235,39 @@
           "Ingredients": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Ingredient"
+              "$ref": "#/components/schemas/RecipeIngredient"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RecipeIngredient": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "UserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "Name": {
+            "type": "string",
+            "nullable": true
+          },
+          "Quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Measurement": {
+            "type": "string",
+            "nullable": true
+          },
+          "RecipeId": {
+            "type": "string",
+            "format": "uuid"
           }
         },
         "additionalProperties": false
@@ -1267,6 +1298,10 @@
             "format": "int32"
           },
           "Day": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workoutDaysInWeek": {
             "type": "integer",
             "format": "int32"
           }

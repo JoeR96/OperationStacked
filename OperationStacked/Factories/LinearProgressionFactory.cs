@@ -43,7 +43,7 @@ namespace OperationStacked.Factories
                 else
                 {
                     //mapped to cables atm will need to map it to other enum types another day
-                     _exercise.EquipmentStackId = Guid.Parse("08db6084-b7f8-4b35-86f1-6c7b1e003d51");
+                     _exercise.EquipmentStackId = Guid.Parse("08db8609-b8c5-481a-8fab-53462d6d37ef");
                       var equipmentStack = await _exerciseRepository.GetEquipmentStack(_exercise.EquipmentStackId);
                       _exercise.EquipmentStackId = _exercise.EquipmentStackId;
                       var stack = CreateStack(Guid.Empty,0,_exercise.WeightIndex,equipmentStack);
