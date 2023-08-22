@@ -1,7 +1,9 @@
 ﻿using FluentAssertions;
 using MySqlX.XDevAPI;
 using NUnit.Framework;
+using OperationStacked.Extensions.TemplateExtensions;
 using OperationStacked.TestLib;
+using OperationStacked.TestLib.Builders;
 using EquipmentType = OperationStacked.Enums.EquipmentType;
 
 namespace OperationStackedAuth.Tests.UnitTests.RecipeTests;
@@ -57,6 +59,10 @@ public class LinearProgressionWorkoutTests
             Reps = new int[]{12,12,12},
             Sets = 3
         });
+
+        var barbellProgressWeight = linearProgressionBarbell.StartingWeight +=
+            linearProgressionBarbell.WeightProgression;
+        completeBarbellResponse.Exercise.WorkingWeight.Should().Be(barbellProgressWeight);
         
         var completeMachineResponse = await _workoutClient.CompleteAsync(new CompleteExerciseRequest()
         {
@@ -64,6 +70,11 @@ public class LinearProgressionWorkoutTests
             Reps = new int[]{12,12,12},
             Sets = 3
         });
+
+        var machineProgressWeight = new EquipmentStackBuilder().WithDefaultValues().Build().GenerateStack();
+        var weight = (double)machineProgressWeight[completeMachineResponse.Exercise.WeightIndex];
+        
+        completeMachineResponse.Exercise.WorkingWeight.Should().Be(weight);
         
         var completeDumbBellResponse = await _workoutClient.CompleteAsync(new CompleteExerciseRequest()
         {
@@ -72,6 +83,10 @@ public class LinearProgressionWorkoutTests
             Sets = 3
         });
         
+        //in our context dumbells go up in 1's up until 10 then 12,14,16,18 etc.. in 2's
+        var dumbBellProgressWeight = linearProgressionDumbell.StartingWeight + 2;
+        completeDumbBellResponse.Exercise.WorkingWeight.Should().Be(dumbBellProgressWeight);
+        completeDumbBellResponse.Exercise.LiftWeek.Should().Be(2);
     }
     
     [OneTimeTearDown]
