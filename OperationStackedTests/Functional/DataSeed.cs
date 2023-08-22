@@ -20,48 +20,71 @@ public class DataSeed
         UserId = _userId;
     }
     public async Task CreateExercisesForMultipleDays(int totalDays)
+{
+    var exercises = new List<CreateExerciseModel>();
+
+    for (int i = 1; i <= totalDays; i++)
     {
-        var exercises = new List<CreateExerciseModel>();
+        string exerciseNameBarbell = "";
+        string exerciseNameMachine = "";
+        string exerciseNameDumbbell = "";
 
-        for (int i = 1; i <= totalDays; i++)
+        switch (i)
         {
-            var linearProgressionBarbell = new ExerciseModelBuilder()
-                .WithEquipmentType(EquipmentType.Barbell)
-                .WithLiftDay(i)
-                .Adapt();
-        
-            var linearProgressionMachine = new ExerciseModelBuilder()
-                .WithEquipmentType(EquipmentType.Machine)
-                .WithLiftOrder(2)
-                .WithLiftDay(i)   // Setting the day using the loop variable
-                .Adapt();
-        
-            var linearProgressionDumbell = new ExerciseModelBuilder()
-                .WithEquipmentType(EquipmentType.Dumbbell)
-                .WithLiftOrder(3)
-                .WithLiftDay(i)   // Setting the day using the loop variable
-                .Adapt();
-
-            exercises.AddRange(new List<CreateExerciseModel>
-            {
-                linearProgressionBarbell,
-                linearProgressionMachine,
-                linearProgressionDumbell
-            });
+            case 1:
+                exerciseNameBarbell = "Chest Press (Barbell)";
+                exerciseNameMachine = "Chest Fly (Machine)";
+                exerciseNameDumbbell = "Chest Press (Dumbbell)";
+                break;
+            case 2:
+                exerciseNameBarbell = "Squat (Barbell)";
+                exerciseNameMachine = "Leg Press (Machine)";
+                exerciseNameDumbbell = "Lunges (Dumbbell)";
+                break;
+            case 3:
+                exerciseNameBarbell = "Deadlift (Barbell)";
+                exerciseNameMachine = "Lat Pull Down (Machine)";
+                exerciseNameDumbbell = "Bent Over Row (Dumbbell)";
+                break;
+            case 4:
+                exerciseNameBarbell = "Functional Lift (Barbell)";
+                exerciseNameMachine = "Functional Pull (Machine)";
+                exerciseNameDumbbell = "Functional Press (Dumbbell)";
+                break;
+            default:
+                // For days beyond 4, you can add default exercises or extend the switch-case.
+                break;
         }
 
-        var createWorkoutRequest = new CreateWorkoutRequest()
+        var linearProgressionBarbell = new ExerciseModelBuilder()
+            .WithName(exerciseNameBarbell)
+            .WithEquipmentType(EquipmentType.Barbell)
+            .WithLiftDay(i)
+            .Adapt();
+
+        var linearProgressionMachine = new ExerciseModelBuilder()
+            .WithName(exerciseNameMachine)
+            .WithEquipmentType(EquipmentType.Machine)
+            .WithLiftOrder(2)
+            .WithLiftDay(i)   // Setting the day using the loop variable
+            .Adapt();
+
+        var linearProgressionDumbell = new ExerciseModelBuilder()
+            .WithName(exerciseNameDumbbell)
+            .WithEquipmentType(EquipmentType.Dumbbell)
+            .WithLiftOrder(3)
+            .WithLiftDay(i)   // Setting the day using the loop variable
+            .Adapt();
+
+        exercises.AddRange(new List<CreateExerciseModel>
         {
-            ExerciseDaysAndOrders = exercises,
-            UserId = UserId
-        };
-
-        var createdExercise = await WorkoutClient.WorkoutCreationPOSTAsync(createWorkoutRequest);
-        var workout = await WorkoutClient.WorkoutCreationGETAsync(UserId, 1, 1,false);
-        workout.Exercises.ForEach(e => CompleteExerciseRecursively(14, e);
-         
-
+            linearProgressionBarbell,
+            linearProgressionMachine,
+            linearProgressionDumbell
+        });
     }
+}
+
 
     private int GenerateExerciseOutcome(double failWeight, double passWeight, double progressWeight)
     {
