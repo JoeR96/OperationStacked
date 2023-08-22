@@ -38,6 +38,11 @@ public class ExerciseModelBuilder
         return this;
     }
 
+    public ExerciseModelBuilder WithName(string name)
+    {
+        _model.ExerciseName = name;
+        return this;
+    }
     // Properties
     public ExerciseModelBuilder WithEquipmentType(EquipmentType equipmentType)
     {
