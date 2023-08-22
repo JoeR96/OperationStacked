@@ -13,9 +13,10 @@ namespace OperationStacked.Services.ExerciseCreationService
         private readonly OperationStackedContext _operationStackedContext;
         private readonly LinearProgressionService _linearProgressionService;
         public ExerciseCreationService(
-            OperationStackedContext operationStackedContext)
+            OperationStackedContext operationStackedContext, LinearProgressionService linearProgressionService)
         {
             _operationStackedContext = operationStackedContext;
+            _linearProgressionService = linearProgressionService;
         }
 
         public async Task<WorkoutCreationResult> CreateWorkout(CreateWorkoutRequest request)
@@ -26,7 +27,7 @@ namespace OperationStacked.Services.ExerciseCreationService
                     switch (exercise.Template)
                     {
                         case ExerciseTemplate.LinearProgression:
-                            return await _linearProgressionService.CreateExercise(exercise);
+                            return await _linearProgressionService.CreateExercise(exercise,request.userId);
                         case ExerciseTemplate.A2SHypertrophy:
                             // Call the appropriate service method for A2SHypertrophy
                             // For now, return null or a default value until you implement this

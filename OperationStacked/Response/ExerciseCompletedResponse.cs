@@ -3,5 +3,5 @@ using OperationStacked.Models;
 
 namespace OperationStacked.Response
 {
-    public sealed record ExerciseCompletionResult(ExerciseCompletedStatus Status,Exercise exercise);
+    public sealed record ExerciseCompletionResult(ExerciseCompletedStatus Status,LinearProgressionExercise exercise);
 }

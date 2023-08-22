@@ -19,7 +19,6 @@ public class ExerciseBuilder<T, TB> where T : Exercise, new() where TB : Exercis
             LiftDay = 1,
             LiftOrder = 1,
             LiftWeek = 1,
-            UserId = Guid.NewGuid(),
             WorkingWeight = 60.00M,
             Completed = false,
             RestTimer = 0

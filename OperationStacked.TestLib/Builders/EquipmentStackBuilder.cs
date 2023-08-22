@@ -14,7 +14,6 @@ public class EquipmentStackBuilder
             IncrementValue = 2.5m,
             IncrementCount = 20,
             EquipmentStackKey = "DefaultKey",
-            UserID = Guid.NewGuid()
         };
         return this;
     }

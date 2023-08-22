@@ -10,17 +10,16 @@ namespace OperationStacked.Factories
 {
     public class LinearProgressionService : ILinearProgressionService
     {
-        private LinearProgressionExercise _exercise;
         private readonly IExerciseRepository _exerciseRepository;
         public LinearProgressionService(IExerciseRepository exerciseRepository)
         {
             _exerciseRepository = exerciseRepository;
         }
-        public async Task<LinearProgressionExercise> CreateExercise(CreateExerciseModel createExerciseModel)
+        public async Task<LinearProgressionExercise> CreateExercise(CreateExerciseModel createExerciseModel,
+            Guid requestUserId = new Guid())
         {
-            _exercise = new LinearProgressionExercise();
-            _exercise.PopulateBaseValues(createExerciseModel);
-            
+            var _exercise = new LinearProgressionExercise();
+            _exercise.PopulateBaseValues(createExerciseModel, requestUserId);
             _exercise.MinimumReps = createExerciseModel.MinimumReps;
             _exercise.MaximumReps = createExerciseModel.MaximumReps;
             _exercise.Sets = createExerciseModel.TargetSets;

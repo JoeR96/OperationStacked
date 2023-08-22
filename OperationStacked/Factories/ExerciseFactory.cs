@@ -8,7 +8,7 @@ namespace OperationStacked.Factories
 {
     public static class ExerciseExtensions
     {
-        public static void PopulateBaseValues(this Exercise e, CreateExerciseModel _createExerciseModel)
+        public static void PopulateBaseValues(this Exercise e, CreateExerciseModel _createExerciseModel, Guid userId)
         {
 
             e.ExerciseName = _createExerciseModel.ExerciseName;
@@ -16,7 +16,7 @@ namespace OperationStacked.Factories
             e.Template = _createExerciseModel.Template;
             e.LiftDay = _createExerciseModel.LiftDay;
             e.LiftOrder = _createExerciseModel.LiftOrder;
-            e.UserId = _createExerciseModel.UserId;
+            e.UserId = userId;
             e.EquipmentType = _createExerciseModel.EquipmentType;
             e.WorkingWeight = _createExerciseModel.StartingWeight;
             e.RestTimer = _createExerciseModel.RestTimer;

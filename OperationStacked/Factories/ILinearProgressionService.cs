@@ -6,6 +6,7 @@ namespace OperationStacked.Factories;
 
 public interface ILinearProgressionService
 {
-    Task<LinearProgressionExercise> CreateExercise(CreateExerciseModel createExerciseModel);
+    Task<LinearProgressionExercise> CreateExercise(CreateExerciseModel createExerciseModel,
+        Guid requestUserId);
     Task<(LinearProgressionExercise, ExerciseCompletedStatus)> ProgressExercise(CompleteExerciseRequest request);
 }

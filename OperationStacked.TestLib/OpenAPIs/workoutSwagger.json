@@ -1175,7 +1175,7 @@
             "$ref": "#/components/schemas/ExerciseCompletedStatus"
           },
           "exercise": {
-            "$ref": "#/components/schemas/Exercise"
+            "$ref": "#/components/schemas/LinearProgressionExercise"
           }
         },
         "additionalProperties": false
@@ -1183,8 +1183,7 @@
       "ExerciseTemplate": {
         "enum": [
           0,
-          1,
-          2
+          1
         ],
         "type": "integer",
         "format": "int32"
@@ -1207,6 +1206,96 @@
               "$ref": "#/components/schemas/Exercise"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LinearProgressionExercise": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ExerciseName": {
+            "type": "string",
+            "nullable": true
+          },
+          "Category": {
+            "type": "string",
+            "nullable": true
+          },
+          "EquipmentType": {
+            "$ref": "#/components/schemas/EquipmentType"
+          },
+          "Template": {
+            "$ref": "#/components/schemas/ExerciseTemplate"
+          },
+          "LiftDay": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "LiftOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "LiftWeek": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "UserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "WorkingWeight": {
+            "type": "number",
+            "format": "double"
+          },
+          "ParentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "Completed": {
+            "type": "boolean"
+          },
+          "RestTimer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "MinimumReps": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "MaximumReps": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Sets": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "WeightIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "PrimaryExercise": {
+            "type": "boolean"
+          },
+          "WeightProgression": {
+            "type": "number",
+            "format": "double"
+          },
+          "AttemptsBeforeDeload": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "FailedAttempts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "EquipmentStackId": {
+            "type": "string",
+            "format": "uuid"
           }
         },
         "additionalProperties": false
