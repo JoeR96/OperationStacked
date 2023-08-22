@@ -26,27 +26,3 @@ public class EquipmentStackTests
         result.Should().Equal(expected);
     }
 }
-
-public static class EquipmentStackExtensions
-{
-    public static Decimal?[] GenerateStack(this EquipmentStack e)
-    {
-            
-        List<Decimal?> stack = new List<Decimal?>();
-        stack.Add(e.StartWeight);
-
-        foreach (var increment in e.InitialIncrements)
-        {
-            var t = stack.Last();
-            stack.Add(t += increment);
-        }
-
-        for (int i = 0; i < e.IncrementCount; i++)
-        {
-            var t = stack.Last();
-            stack.Add(t += e.IncrementValue);
-        }
-
-        return stack.ToArray();
-    }
-}

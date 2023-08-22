@@ -8,35 +8,35 @@ using OperationStacked.Requests;
 
 namespace OperationStacked.Factories
 {
-    public class LinearProgressionFactory : ExerciseFactory<LinearProgressionExercise>
+    public class LinearProgressionService : ILinearProgressionService
     {
-        public LinearProgressionFactory(IExerciseRepository exerciseRepository) : base(exerciseRepository)
+        private LinearProgressionExercise _exercise;
+        private readonly IExerciseRepository _exerciseRepository;
+        public LinearProgressionService(IExerciseRepository exerciseRepository)
         {
+            _exerciseRepository = exerciseRepository;
         }
-
-        public override bool AppliesTo(Type type) => typeof(LinearProgressionExercise).Equals(type);
-
-        public override async Task<IExercise> CreateExercise(CreateExerciseModel createExerciseModel)
+        public async Task<LinearProgressionExercise> CreateExercise(CreateExerciseModel createExerciseModel)
         {
-            CreateBaseExercise(createExerciseModel);
-            _exercise.MinimumReps = _createExerciseModel.MinimumReps;
-            _exercise.MaximumReps = _createExerciseModel.MaximumReps;
-            _exercise.TargetSets = _createExerciseModel.TargetSets;
-            _exercise.WeightIndex = _createExerciseModel.WeightIndex;
-            _exercise.PrimaryExercise = _createExerciseModel.PrimaryExercise;
-            _exercise.StartingWeight = _createExerciseModel.StartingWeight;
-            _exercise.WeightProgression = _createExerciseModel.WeightProgression;
-            _exercise.AttemptsBeforeDeload = _createExerciseModel.AttemptsBeforeDeload;
+            _exercise = new LinearProgressionExercise();
+            _exercise.PopulateBaseValues(createExerciseModel);
+            
+            _exercise.MinimumReps = createExerciseModel.MinimumReps;
+            _exercise.MaximumReps = createExerciseModel.MaximumReps;
+            _exercise.Sets = createExerciseModel.TargetSets;
+            _exercise.WeightIndex = createExerciseModel.WeightIndex;
+            _exercise.PrimaryExercise = createExerciseModel.PrimaryExercise;
+            _exercise.WeightProgression = createExerciseModel.WeightProgression;
+            _exercise.AttemptsBeforeDeload = createExerciseModel.AttemptsBeforeDeload;
 
             if (createExerciseModel.EquipmentType is EquipmentType.Cable or EquipmentType.Machine)
             {
              
-                if ((int)_createExerciseModel.EquipmentStackKey is 0)
+                if ((int)createExerciseModel.EquipmentStackKey is 0)
                 {
                     var equipmentStack = await _exerciseRepository.InsertEquipmentStack(createExerciseModel.EquipmentStack);
                     _exercise.EquipmentStackId = equipmentStack.Stack.Id;
                     var stack = CreateStack(Guid.Empty,0,_exercise.WeightIndex,equipmentStack.Stack);
-                    _exercise.StartingWeight = stack;
                     _exercise.WorkingWeight = stack;
 
                 }
@@ -47,7 +47,6 @@ namespace OperationStacked.Factories
                       var equipmentStack = await _exerciseRepository.GetEquipmentStack(_exercise.EquipmentStackId);
                       _exercise.EquipmentStackId = _exercise.EquipmentStackId;
                       var stack = CreateStack(Guid.Empty,0,_exercise.WeightIndex,equipmentStack);
-                      _exercise.StartingWeight = stack;
                       _exercise.WorkingWeight = stack;
 
                 }
@@ -56,12 +55,12 @@ namespace OperationStacked.Factories
             return _exercise;
         }
 
-        public override async Task<(Exercise, ExerciseCompletedStatus)> ProgressExercise(CompleteExerciseRequest request)
+        public async Task<(LinearProgressionExercise, ExerciseCompletedStatus)> ProgressExercise(CompleteExerciseRequest request)
         {
             var exercise = (LinearProgressionExercise)await _exerciseRepository.GetExerciseById(request.Id);
             exercise.Completed = true;
             await _exerciseRepository.UpdateAsync(exercise);
-            ExerciseCompletedStatus status;
+            ExerciseCompletedStatus status = ExerciseCompletedStatus.Failed;
             int weightIndexModifier = 0;
             int attemptModifier = 0;
             //if rep target  and set count reached
@@ -71,6 +70,7 @@ namespace OperationStacked.Factories
                 exercise.WithinRepRange(request.Reps))
             {
                 status = ExerciseCompletedStatus.Progressed;
+                exercise.FailedAttempts = 0;
                 weightIndexModifier++;
             }
             else if (!exercise.TargetRepCountReached(request.Reps) &&
@@ -78,25 +78,21 @@ namespace OperationStacked.Factories
                 exercise.WithinRepRange(request.Reps))
             {
                 status = ExerciseCompletedStatus.StayedTheSame;
-
             }
             else if (!exercise.TargetRepCountReached(request.Reps) ||
-                !exercise.SetCountReached(request.Sets))
+                !exercise.SetCountReached(request.Sets) || !exercise.WithinRepRange(request.Reps))
             {
                 if (exercise.IsLastAttemptBeforeDeload())
                 {
                     status = ExerciseCompletedStatus.Deload;
                     weightIndexModifier--;
+                    exercise.FailedAttempts = 0;
                 }
                 else
                 {
                     status = ExerciseCompletedStatus.Failed;
                     attemptModifier++;
                 }
-            }
-            else
-            {
-                status = ExerciseCompletedStatus.Failed;
             }
 
             LinearProgressionExercise nextExercise;
@@ -151,6 +147,10 @@ namespace OperationStacked.Factories
                 {
                     return workingWeight;
                 }
+                if(weightIndexModifier < 0)
+                {
+                    return workingWeight > 10 ? workingWeight -= 2 : workingWeight -= 1;
+                }
             }
 
             if (equipmentType is EquipmentType.Cable)
@@ -159,7 +159,7 @@ namespace OperationStacked.Factories
             }            
             if (equipmentType is EquipmentType.Cable or EquipmentType.Machine)
             {
-                return CreateStack(exerciseParentId, workingWeight, startIndex, stack);
+                return CreateStack(exerciseParentId, workingWeight, weightIndexModifier, stack);
             }
             throw new NotImplementedException("EquipmentType is not supported");
         }
@@ -179,6 +179,11 @@ namespace OperationStacked.Factories
                 index = startIndex;
             }
 
+
+            if (index < 0)
+            {
+                index = 0;
+            }
             return (decimal)generatedStack[index];
         }
     }

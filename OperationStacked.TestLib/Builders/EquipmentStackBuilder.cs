@@ -2,15 +2,15 @@
 
 public class EquipmentStackBuilder
 {
-    private EquipmentStack _stack = new ();
+    private Entities.EquipmentStack _stack = new ();
 
     public EquipmentStackBuilder WithDefaultValues()
     {
-        _stack = new EquipmentStack()
+        _stack = new OperationStacked.Entities.EquipmentStack()
         {
             Id = Guid.NewGuid(),
             StartWeight = 10,
-            InitialIncrements = new decimal?[]{},
+            InitialIncrements = new Decimal?[]{},
             IncrementValue = 2.5m,
             IncrementCount = 20,
             EquipmentStackKey = "DefaultKey",
@@ -28,7 +28,6 @@ public class EquipmentStackBuilder
     {
         _stack.IncrementCount = incrementCount;
         return this;
-        return this;
     }
     public EquipmentStackBuilder WithInitialIncrements(decimal?[] increments)
     {
@@ -42,8 +41,20 @@ public class EquipmentStackBuilder
         return this;
     }
 
+    public CreateEquipmentStackRequest Adapt()
+    {
+        return new CreateEquipmentStackRequest
+        {
+            StartWeight = _stack.StartWeight,
+            InitialIncrements = _stack.InitialIncrements,
+            IncrementValue = _stack.IncrementValue,
+            IncrementCount = _stack.IncrementCount,
+            UserID = _stack.UserID,
+            EquipmentStackKey = _stack.EquipmentStackKey
+        };
+    }
     // Add other builder methods as needed...
 
-    public EquipmentStack Build() => _stack;
+    public Entities.EquipmentStack Build() => _stack;
 }
 

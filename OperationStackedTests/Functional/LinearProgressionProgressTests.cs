@@ -27,9 +27,9 @@ namespace OperationStackedTests.Functional
         {
             var request = new CreateEquipmentStackRequest()
             {
-                StartWeight = 1.1,
-                InitialIncrements = new double[] { 1.1 },
-                IncrementValue = 2.3,
+                StartWeight = (decimal)1.1,
+                InitialIncrements = new decimal?[] { 1.1m },
+                IncrementValue = (decimal)2.3,
                 IncrementCount = 20,
                 EquipmentStackKey = "The Gym Cable"
             };
@@ -206,9 +206,9 @@ namespace OperationStackedTests.Functional
                         Week = 1,
                         EquipmentStack = new CreateEquipmentStackRequest()
                             {
-                                StartWeight = 4.5,
-                                InitialIncrements = new double[] { },
-                                IncrementValue = 4.3,
+                                StartWeight = (decimal)4.5,
+                                InitialIncrements = new decimal?[] { },
+                                IncrementValue = (decimal)4.3,
                                 IncrementCount = 20,
                                 EquipmentStackKey = "The Gym Leg Extension"
                             }
@@ -387,9 +387,9 @@ namespace OperationStackedTests.Functional
                         Week = 1,
                         EquipmentStack = new CreateEquipmentStackRequest()
                             {
-                                StartWeight = 4.5,
-                                InitialIncrements = new double[] { },
-                                IncrementValue = 4.3,
+                                StartWeight = (decimal)4.5,
+                                InitialIncrements = new decimal?[] { },
+                                IncrementValue = (decimal)4.3,
                                 IncrementCount = 20,
                                 EquipmentStackKey = "The Gym Leg Curl"
                             }

@@ -1,47 +1,54 @@
 ﻿using OperationStacked.Abstractions;
 using OperationStacked.Data;
 using OperationStacked.Entities;
+using OperationStacked.Factories;
 using OperationStacked.Models;
 using OperationStacked.Requests;
 using OperationStacked.Response;
-using OperationStacked.Strategy;
 
 namespace OperationStacked.Services.ExerciseCreationService
 {
     public class ExerciseCreationService : IExerciseCreationService
     {
         private readonly OperationStackedContext _operationStackedContext;
-        private readonly IExerciseStrategyResolver _exerciseStrategyResolver;
-         
+        private readonly LinearProgressionService _linearProgressionService;
         public ExerciseCreationService(
-            IExerciseStrategyResolver exerciseStrategyResolver, 
             OperationStackedContext operationStackedContext)
         {
-            _exerciseStrategyResolver = exerciseStrategyResolver;
             _operationStackedContext = operationStackedContext;
         }
 
         public async Task<WorkoutCreationResult> CreateWorkout(CreateWorkoutRequest request)
         {
-            IEnumerable<IExercise> exercises = await Task.WhenAll(
-                request.ExerciseDaysAndOrders.Select(exercise => _exerciseStrategyResolver
-                    .CreateStrategy()
-                    .CreateExercise(ResolveType(exercise.Template), exercise))
+            IEnumerable<Exercise> exercises = await Task.WhenAll(
+                request.ExerciseDaysAndOrders.Select(async exercise =>
+                {
+                    switch (exercise.Template)
+                    {
+                        case ExerciseTemplate.LinearProgression:
+                            return await _linearProgressionService.CreateExercise(exercise);
+                        case ExerciseTemplate.A2SHypertrophy:
+                            // Call the appropriate service method for A2SHypertrophy
+                            // For now, return null or a default value until you implement this
+                            return null;
+                        default:
+                            throw new InvalidOperationException($"Unsupported exercise template: {exercise.Template}");
+                    }
+                })
             );
-
 
 
             await _operationStackedContext.AddRangeAsync(exercises);
             await _operationStackedContext.SaveChangesAsync();
 
             // Cast each item in the exercises collection individually
-            var castExercises = exercises
-                .Select(exercise => exercise as Exercise)
-                .Where(exercise => exercise != null);
-
+            // var castExercises = exercises
+            //     .Select(exercise => exercise as Exercise)
+            //     .Where(exercise => exercise != null);
+            //
             return new WorkoutCreationResult(
-                castExercises.Any() ? WorkoutCreatedStatus.Created : WorkoutCreatedStatus.Error,
-                castExercises);
+                exercises.Any() ? WorkoutCreatedStatus.Created : WorkoutCreatedStatus.Error,
+                exercises);
         }
 
 

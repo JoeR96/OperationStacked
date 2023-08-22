@@ -9,7 +9,6 @@ using OperationStacked.Services.ExerciseCreationService;
 using OperationStacked.Services.ExerciseProgressionService;
 using OperationStacked.Services.ExerciseRetrievalService;
 using OperationStacked.Services.UserAccountsService;
-using OperationStacked.Strategy;
 
 namespace OperationStacked.Extensions.ServiceExtensions
 {
@@ -46,9 +45,7 @@ namespace OperationStacked.Extensions.ServiceExtensions
                 .AddTransient<IToDoService, ToDoService>()
                 .AddTransient<IUserAccountService, UserAccountService>();
 
-        public static IServiceCollection AddExerciseStrategy(this IServiceCollection services) =>
-            services.AddTransient<IExerciseStrategyResolver, ExerciseStrategyResolver>();
-
+     
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         => services.AddTransient<IExerciseRepository, ExerciseRepository>();
         public static IServiceCollection RegisterA2S(this IServiceCollection services)

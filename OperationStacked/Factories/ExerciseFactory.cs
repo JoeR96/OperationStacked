@@ -6,40 +6,22 @@ using OperationStacked.Requests;
 
 namespace OperationStacked.Factories
 {
-    public abstract class ExerciseFactory<T> : IExerciseFactory where T : Exercise, new()
+    public static class ExerciseExtensions
     {
-        public ExerciseFactory(IExerciseRepository exerciseRepository)
+        public static void PopulateBaseValues(this Exercise e, CreateExerciseModel _createExerciseModel)
         {
 
-            _exerciseRepository = exerciseRepository;
-
+            e.ExerciseName = _createExerciseModel.ExerciseName;
+            e.Category = _createExerciseModel.Category;
+            e.Template = _createExerciseModel.Template;
+            e.LiftDay = _createExerciseModel.LiftDay;
+            e.LiftOrder = _createExerciseModel.LiftOrder;
+            e.UserId = _createExerciseModel.UserId;
+            e.EquipmentType = _createExerciseModel.EquipmentType;
+            e.WorkingWeight = _createExerciseModel.StartingWeight;
+            e.RestTimer = _createExerciseModel.RestTimer;
+            e.ParentId = _createExerciseModel.ParentId;
         }
-        protected T _exercise;
-        protected CreateExerciseModel _createExerciseModel;
-        protected IExerciseRepository _exerciseRepository;
-
-        protected void CreateBaseExercise(CreateExerciseModel createExerciseModel)
-        {
-            _createExerciseModel = createExerciseModel;
-            _exercise = new T()
-            {
-                ExerciseName = _createExerciseModel.ExerciseName,
-                Category = _createExerciseModel.Category,
-                Template = _createExerciseModel.Template,
-                LiftDay = _createExerciseModel.LiftDay,
-                LiftOrder = _createExerciseModel.LiftOrder,
-                UserId = _createExerciseModel.UserId,
-                EquipmentType = _createExerciseModel.EquipmentType,
-                WorkingWeight = _createExerciseModel.StartingWeight,
-                ParentId = _createExerciseModel.ParentId,
-                RestTimer = _createExerciseModel.RestTimer
-            };
-
-        }
-        public abstract Task<IExercise> CreateExercise(CreateExerciseModel createExerciseModel);
-        public abstract bool AppliesTo(Type type);
-
-        public abstract Task<(Exercise, ExerciseCompletedStatus)> ProgressExercise(CompleteExerciseRequest request);
 
     }
 }

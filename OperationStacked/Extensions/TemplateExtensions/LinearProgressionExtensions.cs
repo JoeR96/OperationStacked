@@ -4,27 +4,23 @@ namespace OperationStacked.Extensions.TemplateExtensions
 {
     public static class LinearProgressExtensions
     {
-
         public static bool SetCountReached(this LinearProgressionExercise e, int sets)
-            => sets >= e.TargetSets ? true : false;
+            => sets >= e.Sets ? true : false;
         public static bool TargetRepCountReached(this LinearProgressionExercise e, int[] reps)
             => !reps.Any(rep => rep < e.MaximumReps) ? true : false;
         public static bool WithinRepRange(this LinearProgressionExercise e, int[] reps)
             => !reps.Any(rep => rep < e.MinimumReps) ? true : false;
 
         public static bool IsLastAttemptBeforeDeload(this LinearProgressionExercise e)
-            => e.CurrentAttempt >= e.AttemptsBeforeDeload;
+            => e.FailedAttempts >= e.AttemptsBeforeDeload;
         public static LinearProgressionExercise GenerateNextExercise(this LinearProgressionExercise e,decimal workingWeight, int weightIndexModifier, int attemptModifier,EquipmentStack stack = null)
-            => new LinearProgressionExercise
+            => new()
             {
                 MinimumReps = e.MinimumReps,
                 MaximumReps = e.MaximumReps,
-                TargetSets = e.TargetSets,
-                StartingSets = e.TargetSets,
-                CurrentSets = e.CurrentSets,
+                Sets = e.Sets,
                 WeightIndex = e.WeightIndex + weightIndexModifier,
                 PrimaryExercise = e.PrimaryExercise,
-                StartingWeight = e.StartingWeight,
                 WeightProgression = e.WeightProgression,
                 AttemptsBeforeDeload = e.AttemptsBeforeDeload,
                 ExerciseName = e.ExerciseName,
@@ -36,11 +32,19 @@ namespace OperationStacked.Extensions.TemplateExtensions
                 LiftWeek = e.LiftWeek + 1,
                 ParentId = e.Id,
                 WorkingWeight = workingWeight,
-                CurrentAttempt = e.CurrentAttempt + attemptModifier,
+                FailedAttempts = e.FailedAttempts + attemptModifier,
                 EquipmentType = e.EquipmentType,
                 UserId = e.UserId
             };
-
+        public static decimal ProgressedWeight(this LinearProgressionExercise exercise)
+        {
+            return exercise.WorkingWeight + exercise.WeightProgression;
+        }
+        
+        public static decimal DeloadWeight(this LinearProgressionExercise exercise)
+        {
+            return exercise.WorkingWeight - exercise.WeightProgression;
+        }
         public static Decimal?[] GenerateStack(this EquipmentStack e)
         {
             

@@ -13,6 +13,7 @@ using OperationStacked.Communication;
 using OperationStacked.Data;
 using OperationStacked.Extensions.FactoryExtensions;
 using OperationStacked.Extensions.ServiceExtensions;
+using OperationStacked.Factories;
 using OperationStacked.Repositories;
 using OperationStacked.Services.RecipeService;
 using Serilog;
@@ -55,13 +56,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddServices();
-builder.Services.AddExerciseStrategy();
 builder.Services.Configure<TokenOptions>(config.GetSection("TokenOptions"));
 builder.Services.RegisterA2S();
 builder.Services.AddSingleton(signingConfigurations);
 builder.Services.AddExerciseFactory();
 builder.Services.AddHealthChecks();
 builder.Services.AddRepositories();
+builder.Services.AddScoped<LinearProgressionService>();
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.PropertyNamingPolicy = null;
@@ -82,7 +83,6 @@ await ConfigureSecret();
 
 async Task ConfigureSecret()
 {
-  
     var secret = Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY");
     var access = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
     var awsCredentials = new BasicAWSCredentials(access, secret);
