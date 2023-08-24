@@ -1,11 +1,11 @@
+using Concise.Steps;
 using MoreLinq.Extensions;
 using NUnit.Framework;
 using OperationStacked.TestLib;
 using OperationStackedAuth.Tests;
-using EquipmentType = OperationStacked.Enums.EquipmentType;
 
 namespace OperationStackedTests.Functional;
-
+[TestFixture]
 public class DataSeed
 {
     public Guid UserId;
@@ -19,72 +19,89 @@ public class DataSeed
         WorkoutClient = client;
         UserId = _userId;
     }
-    public async Task CreateExercisesForMultipleDays(int totalDays)
-{
-    var exercises = new List<CreateExerciseModel>();
 
-    for (int i = 1; i <= totalDays; i++)
+    [StepTest]
+    public async Task CreateExercisesForMultipleDays()
     {
-        string exerciseNameBarbell = "";
-        string exerciseNameMachine = "";
-        string exerciseNameDumbbell = "";
+        var exercises = new List<CreateExerciseModel>();
 
-        switch (i)
+        for (int i = 1; i <= 4; i++)
         {
-            case 1:
-                exerciseNameBarbell = "Chest Press (Barbell)";
-                exerciseNameMachine = "Chest Fly (Machine)";
-                exerciseNameDumbbell = "Chest Press (Dumbbell)";
-                break;
-            case 2:
-                exerciseNameBarbell = "Squat (Barbell)";
-                exerciseNameMachine = "Leg Press (Machine)";
-                exerciseNameDumbbell = "Lunges (Dumbbell)";
-                break;
-            case 3:
-                exerciseNameBarbell = "Deadlift (Barbell)";
-                exerciseNameMachine = "Lat Pull Down (Machine)";
-                exerciseNameDumbbell = "Bent Over Row (Dumbbell)";
-                break;
-            case 4:
-                exerciseNameBarbell = "Functional Lift (Barbell)";
-                exerciseNameMachine = "Functional Pull (Machine)";
-                exerciseNameDumbbell = "Functional Press (Dumbbell)";
-                break;
-            default:
-                // For days beyond 4, you can add default exercises or extend the switch-case.
-                break;
+            string exerciseNameBarbell = "";
+            string exerciseNameMachine = "";
+            string exerciseNameDumbbell = "";
+
+            switch (i)
+            {
+                case 1:
+                    exerciseNameBarbell = "Chest Press (Barbell)";
+                    exerciseNameMachine = "Chest Fly (Machine)";
+                    exerciseNameDumbbell = "Chest Press (Dumbbell)";
+                    break;
+                case 2:
+                    exerciseNameBarbell = "Squat (Barbell)";
+                    exerciseNameMachine = "Leg Press (Machine)";
+                    exerciseNameDumbbell = "Lunges (Dumbbell)";
+                    break;
+                case 3:
+                    exerciseNameBarbell = "Deadlift (Barbell)";
+                    exerciseNameMachine = "Lat Pull Down (Machine)";
+                    exerciseNameDumbbell = "Bent Over Row (Dumbbell)";
+                    break;
+                case 4:
+                    exerciseNameBarbell = "Functional Lift (Barbell)";
+                    exerciseNameMachine = "Functional Pull (Machine)";
+                    exerciseNameDumbbell = "Functional Press (Dumbbell)";
+                    break;
+                default:
+                    // For days beyond 4, you can add default exercises or extend the switch-case.
+                    break;
+            }
+
+            var linearProgressionBarbell = new ExerciseModelBuilder()
+                .WithName(exerciseNameBarbell)
+                .WithEquipmentType(OperationStacked.Enums.EquipmentType.Barbell)
+                .WithLiftDay(i)
+                .Adapt();
+
+            var linearProgressionMachine = new ExerciseModelBuilder()
+                .WithName(exerciseNameMachine)
+                .WithEquipmentType(OperationStacked.Enums.EquipmentType.Machine)
+                .WithLiftOrder(2)
+                .WithLiftDay(i) // Setting the day using the loop variable
+                .Adapt();
+
+            var linearProgressionDumbell = new ExerciseModelBuilder()
+                .WithName(exerciseNameDumbbell)
+                .WithEquipmentType(OperationStacked.Enums.EquipmentType.Dumbbell)
+                .WithLiftOrder(3)
+                .WithLiftDay(i) // Setting the day using the loop variable
+                .Adapt();
+
+            exercises.AddRange(new List<CreateExerciseModel>
+            {
+                linearProgressionBarbell,
+                linearProgressionMachine,
+                linearProgressionDumbell
+            });
+
+
         }
 
-        var linearProgressionBarbell = new ExerciseModelBuilder()
-            .WithName(exerciseNameBarbell)
-            .WithEquipmentType(EquipmentType.Barbell)
-            .WithLiftDay(i)
-            .Adapt();
-
-        var linearProgressionMachine = new ExerciseModelBuilder()
-            .WithName(exerciseNameMachine)
-            .WithEquipmentType(EquipmentType.Machine)
-            .WithLiftOrder(2)
-            .WithLiftDay(i)   // Setting the day using the loop variable
-            .Adapt();
-
-        var linearProgressionDumbell = new ExerciseModelBuilder()
-            .WithName(exerciseNameDumbbell)
-            .WithEquipmentType(EquipmentType.Dumbbell)
-            .WithLiftOrder(3)
-            .WithLiftDay(i)   // Setting the day using the loop variable
-            .Adapt();
-
-        exercises.AddRange(new List<CreateExerciseModel>
+        var work = await WorkoutClient.WorkoutCreationPOSTAsync((new CreateWorkoutRequest()
         {
-            linearProgressionBarbell,
-            linearProgressionMachine,
-            linearProgressionDumbell
-        });
-    }
-}
+            ExerciseDaysAndOrders = exercises,
+            UserId = UserId
+        }));
+        var tasks = new List<Task>();
 
+        foreach (var workExercise in work.Exercises)
+        {
+            tasks.Add(CompleteExerciseRecursivelyAsync(20, workExercise));
+        }
+
+        await Task.WhenAll(tasks);
+    }
 
     private int GenerateExerciseOutcome(double failWeight, double passWeight, double progressWeight)
     {
@@ -96,7 +113,7 @@ public class DataSeed
         return 12;  // Progress
     }
 
-    public async Task CompleteExerciseRecursively(int count, LinearProgressionExercise exercise, 
+    public async Task CompleteExerciseRecursivelyAsync(int count, LinearProgressionExercise exercise, 
         double failWeight = 0.05, 
         double passWeight = 0.4, 
         double progressWeight = 0.4)
@@ -110,6 +127,7 @@ public class DataSeed
 
             var completeResponse = await WorkoutClient.CompleteAsync(_);
             exerciseId = completeResponse.Exercise.Id;
+            Console.WriteLine(completeResponse.Exercise.Id);
         }
     }
 

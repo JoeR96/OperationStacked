@@ -49,7 +49,7 @@ namespace OperationStacked.Services.ExerciseCreationService
             //
             return new WorkoutCreationResult(
                 exercises.Any() ? WorkoutCreatedStatus.Created : WorkoutCreatedStatus.Error,
-                exercises);
+                (IEnumerable<LinearProgressionExercise>)exercises);
         }
 
 
