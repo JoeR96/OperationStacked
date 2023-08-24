@@ -45,6 +45,10 @@
     <Folder Include="Models\Requests\" />
     <Folder Include="Services\AuthenticationService\" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Migrations\20230822174848_FAiledAttempts.cs" />
+    <Compile Remove="Migrations\20230822174848_FAiledAttempts.Designer.cs" />
+  </ItemGroup>
   <PropertyGroup>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
   </PropertyGroup>
