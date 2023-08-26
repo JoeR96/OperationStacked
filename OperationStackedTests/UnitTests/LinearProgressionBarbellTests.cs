@@ -57,7 +57,7 @@ public class LinearProgressionTests
 
         status.Should().Be(ExerciseCompletedStatus.StayedTheSame);
         nextExercise.WorkingWeight.Should().Be(exercise.WorkingWeight);
-        nextExercise.FailedAttempts.Should().Be(0);
+        nextExercise.CurrentAttempt.Should().Be(0);
     }
 
     [Test]
@@ -70,7 +70,7 @@ public class LinearProgressionTests
 
         status.Should().Be(ExerciseCompletedStatus.Failed);
         nextExercise.WorkingWeight.Should().Be(exercise.WorkingWeight);
-        nextExercise.FailedAttempts.Should().Be(1);
+        nextExercise.CurrentAttempt.Should().Be(1);
     }
     [Test]
     public async Task LinearProgressionExercise_AttemptTwoProgresses()
@@ -94,7 +94,7 @@ public class LinearProgressionTests
 
         status.Should().Be(ExerciseCompletedStatus.Deload);
         nextExercise.WorkingWeight.Should().Be(exercise.DeloadWeight());
-        nextExercise.FailedAttempts.Should().Be(0);
+        nextExercise.CurrentAttempt.Should().Be(0);
     }
 
     // Helper methods

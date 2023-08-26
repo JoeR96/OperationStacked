@@ -14,7 +14,7 @@ namespace OperationStacked.Entities
         public bool PrimaryExercise { get; set; } = false;
         public decimal WeightProgression { get; set; }
         public int AttemptsBeforeDeload { get; set; }
-        public int FailedAttempts { get; set; } = 0;
+        public int CurrentAttempt { get; set; } = 0;
         public Guid EquipmentStackId { get; set; }
 
         

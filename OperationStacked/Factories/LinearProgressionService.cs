@@ -69,7 +69,7 @@ namespace OperationStacked.Factories
                 exercise.WithinRepRange(request.Reps))
             {
                 status = ExerciseCompletedStatus.Progressed;
-                exercise.FailedAttempts = 0;
+                exercise.CurrentAttempt = 0;
                 weightIndexModifier++;
             }
             else if (!exercise.TargetRepCountReached(request.Reps) &&
@@ -85,7 +85,7 @@ namespace OperationStacked.Factories
                 {
                     status = ExerciseCompletedStatus.Deload;
                     weightIndexModifier--;
-                    exercise.FailedAttempts = 0;
+                    exercise.CurrentAttempt = 0;
                 }
                 else
                 {

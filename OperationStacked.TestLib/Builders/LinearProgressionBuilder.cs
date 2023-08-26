@@ -13,7 +13,7 @@ public class LinearProgressionExerciseBuilder : ExerciseBuilder<LinearProgressio
         _exercise.PrimaryExercise = true;
         _exercise.WeightProgression = 2.50M;
         _exercise.AttemptsBeforeDeload = 2;
-        _exercise.FailedAttempts = 1;
+        _exercise.CurrentAttempt = 1;
         _exercise.EquipmentStackId = Guid.NewGuid();
 
         return this;
@@ -40,7 +40,7 @@ public class LinearProgressionExerciseBuilder : ExerciseBuilder<LinearProgressio
 
     public LinearProgressionExerciseBuilder WithFailedAttempt(int failedAttempt)
     {
-        _exercise.FailedAttempts = failedAttempt;
+        _exercise.CurrentAttempt = failedAttempt;
         return this;
     }
 }
