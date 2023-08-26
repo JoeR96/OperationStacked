@@ -3,6 +3,7 @@ using OperationStacked.Data;
 using OperationStacked.Entities;
 using OperationStacked.Requests;
 using OperationStacked.Response;
+using OperationStacked.Services.Logger;
 
 namespace OperationStacked.Repositories
 {
@@ -18,15 +19,29 @@ namespace OperationStacked.Repositories
             _operationStackedContext = contextFactory.CreateDbContext();
         }
 
-        public async Task<List<Exercise>> GetExercises(Guid userId, int week, int day, bool completed) => 
-            completed ? 
-                await _operationStackedContext.Exercises
-                    .Where(x => x.LiftDay == day && x.LiftWeek == week && x.UserId == userId)
-                    .ToListAsync() 
-                : 
-                await _operationStackedContext.Exercises
-                    .Where(x => x.LiftDay == day && x.LiftWeek == week && x.UserId == userId && x.Completed == false)
-                    .ToListAsync();
+        public async Task<List<Exercise>> GetExercises(Guid userId, int week, int day, bool completed)
+        {
+            var logger = await CloudWatchLogger.GetLoggerAsync();
+
+            try
+            {
+                logger.LogMessageAsync("Got workout");
+                return completed
+                    ? await _operationStackedContext.Exercises
+                        .Where(x => x.LiftDay == day && x.LiftWeek == week && x.UserId == userId)
+                        .ToListAsync()
+                    : await _operationStackedContext.Exercises
+                        .Where(x => x.LiftDay == day && x.LiftWeek == week && x.UserId == userId && x.Completed == false)
+                        .ToListAsync();
+            }
+            catch (Exception e)
+            {
+                logger.LogMessageAsync($"Error {e}");
+                throw;
+            }
+           
+        }
+
         public async Task<Exercise> GetExerciseById(Guid id) => await _operationStackedContext.Exercises
         .FirstOrDefaultAsync(x => x.Id == id);
 

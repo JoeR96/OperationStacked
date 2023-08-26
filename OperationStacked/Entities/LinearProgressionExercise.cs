@@ -16,7 +16,6 @@ namespace OperationStacked.Entities
         public int AttemptsBeforeDeload { get; set; }
         public int FailedAttempts { get; set; } = 0;
         public Guid EquipmentStackId { get; set; }
-        public int CurrentAttempt { get; set; }
 
         
 
