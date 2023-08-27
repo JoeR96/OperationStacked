@@ -24,6 +24,9 @@ namespace OperationStacked.Entities
         public Guid ParentId { get; set; }
         public bool Completed { get; set; }
         public int RestTimer { get; set; }
+        public Guid EquipmentStackId { get; set; }
+        public int WeightIndex { get; set; }
+
 
     }
 }

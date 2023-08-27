@@ -117,7 +117,7 @@ namespace OperationStacked.Factories
             return (nextExercise, status);
         }
         
-        private static async Task<decimal> WorkingWeight(Guid exerciseParentId, decimal workingWeight,
+        public static async Task<decimal> WorkingWeight(Guid exerciseParentId, decimal workingWeight,
             int weightIndexModifier,
             decimal weightProgression, EquipmentType equipmentType, int weightIndex,
             EquipmentStack stack = null)
@@ -157,12 +157,26 @@ namespace OperationStacked.Factories
         
             if (equipmentType is EquipmentType.Cable or EquipmentType.Machine)
             {  
-                return CreateStack(exerciseParentId, workingWeight, weightIndexModifier, stack);
+                return CreateStaticStack(exerciseParentId, workingWeight, weightIndexModifier, stack);
             }
             throw new NotImplementedException("EquipmentType is not supported");
         }
 
-        private static decimal CreateStack(Guid exerciseParentId, decimal workingWeight, int startIndex,
+        public decimal CreateStack(Guid exerciseParentId, decimal workingWeight, int startIndex,
+            EquipmentStack stack)
+        {
+            var generatedStack = stack.GenerateStack();
+            int index = startIndex;
+
+            if (index < 0)
+            {
+                index = 0;
+            }
+
+            return (decimal)generatedStack[index];
+        }
+        
+        public static decimal CreateStaticStack(Guid exerciseParentId, decimal workingWeight, int startIndex,
             EquipmentStack stack)
         {
             var generatedStack = stack.GenerateStack();
