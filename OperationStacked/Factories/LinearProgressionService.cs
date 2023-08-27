@@ -156,9 +156,8 @@ namespace OperationStacked.Factories
 
         
             if (equipmentType is EquipmentType.Cable or EquipmentType.Machine)
-            {
-                
-                return CreateStack(exerciseParentId, workingWeight, weightIndexModifier + weightIndex, stack);
+            {  
+                return CreateStack(exerciseParentId, workingWeight, weightIndexModifier, stack);
             }
             throw new NotImplementedException("EquipmentType is not supported");
         }
@@ -167,22 +166,13 @@ namespace OperationStacked.Factories
             EquipmentStack stack)
         {
             var generatedStack = stack.GenerateStack();
-            int index;
-
-            if (exerciseParentId != Guid.Empty)
-            {
-                index = Array.IndexOf(generatedStack, workingWeight);
-            }
-            else
-            {
-                index = startIndex;
-            }
-
+            int index = startIndex;
 
             if (index < 0)
             {
                 index = 0;
             }
+
             return (decimal)generatedStack[index];
         }
     }
