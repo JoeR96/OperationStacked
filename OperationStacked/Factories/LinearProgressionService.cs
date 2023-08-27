@@ -102,6 +102,8 @@ namespace OperationStacked.Factories
                         exercise.WeightProgression
                         , exercise.EquipmentType, exercise.WeightIndex,stack),
                     weightIndexModifier, attemptModifier,stack);
+                
+                
             }
             else
             {
@@ -117,7 +119,7 @@ namespace OperationStacked.Factories
         
         private static async Task<decimal> WorkingWeight(Guid exerciseParentId, decimal workingWeight,
             int weightIndexModifier,
-            decimal weightProgression, EquipmentType equipmentType, int startIndex,
+            decimal weightProgression, EquipmentType equipmentType, int weightIndex,
             EquipmentStack stack = null)
         {
             if (equipmentType is EquipmentType.Barbell or EquipmentType.SmithMachine)
@@ -152,13 +154,11 @@ namespace OperationStacked.Factories
                 }
             }
 
-            if (equipmentType is EquipmentType.Cable)
-            {
-                return CreateStack(exerciseParentId, workingWeight, weightIndexModifier, stack);
-            }            
+        
             if (equipmentType is EquipmentType.Cable or EquipmentType.Machine)
             {
-                return CreateStack(exerciseParentId, workingWeight, weightIndexModifier, stack);
+                weightIndex += weightIndexModifier;
+                return CreateStack(exerciseParentId, workingWeight, weightIndex, stack);
             }
             throw new NotImplementedException("EquipmentType is not supported");
         }
