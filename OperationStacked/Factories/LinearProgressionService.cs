@@ -157,8 +157,8 @@ namespace OperationStacked.Factories
         
             if (equipmentType is EquipmentType.Cable or EquipmentType.Machine)
             {
-                weightIndex += weightIndexModifier;
-                return CreateStack(exerciseParentId, workingWeight, weightIndex, stack);
+                
+                return CreateStack(exerciseParentId, workingWeight, weightIndexModifier + weightIndex, stack);
             }
             throw new NotImplementedException("EquipmentType is not supported");
         }
