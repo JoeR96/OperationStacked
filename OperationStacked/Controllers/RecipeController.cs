@@ -24,7 +24,12 @@ public class RecipeController : ControllerBase
     {
         return Ok(await _recipeService.CreateRecipeAsync(request));
     }
-    
+    [HttpGet]
+    [ProducesResponseType(200, Type = typeof(Recipe))]
+    public async Task<IActionResult> TESTCreateRecipeAsync()
+    {
+        return Ok("hi");
+    }
     //[Route("/{userId}/{recipeId}")]
     //[HttpGet]
     //[ProducesResponseType(200, Type = typeof(Recipe))]
@@ -32,4 +37,8 @@ public class RecipeController : ControllerBase
     //{
     //    return Ok(await _recipeService.GetRecipeAsync(userId,recipeId));
     //}
+    
+    
+    
+    
 }

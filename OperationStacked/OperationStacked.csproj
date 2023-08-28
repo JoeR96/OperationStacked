@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>9c325244-b845-4e61-ad2b-75382d65871b</UserSecretsId>
@@ -41,9 +41,14 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Migrations" />
     <Folder Include="Models\ExerciseTemplates\" />
     <Folder Include="Models\Requests\" />
     <Folder Include="Services\AuthenticationService\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Migrations\20230822174848_FAiledAttempts.cs" />
+    <Compile Remove="Migrations\20230822174848_FAiledAttempts.Designer.cs" />
   </ItemGroup>
   <PropertyGroup>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>

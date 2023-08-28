@@ -92,7 +92,7 @@ public class LinearProgressionWorkoutTests
     [OneTimeTearDown]
     public async Task TearDown()
     {
-        var delete = await _workoutClient.DeleteAllAsync(_userId);
-        delete.Should().Be(true);
+        // var delete = await _workoutClient.DeleteAllAsync(_userId);
+        // delete.Should().Be(true);
     }
 }

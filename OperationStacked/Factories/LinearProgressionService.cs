@@ -69,7 +69,7 @@ namespace OperationStacked.Factories
                 exercise.WithinRepRange(request.Reps))
             {
                 status = ExerciseCompletedStatus.Progressed;
-                exercise.FailedAttempts = 0;
+                exercise.CurrentAttempt = 0;
                 weightIndexModifier++;
             }
             else if (!exercise.TargetRepCountReached(request.Reps) &&
@@ -85,7 +85,7 @@ namespace OperationStacked.Factories
                 {
                     status = ExerciseCompletedStatus.Deload;
                     weightIndexModifier--;
-                    exercise.FailedAttempts = 0;
+                    exercise.CurrentAttempt = 0;
                 }
                 else
                 {
@@ -102,6 +102,8 @@ namespace OperationStacked.Factories
                         exercise.WeightProgression
                         , exercise.EquipmentType, exercise.WeightIndex,stack),
                     weightIndexModifier, attemptModifier,stack);
+                
+                
             }
             else
             {
@@ -115,9 +117,9 @@ namespace OperationStacked.Factories
             return (nextExercise, status);
         }
         
-        private static async Task<decimal> WorkingWeight(Guid exerciseParentId, decimal workingWeight,
+        public static async Task<decimal> WorkingWeight(Guid exerciseParentId, decimal workingWeight,
             int weightIndexModifier,
-            decimal weightProgression, EquipmentType equipmentType, int startIndex,
+            decimal weightProgression, EquipmentType equipmentType, int weightIndex,
             EquipmentStack stack = null)
         {
             if (equipmentType is EquipmentType.Barbell or EquipmentType.SmithMachine)
@@ -152,37 +154,39 @@ namespace OperationStacked.Factories
                 }
             }
 
-            if (equipmentType is EquipmentType.Cable)
-            {
-                return CreateStack(exerciseParentId, workingWeight, weightIndexModifier, stack);
-            }            
+        
             if (equipmentType is EquipmentType.Cable or EquipmentType.Machine)
-            {
-                return CreateStack(exerciseParentId, workingWeight, weightIndexModifier, stack);
+            {  
+                return CreateStaticStack(exerciseParentId, workingWeight, weightIndexModifier, stack);
             }
             throw new NotImplementedException("EquipmentType is not supported");
         }
 
-        private static decimal CreateStack(Guid exerciseParentId, decimal workingWeight, int startIndex,
+        public decimal CreateStack(Guid exerciseParentId, decimal workingWeight, int startIndex,
             EquipmentStack stack)
         {
             var generatedStack = stack.GenerateStack();
-            int index;
-
-            if (exerciseParentId != Guid.Empty)
-            {
-                index = Array.IndexOf(generatedStack, workingWeight);
-            }
-            else
-            {
-                index = startIndex;
-            }
-
+            int index = startIndex;
 
             if (index < 0)
             {
                 index = 0;
             }
+
+            return (decimal)generatedStack[index];
+        }
+        
+        public static decimal CreateStaticStack(Guid exerciseParentId, decimal workingWeight, int startIndex,
+            EquipmentStack stack)
+        {
+            var generatedStack = stack.GenerateStack();
+            int index = startIndex;
+
+            if (index < 0)
+            {
+                index = 0;
+            }
+
             return (decimal)generatedStack[index];
         }
     }

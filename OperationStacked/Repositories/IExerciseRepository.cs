@@ -15,6 +15,6 @@ namespace OperationStacked.Repositories
         Task<EquipmentStackResponse> InsertEquipmentStack(CreateEquipmentStackRequest equipmentStack);
         Task<EquipmentStack> GetEquipmentStack(Guid equipmentStackId);
         Task<bool> DeleteEquipmentStack(Guid equipmentStackId);
-        Task<bool> UpdateExerciseById(Guid exerciseId, decimal weight);
+        Task<bool> UpdateExerciseById(Guid exerciseId, decimal weight, int weightIndex = -1);
     }
 }

@@ -1414,7 +1414,7 @@
           "Exercises": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Exercise"
+              "$ref": "#/components/schemas/LinearProgressionExercise"
             },
             "nullable": true
           }

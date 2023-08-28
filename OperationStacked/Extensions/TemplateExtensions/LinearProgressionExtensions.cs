@@ -12,7 +12,7 @@ namespace OperationStacked.Extensions.TemplateExtensions
             => !reps.Any(rep => rep < e.MinimumReps) ? true : false;
 
         public static bool IsLastAttemptBeforeDeload(this LinearProgressionExercise e)
-            => e.FailedAttempts >= e.AttemptsBeforeDeload;
+            => e.CurrentAttempt >= e.AttemptsBeforeDeload;
         public static LinearProgressionExercise GenerateNextExercise(this LinearProgressionExercise e,decimal workingWeight, int weightIndexModifier, int attemptModifier,EquipmentStack stack = null)
             => new()
             {
@@ -32,7 +32,7 @@ namespace OperationStacked.Extensions.TemplateExtensions
                 LiftWeek = e.LiftWeek + 1,
                 ParentId = e.Id,
                 WorkingWeight = workingWeight,
-                FailedAttempts = e.FailedAttempts + attemptModifier,
+                CurrentAttempt = e.CurrentAttempt + attemptModifier,
                 EquipmentType = e.EquipmentType,
                 UserId = e.UserId
             };
