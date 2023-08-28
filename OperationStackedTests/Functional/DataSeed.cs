@@ -1,3 +1,4 @@
+using Concise.Steps;
 using MoreLinq.Extensions;
 using NUnit.Framework;
 using OperationStacked.TestLib;
@@ -5,7 +6,7 @@ using OperationStackedAuth.Tests;
 using EquipmentType = OperationStacked.Enums.EquipmentType;
 
 namespace OperationStackedTests.Functional;
-
+[TestFixture]
 public class DataSeed
 {
     public Guid UserId;
@@ -19,11 +20,12 @@ public class DataSeed
         WorkoutClient = client;
         UserId = _userId;
     }
-    public async Task CreateExercisesForMultipleDays(int totalDays)
+    [StepTest]
+    public async Task CreateExercisesForMultipleDays()
 {
     var exercises = new List<CreateExerciseModel>();
 
-    for (int i = 1; i <= totalDays; i++)
+    for (int i = 1; i <= 4; i++)
     {
         string exerciseNameBarbell = "";
         string exerciseNameMachine = "";
@@ -82,6 +84,17 @@ public class DataSeed
             linearProgressionMachine,
             linearProgressionDumbell
         });
+
+        var request = new CreateWorkoutRequest()
+        {
+            UserId = UserId,
+            ExerciseDaysAndOrders = exercises
+        };
+        
+        var workout = await WorkoutClient.WorkoutCreationPOSTAsync(request
+        );
+        workout.Exercises.ForEach(async e => await CompleteExerciseRecursively(1,e));
+        
     }
 }
 
@@ -96,7 +109,7 @@ public class DataSeed
         return 12;  // Progress
     }
 
-    public async Task CompleteExerciseRecursively(int count, LinearProgressionExercise exercise, 
+    public async Task CompleteExerciseRecursively(int count, Exercise exercise, 
         double failWeight = 0.05, 
         double passWeight = 0.4, 
         double progressWeight = 0.4)

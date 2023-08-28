@@ -28,7 +28,7 @@ namespace OperationStacked.Extensions.TemplateExtensions
                 Template = e.Template,
                 LiftDay = e.LiftDay,
                 LiftOrder = e.LiftOrder,
-                EquipmentStackId = stack == null ? Guid.Empty : stack.Id,
+                EquipmentStackId = e.EquipmentStackId,
                 LiftWeek = e.LiftWeek + 1,
                 ParentId = e.Id,
                 WorkingWeight = workingWeight,

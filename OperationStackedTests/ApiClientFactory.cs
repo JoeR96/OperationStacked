@@ -7,11 +7,12 @@ namespace OperationStackedAuth.Tests
 {
     internal class ApiClientFactory
     {
-        private static readonly WebApplicationFactory<Program> Factory = new WebApplicationFactory<Program>();
+        //private static readonly WebApplicationFactory<Program> Factory = new WebApplicationFactory<Program>();
 
         internal static async Task<(WorkoutClient, Guid)> CreateWorkoutClientAsync(bool withToken = false)
         {
-            var client = Factory.CreateClient();
+            var client = new HttpClient();
+            //client.BaseAddress = "http://3.10.176.181:5001";
             var userId = Guid.Empty;
 
             if (withToken)

@@ -45,8 +45,8 @@ public class EquipmentStackBuilder
         return new CreateEquipmentStackRequest
         {
             StartWeight = _stack.StartWeight,
-            InitialIncrements = _stack.InitialIncrements,
-            IncrementValue = _stack.IncrementValue,
+            InitialIncrements = _stack.InitialIncrements?.Select(x => (double)(x ?? 0M)).ToList(),
+            IncrementValue = (double)(_stack.IncrementValue),
             IncrementCount = _stack.IncrementCount,
             UserID = _stack.UserID,
             EquipmentStackKey = _stack.EquipmentStackKey
