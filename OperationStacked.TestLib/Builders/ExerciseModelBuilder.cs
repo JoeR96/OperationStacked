@@ -1,11 +1,14 @@
 ﻿using System;
 using OperationStacked.Entities;
-using OperationStacked.Enums;
-using OperationStacked.Models;
 using OperationStacked.Requests;
+using OperationStacked.TestLib;
 using OperationStacked.TestLib.Builders;
 using A2SBlocks = OperationStacked.TestLib.A2SBlocks;
+using CreateEquipmentStackRequest = OperationStacked.Requests.CreateEquipmentStackRequest;
+using CreateExerciseModel = OperationStacked.Models.CreateExerciseModel;
 using EquipmentStackKey = OperationStacked.TestLib.EquipmentStackKey;
+using EquipmentType = OperationStacked.Enums.EquipmentType;
+using ExerciseTemplate = OperationStacked.Models.ExerciseTemplate;
 
 public class ExerciseModelBuilder
 {
@@ -44,14 +47,21 @@ public class ExerciseModelBuilder
         return this;
     }
     // Properties
-    public ExerciseModelBuilder WithEquipmentType(EquipmentType equipmentType)
+    public ExerciseModelBuilder WithEquipmentType(EquipmentType equipmentType, int count = 0, decimal value = 0m,decimal?[] initialIncrements = null)
     {
         _model.EquipmentType = equipmentType;
 
-        // if (equipmentType is EquipmentType.Cable || equipmentType is EquipmentType.Machine)
-        // {
-        //     _model.EquipmentStack = new EquipmentStackBuilder().WithDefaultValues().Adapt();
-        // }
+        if (equipmentType is EquipmentType.Cable || equipmentType is EquipmentType.Machine)
+        {
+        
+            var request = new CreateEquipmentStackRequest()
+            {
+                InitialIncrements = initialIncrements,
+                IncrementCount = count,
+                IncrementValue = value
+            };
+            _model.EquipmentStack = request;
+        }
         
         return this;
     }
@@ -83,7 +93,16 @@ public class ExerciseModelBuilder
         _model.MaximumReps = maxReps;
         return this;
     }
-
+    public ExerciseModelBuilder WithSets(int sets)
+    {
+        _model.Sets = sets;
+        return this;
+    }
+    public ExerciseModelBuilder WithStartingWeight(decimal startingWeight)
+    {
+        _model.StartingWeight = startingWeight;
+        return this;
+    }
     // Additional builder methods can be added here based on your requirements
 
     // Build the model

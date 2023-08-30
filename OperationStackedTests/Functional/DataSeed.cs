@@ -25,7 +25,7 @@ public class DataSeed
     {
         var exercises = new List<CreateExerciseModel>();
 
-        for (int i = 1; i <= 4; i++)
+        for (int i = 1; i <= 5; i++)
         {
             string exerciseNameBarbell = "";
             string exerciseNameMachine = "";
@@ -53,18 +53,25 @@ public class DataSeed
                     exerciseNameMachine = "Functional Pull (Machine)";
                     exerciseNameDumbbell = "Functional Press (Dumbbell)";
                     break;
+                case 5:
+                    exerciseNameBarbell = "Functional Lift (Barbell)";
+                    exerciseNameMachine = "Functional Pull (Machine)";
+                    exerciseNameDumbbell = "Functional Press (Dumbbell)";
+                    break;
                 default:
                     // For days beyond 4, you can add default exercises or extend the switch-case.
                     break;
             }
 
             var linearProgressionBarbell = new ExerciseModelBuilder()
+                .WithDefaultValues()
                 .WithName(exerciseNameBarbell)
                 .WithEquipmentType(OperationStacked.Enums.EquipmentType.Barbell)
                 .WithLiftDay(i)
                 .Adapt();
 
             var linearProgressionMachine = new ExerciseModelBuilder()
+                .WithDefaultValues()
                 .WithName(exerciseNameMachine)
                 .WithEquipmentType(OperationStacked.Enums.EquipmentType.Machine)
                 .WithLiftOrder(2)
@@ -72,6 +79,7 @@ public class DataSeed
                 .Adapt();
 
             var linearProgressionDumbell = new ExerciseModelBuilder()
+                .WithDefaultValues()
                 .WithName(exerciseNameDumbbell)
                 .WithEquipmentType(OperationStacked.Enums.EquipmentType.Dumbbell)
                 .WithLiftOrder(3)

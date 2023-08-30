@@ -149,11 +149,6 @@ namespace OperationStacked.Repositories
         public async Task<bool> UpdateExerciseById(Guid exerciseId, decimal weight,int weightIndex = -1)
         {
             var exercise = await _operationStackedContext.Exercises.Where(x => x.Id == exerciseId).FirstOrDefaultAsync();
-            exercise.WorkingWeight = weight;
-            if (weightIndex > 0)
-            {
-                exercise.WeightIndex = weightIndex;
-            }
             _operationStackedContext.Update(exercise);
             var saveResult = await _operationStackedContext.SaveChangesAsync();
 
