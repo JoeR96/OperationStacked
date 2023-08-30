@@ -42,7 +42,7 @@ public class ExerciseProgressionService : IExerciseProgressionService
         }
     }
 
-    public async Task<bool> UpdateWorkingWeight(Guid exerciseId, decimal newWorkingWeight)
+    public async Task<decimal> UpdateWorkingWeight(Guid exerciseId, decimal newWorkingWeight)
     {
         var exercise = await _exerciseRepository.GetExerciseById(exerciseId);
         bool success = false;
@@ -70,7 +70,9 @@ public class ExerciseProgressionService : IExerciseProgressionService
         }
 
         success = await _exerciseRepository.UpdateExerciseById(exercise.Id, newWorkingWeight);
-        return success;    }
+        return exercise.WorkingWeight;
+        
+    }
     private static int FindClosestIndex(decimal?[] arr, decimal target) 
     {
         int closestIndex = 0;
