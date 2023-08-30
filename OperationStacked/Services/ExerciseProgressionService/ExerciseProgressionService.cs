@@ -62,7 +62,7 @@ public class ExerciseProgressionService : IExerciseProgressionService
 
             var newIndex = FindClosestIndex(generatedStack, newWorkingWeight);
             var newWeight = (decimal)generatedStack[newIndex];
-            exercise.WorkingWeight = newWorkingWeight;
+            exercise.WorkingWeight = newWeight;
 
             await _exerciseRepository.UpdateExerciseById(exercise.Id, newWeight, newIndex);
             
