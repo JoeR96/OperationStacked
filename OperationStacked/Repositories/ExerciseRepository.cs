@@ -25,7 +25,8 @@ namespace OperationStacked.Repositories
 
             try
             {
-                logger.LogMessageAsync("Got workout");
+                await logger.LogMessageAsync("Got Exercises");
+
                 return completed
                     ? await _operationStackedContext.Exercises
                         .Where(x => x.LiftDay == day && x.LiftWeek == week && x.UserId == userId)
@@ -36,7 +37,7 @@ namespace OperationStacked.Repositories
             }
             catch (Exception e)
             {
-                logger.LogMessageAsync($"Error {e}");
+                await logger.LogMessageAsync($"Error {e}");
                 throw;
             }
            

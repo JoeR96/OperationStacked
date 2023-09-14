@@ -66,6 +66,13 @@ public class ExerciseProgressionService : IExerciseProgressionService
             exercise.WeightIndex = newIndex;
             await _exerciseRepository.UpdateExerciseById(exercise.Id, newWeight, newIndex);
             
+            
+            
+            
+            
+            
+            
+            
 
         }
 
