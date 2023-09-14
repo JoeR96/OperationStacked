@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using OperationStacked.Entities;
+using OperationStacked.Options;
 
 namespace OperationStacked.Data
 {
