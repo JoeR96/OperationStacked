@@ -18,33 +18,12 @@ using OperationStacked.Factories;
 using OperationStacked.Repositories;
 using OperationStacked.Services.Logger;
 using OperationStacked.Services.RecipeService;
-using Serilog;
-using Serilog.Events;
-using Serilog.Formatting.Compact;
-using Serilog.Sinks.AwsCloudWatch;
 
 Console.WriteLine(Environment.GetEnvironmentVariables());
 var connectionString = RemovePortFromServer(await GetConnectionStringFromParameterStore());
-Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Debug()
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-    .Enrich.FromLogContext()
-    .WriteTo.Console()
-    .WriteTo.AmazonCloudWatch(new CloudWatchSinkOptions
-    {
-        LogGroupName = "operation-stacked",
-        CreateLogGroup = true,
-        TextFormatter = new CompactJsonFormatter(),
-        MinimumLogEventLevel = LogEventLevel.Verbose,
-        BatchSizeLimit = 100,
-        QueueSizeLimit = 10000,
-        Period = TimeSpan.FromSeconds(2),
-        RetryAttempts = 5
-    }, new AmazonCloudWatchLogsClient())
-    .CreateLogger();
+
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseSerilog(Log.Logger);
 var config = builder.Configuration;
 builder.Services.Configure<ConnectionStringOptions>(options =>
 {
@@ -53,7 +32,6 @@ builder.Services.Configure<ConnectionStringOptions>(options =>
 
 var tokenOptions = config.GetSection("TokenOptions").Get<TokenOptions>();
 var signingConfigurations = new SigningConfigurations(tokenOptions.Secret);
-builder.Services.AddLogging(builder => builder.AddSerilog(Log.Logger));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
