@@ -1,3 +1,4 @@
+using Amazon;
 using Amazon.CloudWatchLogs;
 using Amazon.Runtime;
 using Amazon.SecretsManager;
@@ -15,6 +16,7 @@ using OperationStacked.Extensions.FactoryExtensions;
 using OperationStacked.Extensions.ServiceExtensions;
 using OperationStacked.Factories;
 using OperationStacked.Repositories;
+using OperationStacked.Services.Logger;
 using OperationStacked.Services.RecipeService;
 using Serilog;
 using Serilog.Events;
@@ -139,6 +141,8 @@ builder.Services.AddAuthentication(options =>
      
     };
 });
+builder.Services.AddSingleton<ICloudWatchLogger>(sp => new CloudWatchLogger("operation-stacked", RegionEndpoint.EUWest2));
+
 builder.Services.AddDbContext<OperationStackedContext>(options =>
 {
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 29)));

@@ -11,21 +11,21 @@ namespace OperationStacked.Repositories
     {
         private OperationStackedContext _operationStackedContext;
         private readonly IDbContextFactory<OperationStackedContext> _contextFactory;
+        private readonly ICloudWatchLogger _logger;
 
-
-        public ExerciseRepository( IDbContextFactory<OperationStackedContext> contextFactory)
+        public ExerciseRepository( IDbContextFactory<OperationStackedContext> contextFactory, ICloudWatchLogger logger)
         {
             _contextFactory = contextFactory;
+            _logger = logger;
             _operationStackedContext = contextFactory.CreateDbContext();
         }
 
         public async Task<List<Exercise>> GetExercises(Guid userId, int week, int day, bool completed)
         {
-            var logger = await CloudWatchLogger.GetLoggerAsync();
 
             try
             {
-                await logger.LogMessageAsync("Got Exercises");
+                await _logger.LogMessageAsync("This is a log message!");
 
                 return completed
                     ? await _operationStackedContext.Exercises
@@ -37,7 +37,7 @@ namespace OperationStacked.Repositories
             }
             catch (Exception e)
             {
-                await logger.LogMessageAsync($"Error {e}");
+                await _logger.LogMessageAsync($"Error {e}");
                 throw;
             }
            
