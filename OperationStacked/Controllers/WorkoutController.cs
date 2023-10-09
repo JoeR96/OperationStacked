@@ -56,6 +56,14 @@ namespace OperationStacked.Controllers
             [FromRoute] bool completed)
             => Ok(Newtonsoft.Json.JsonConvert.SerializeObject(
                 await _exerciseRetrievalService.GetWorkout(userId, week, day, completed)));
+        
+        [HttpGet]
+        [Route("{userId}/all")]
+        [ProducesResponseType(200, Type = typeof(GetWorkoutResult))]
+        public async Task<IActionResult> GetAllWorkouts(
+            [FromRoute] Guid userId)
+            => Ok(Newtonsoft.Json.JsonConvert.SerializeObject(
+                await _exerciseRetrievalService.GetAllWorkouts(userId)));
 
         [HttpDelete]
         [ProducesResponseType(200, Type = typeof(bool))]

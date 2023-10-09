@@ -1,4 +1,6 @@
 using Amazon;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using OperationStacked.Data;
 using OperationStacked.Extensions.AuthenticationExtensions;
 using OperationStacked.Extensions.CorsExtensions;

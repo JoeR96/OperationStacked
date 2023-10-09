@@ -42,7 +42,21 @@ namespace OperationStacked.Repositories
             }
            
         }
-
+        
+        public async Task<IEnumerable<Exercise>> GetAllExercises(Guid userId)
+        {
+            try
+            {
+                return await _operationStackedContext.Exercises
+                                        .Where(x =>x.UserId == userId)
+                                        .ToListAsync();
+            }
+            catch (Exception e)
+            {
+                await _logger.LogMessageAsync($"Error {e}");
+                throw;
+            }
+        }
         public async Task<Exercise> GetExerciseById(Guid id) => await _operationStackedContext.Exercises
         .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -155,5 +169,7 @@ namespace OperationStacked.Repositories
 
             return saveResult > 0;
         }
+
+       
     }
 }
