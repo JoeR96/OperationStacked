@@ -43,13 +43,20 @@ namespace OperationStacked.Repositories
            
         }
         
-        public async Task<IEnumerable<Exercise>> GetAllExercises(Guid userId)
+        public async Task<(IEnumerable<Exercise> exercises, int totalCount)> GetAllExercisesWithCount(Guid userId, int pageIndex, int pageSize)
         {
             try
             {
-                return await _operationStackedContext.Exercises
-                                        .Where(x =>x.UserId == userId)
-                                        .ToListAsync();
+                var totalCount = await _operationStackedContext.Exercises.CountAsync(x => x.UserId == userId);
+        
+                var exercises = await _operationStackedContext.Exercises
+                    .Where(x => x.UserId == userId)
+                    .OrderBy(e => e.Id)
+                    .Skip(pageIndex * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+
+                return (exercises, totalCount);
             }
             catch (Exception e)
             {
@@ -57,6 +64,8 @@ namespace OperationStacked.Repositories
                 throw;
             }
         }
+
+
         public async Task<Exercise> GetExerciseById(Guid id) => await _operationStackedContext.Exercises
         .FirstOrDefaultAsync(x => x.Id == id);
 
