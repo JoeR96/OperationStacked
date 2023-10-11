@@ -22,7 +22,7 @@ namespace OperationStacked.Repositories
 
         public async Task<List<Exercise>> GetExercises(Guid userId, int week, int day, bool completed)
         {
-
+            await GetAllExercisesAndUpdateCompletedReps(userId);
             try
             {
                 await _logger.LogMessageAsync("This is a log message!");
@@ -42,7 +42,45 @@ namespace OperationStacked.Repositories
             }
            
         }
-        
+        public async Task<List<Exercise>> GetAllExercisesAndUpdateCompletedReps(Guid userId)
+        {
+            try
+            {
+                await _logger.LogMessageAsync("Starting to fetch and update exercises!");
+
+                // Fetch all exercises for the given userId
+                var exercises = await _operationStackedContext.Exercises
+                    .Where(x => x.UserId == userId)
+                    .ToListAsync();
+
+                var random = new Random();  // Create a random object to generate random numbers
+
+                foreach (var exercise in exercises)
+                {
+                    if (exercise is LinearProgressionExercise lpExercise)  // Ensure exercise is of type LinearProgressionExercise
+                    {
+                        // Generate randomized set values between minimum and maximum reps
+                        var setsValues = Enumerable.Range(0, lpExercise.Sets)
+                            .Select(_ => random.Next(lpExercise.MinimumReps, lpExercise.MaximumReps + 1))
+                            .ToArray();
+
+                        // Convert the randomized set values to a comma-separated string
+                        exercise.CompletedReps = string.Join(",", setsValues);
+                    }
+                }
+
+                // Update the changes in the context
+                _operationStackedContext.UpdateRange(exercises);
+                await _operationStackedContext.SaveChangesAsync();
+
+                return exercises;  // Return the updated exercises
+            }
+            catch (Exception e)
+            {
+                await _logger.LogMessageAsync($"Error {e}");
+                throw;
+            }
+        }
         public async Task<(IEnumerable<Exercise> exercises, int totalCount)> GetAllExercisesWithCount(Guid userId, int pageIndex, int pageSize)
         {
             try
