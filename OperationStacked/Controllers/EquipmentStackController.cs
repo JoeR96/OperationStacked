@@ -26,10 +26,17 @@ public class EquipmentStackController : ControllerBase
         Ok(await _exerciseRepository.InsertEquipmentStack(equipmentStack));
 
     [HttpGet]
-    [ProducesResponseType(200, Type = typeof(EquipmentStackResponse))]
+    [ProducesResponseType(200,Type = typeof(List<EquipmentStackResponse>))]
+    [Route("{userId}/all")]
+    public async Task<IActionResult> GetAllEquipmentStacks([FromRoute] Guid userId) =>
+        Ok(await _exerciseRepository.GetAllEquipmentStacks(userId));
+
+    [HttpGet]
+    [ProducesResponseType(200,Type = typeof(EquipmentStackResponse))]
     [Route("{equipmentStackId}")]
     public async Task<IActionResult> EquipmentStack(
         [FromRoute] Guid equipmentStackId) => Ok(await _exerciseRepository.GetEquipmentStack(equipmentStackId));
+
 
     [HttpDelete]
     [ProducesResponseType(200, Type = typeof(bool))]

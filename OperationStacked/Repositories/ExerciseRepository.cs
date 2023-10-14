@@ -186,6 +186,24 @@ namespace OperationStacked.Repositories
                 throw; // rethrowing the exception
             }
         }
+        
+        public async Task<List<EquipmentStack>> GetAllEquipmentStacks(Guid userId)
+        {
+            try 
+            {
+                List<EquipmentStack> equipmentStack;
+                using (var context = _contextFactory.CreateDbContext())
+                {
+                    equipmentStack = await context.EquipmentStacks.Where(x => x.UserID == userId).ToListAsync();
+                }
+                return equipmentStack;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw; 
+            }
+        }
 
 
         public async Task<bool> DeleteEquipmentStack(Guid equipmentStackId)

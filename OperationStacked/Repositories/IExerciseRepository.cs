@@ -18,5 +18,6 @@ namespace OperationStacked.Repositories
         Task<bool> UpdateExerciseById(Guid exerciseId, decimal weight, int weightIndex = -1);
         Task<(IEnumerable<Exercise> exercises, int totalCount)> GetAllExercisesWithCount(Guid userId, int pageIndex, int pageSize);
 
+        Task<List<EquipmentStack>> GetAllEquipmentStacks(Guid userId);
     }
 }
