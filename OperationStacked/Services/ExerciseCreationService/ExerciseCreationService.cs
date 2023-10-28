@@ -12,6 +12,7 @@ namespace OperationStacked.Services.ExerciseCreationService
     {
         private readonly OperationStackedContext _operationStackedContext;
         private readonly LinearProgressionService _linearProgressionService;
+        private readonly IWorkoutExerciseService _workoutExerciseService;
         public ExerciseCreationService(
             OperationStackedContext operationStackedContext, LinearProgressionService linearProgressionService)
         {
@@ -21,25 +22,37 @@ namespace OperationStacked.Services.ExerciseCreationService
 
         public async Task<WorkoutCreationResult> CreateWorkout(CreateWorkoutRequest request)
         {
-            IEnumerable<Exercise> exercises = await Task.WhenAll(
-                request.ExerciseDaysAndOrders.Select(async exercise =>
+            var workoutExercises =await Task.WhenAll(
+                request.ExerciseDaysAndOrders.Select(async exercise => await  _workoutExerciseService.CreateWorkoutExercise(exercise)));
+
+
+            //exercises are already created so we create the first week for each template
+            var linearProgressionExercises = await Task.WhenAll(
+                workoutExercises.Select(async workoutExercise =>
                 {
-                    switch (exercise.Template)
+                    var exerciseModel = request.ExerciseDaysAndOrders.First(e => e.ExerciseId == workoutExercise.ExerciseId);
+
+                    switch (exerciseModel.Template)
                     {
                         case ExerciseTemplate.LinearProgression:
-                            return await _linearProgressionService.CreateExercise(exercise,request.userId);
+                            var linearProgressionExercise = await _linearProgressionService.CreateLinearProgressionExercise(exerciseModel, request.userId);
+
+                            // Link WorkoutExercise to LinearProgressionExercise
+                            linearProgressionExercise.WorkoutExerciseId = workoutExercise.ExerciseId; // or perhaps workoutExercise.Id depending on your structure
+                            workoutExercise.LinearProgressionExercise = linearProgressionExercise;
+
+                            return linearProgressionExercise;
+
                         case ExerciseTemplate.A2SHypertrophy:
-                            // Call the appropriate service method for A2SHypertrophy
-                            // For now, return null or a default value until you implement this
                             return null;
+
                         default:
-                            throw new InvalidOperationException($"Unsupported exercise template: {exercise.Template}");
+                            throw new InvalidOperationException($"Unsupported exercise template: {exerciseModel.Template}");
                     }
                 })
             );
 
 
-            await _operationStackedContext.AddRangeAsync(exercises);
             await _operationStackedContext.SaveChangesAsync();
 
             // Cast each item in the exercises collection individually
@@ -48,8 +61,8 @@ namespace OperationStacked.Services.ExerciseCreationService
             //     .Where(exercise => exercise != null);
             //
             return new WorkoutCreationResult(
-                exercises.Any() ? WorkoutCreatedStatus.Created : WorkoutCreatedStatus.Error,
-                (IEnumerable<LinearProgressionExercise>)exercises);
+                workoutExercises.Any() ? WorkoutCreatedStatus.Created : WorkoutCreatedStatus.Error,
+                (linearProgressionExercises));
         }
 
 

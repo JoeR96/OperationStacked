@@ -13,14 +13,8 @@ namespace OperationStacked.Factories
 
             e.ExerciseName = _createExerciseModel.ExerciseName;
             e.Category = _createExerciseModel.Category;
-            e.Template = _createExerciseModel.Template;
-            e.LiftDay = _createExerciseModel.LiftDay;
-            e.LiftOrder = _createExerciseModel.LiftOrder;
             e.UserId = userId;
             e.EquipmentType = _createExerciseModel.EquipmentType;
-            e.WorkingWeight = _createExerciseModel.StartingWeight;
-            e.RestTimer = _createExerciseModel.RestTimer;
-            e.ParentId = _createExerciseModel.ParentId;
         }
 
     }

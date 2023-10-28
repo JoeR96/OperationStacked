@@ -15,16 +15,14 @@ namespace OperationStacked.Factories
         {
             _exerciseRepository = exerciseRepository;
         }
-        public async Task<LinearProgressionExercise> CreateExercise(CreateExerciseModel createExerciseModel,
+        public async Task<LinearProgressionExercise> CreateLinearProgressionExercise(CreateExerciseModel createExerciseModel,
             Guid requestUserId = new Guid())
         {
             var _exercise = new LinearProgressionExercise();
-            _exercise.PopulateBaseValues(createExerciseModel, requestUserId);
             _exercise.MinimumReps = createExerciseModel.MinimumReps;
             _exercise.MaximumReps = createExerciseModel.MaximumReps;
             _exercise.Sets = createExerciseModel.TargetSets;
             _exercise.WeightIndex = createExerciseModel.WeightIndex;
-            _exercise.PrimaryExercise = createExerciseModel.PrimaryExercise;
             _exercise.WeightProgression = createExerciseModel.WeightProgression;
             _exercise.AttemptsBeforeDeload = createExerciseModel.AttemptsBeforeDeload;
 
@@ -51,17 +49,14 @@ namespace OperationStacked.Factories
                 }
             }
 
+            await _exerciseRepository.InsertLinearProgressionExercise(_exercise);
             return _exercise;
         }
 
         public async Task<(LinearProgressionExercise, ExerciseCompletedStatus)> ProgressExercise(CompleteExerciseRequest request)
         {
-            var exercise = (LinearProgressionExercise)await _exerciseRepository.GetExerciseById(request.Id);
-            exercise.Completed = true;
-            string completedRepsString = string.Join(",", request.Reps);
-            exercise.CompletedReps = completedRepsString;
+            var exercise = await _exerciseRepository.GetLinearProgressionExerciseById(request.ExerciseId);
 
-            await _exerciseRepository.UpdateAsync(exercise);
             ExerciseCompletedStatus status = ExerciseCompletedStatus.Failed;
             int weightIndexModifier = 0;
             int attemptModifier = 0;
@@ -98,12 +93,12 @@ namespace OperationStacked.Factories
             }
 
             LinearProgressionExercise nextExercise;
-            if (exercise.EquipmentType is EquipmentType.Cable or EquipmentType.Machine)
+            if (exercise.WorkoutExercise.Exercise.EquipmentType is EquipmentType.Cable or EquipmentType.Machine)
             {
                 var stack = await _exerciseRepository.GetEquipmentStack(exercise.EquipmentStackId);
                 nextExercise = exercise.GenerateNextExercise(await WorkingWeight(exercise.ParentId,exercise.WorkingWeight,exercise.WeightIndex + weightIndexModifier,
                         exercise.WeightProgression
-                        , exercise.EquipmentType, exercise.WeightIndex,stack),
+                        , exercise.WorkoutExercise.Exercise.EquipmentType, exercise.WeightIndex,stack),
                     weightIndexModifier, attemptModifier,stack);
                 
                 
@@ -112,11 +107,11 @@ namespace OperationStacked.Factories
             {
                 nextExercise = exercise.GenerateNextExercise(await WorkingWeight(exercise.ParentId,exercise.WorkingWeight, weightIndexModifier,
                         exercise.WeightProgression
-                        , exercise.EquipmentType, exercise.WeightIndex),
+                        , exercise.WorkoutExercise.Exercise.EquipmentType, exercise.WeightIndex),
                     weightIndexModifier, attemptModifier);
             }
             
-            await _exerciseRepository.InsertExercise(nextExercise); 
+            await _exerciseRepository.InsertLinearProgressionExercise(nextExercise); 
             return (nextExercise, status);
         }
         

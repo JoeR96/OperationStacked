@@ -25,16 +25,31 @@ namespace OperationStacked.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<WorkoutExercise>()
+                .HasOne(we => we.Exercise)
+                .WithMany()
+                .HasForeignKey(we => we.ExerciseId);
+            
+            
             modelBuilder.Entity<EquipmentStack>()
                 .Property(e => e.InitialIncrements)
                 .HasConversion(
                     v => v != null ? string.Join(',', v) : null,
                     v => v != null ? v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(x => (decimal?)decimal.Parse(x)).ToArray() : null);
+
+            modelBuilder.Entity<WorkoutExercise>()
+                .HasOne(we => we.LinearProgressionExercise)
+                .WithOne(lpe => lpe.WorkoutExercise)
+                .HasForeignKey<LinearProgressionExercise>(lpe => lpe.WorkoutExerciseId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         public virtual DbSet<LinearProgressionExercise> LinearProgressionExercises { get; set; }
         public virtual DbSet<A2SHypertrophyExercise> A2SHypertrophyExercises { get; set; }
         public virtual DbSet<Exercise> Exercises { get; set; }
+        public virtual DbSet<WorkoutExercise> WorkoutExercises { get; set; }
+        public virtual DbSet<ExerciseHistory> ExerciseHistory { get; set; }
+
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<EquipmentStack> EquipmentStacks { get; set; }
 

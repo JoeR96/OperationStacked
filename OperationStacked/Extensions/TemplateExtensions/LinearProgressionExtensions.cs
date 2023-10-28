@@ -19,22 +19,9 @@ namespace OperationStacked.Extensions.TemplateExtensions
                 MinimumReps = e.MinimumReps,
                 MaximumReps = e.MaximumReps,
                 Sets = e.Sets,
-                WeightIndex = e.WeightIndex + weightIndexModifier,
-                PrimaryExercise = e.PrimaryExercise,
                 WeightProgression = e.WeightProgression,
                 AttemptsBeforeDeload = e.AttemptsBeforeDeload,
-                ExerciseName = e.ExerciseName,
-                Category = e.Category,
-                Template = e.Template,
-                LiftDay = e.LiftDay,
-                LiftOrder = e.LiftOrder,
-                EquipmentStackId = e.EquipmentStackId,
-                LiftWeek = e.LiftWeek + 1,
-                ParentId = e.Id,
-                WorkingWeight = workingWeight,
-                CurrentAttempt = e.CurrentAttempt + attemptModifier,
-                EquipmentType = e.EquipmentType,
-                UserId = e.UserId
+                CurrentAttempt = e.CurrentAttempt + attemptModifier
             };
         public static decimal ProgressedWeight(this LinearProgressionExercise exercise)
         {

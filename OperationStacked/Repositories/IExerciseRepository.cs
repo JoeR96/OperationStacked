@@ -7,7 +7,7 @@ namespace OperationStacked.Repositories
     public interface IExerciseRepository
     {
         Task<Exercise> GetExerciseById(Guid id);
-        Task<List<Exercise>> GetExercises(Guid userId, int week, int day, bool completed);
+        Task<List<WorkoutExercise>> GetWorkoutExercisesByWeekAndDay(Guid userId, int week, int day);
         Task InsertExercise(Exercise nextExercise);
         Task UpdateAsync(Exercise exercise);
         Task<bool> DeleteAllExercisesForUser(Guid userId);
@@ -16,8 +16,12 @@ namespace OperationStacked.Repositories
         Task<EquipmentStack> GetEquipmentStack(Guid equipmentStackId);
         Task<bool> DeleteEquipmentStack(Guid equipmentStackId);
         Task<Exercise> UpdateExerciseById(UpdateExerciseRequest request, int weightIndex = -1);
-        Task<(IEnumerable<Exercise> exercises, int totalCount)> GetAllExercisesWithCount(Guid userId, int pageIndex, int pageSize);
+        Task<(IEnumerable<WorkoutExercise> exercises, int totalCount)> GetAllWorkoutExercisesWithCount(Guid userId, int pageIndex, int pageSize);
 
         Task<List<EquipmentStack>> GetAllEquipmentStacks(Guid userId);
+        Task<LinearProgressionExercise> GetLinearProgressionExerciseById(Guid id);
+        Task InsertLinearProgressionExercise(LinearProgressionExercise nextExercise);
+        Task InsertWorkoutExercise(WorkoutExercise workoutExercise);
+        Task InsertExerciseHistory(ExerciseHistory history);
     }
 }

@@ -27,32 +27,38 @@ public class ExerciseProgressionService : IExerciseProgressionService
 
     public async Task<ExerciseCompletionResult> CompleteExercise(CompleteExerciseRequest request)
     {
-        var exercise = GetExercise(request.Id);
-    
-        switch (exercise.Template)
+        var exercise = GetWorkoutExercise(request.ExerciseId);
+
+
+        if (request.Template != null)
         {
-            case ExerciseTemplate.LinearProgression:
-                return await HandleLinearProgression(request);
+            switch (exercise.Template)
+            {
+                case ExerciseTemplate.LinearProgression:
+                    return await HandleLinearProgression(request);
 
-            case ExerciseTemplate.A2SHypertrophy:
-                return await HandleA2SHypertrophy(request);
+                case ExerciseTemplate.A2SHypertrophy:
+                    return await HandleA2SHypertrophy(request);
 
-            default:
-                throw new InvalidOperationException($"Unsupported exercise template: {exercise.Template}");
+                default:
+                    throw new InvalidOperationException($"Unsupported exercise template: {exercise.Template}");
+            }
         }
+
+        return new ExerciseCompletionResult(ExerciseCompletedStatus.Progressed, null);
     }
 
-    public async Task<Exercise> UpdateWorkingWeight(UpdateExerciseRequest request)
+    public async Task<LinearProgressionExercise> UpdateWorkingWeight(UpdateExerciseRequest request)
     {
-        var exercise = await _exerciseRepository.GetExerciseById(request.Id) as LinearProgressionExercise;
-
-        bool success = false;
-        if (exercise.EquipmentType is EquipmentType.Barbell or EquipmentType.SmithMachine or EquipmentType.Dumbbell or EquipmentType.SmithMachine)
+        var exercise = await _exerciseRepository.GetLinearProgressionExerciseById(request.Id);
+        var success = false;
+        
+        if (exercise.WorkoutExercise.Exercise.EquipmentType is EquipmentType.Barbell or EquipmentType.SmithMachine or EquipmentType.Dumbbell or EquipmentType.SmithMachine)
         {
             exercise.WorkingWeight = request.WorkingWeight;
         }
 
-        if (exercise.EquipmentType is EquipmentType.Cable or EquipmentType.Machine)
+        if (exercise.WorkoutExercise.Exercise.EquipmentType is EquipmentType.Cable or EquipmentType.Machine)
         {
             var stackId = exercise.EquipmentStackId;
             var equipmentStack = await _exerciseRepository.GetEquipmentStack(stackId);
@@ -102,10 +108,10 @@ public class ExerciseProgressionService : IExerciseProgressionService
         return new ExerciseCompletionResult(default, default);
     }
 
-    private Exercise GetExercise(Guid id)
+    private WorkoutExercise GetWorkoutExercise(Guid id)
         => _operationStackedContext
-            .Exercises
-            .Where(x => x.Id == id)
+            .WorkoutExercises
+            .Where(x => x.Exercise.Id == id)
             .FirstOrDefault();
 
   

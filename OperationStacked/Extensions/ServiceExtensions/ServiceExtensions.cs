@@ -5,6 +5,7 @@ using OperationStacked.Data;
 using OperationStacked.Factories;
 using OperationStacked.Options;
 using OperationStacked.Repositories;
+using OperationStacked.Services;
 using OperationStacked.Services.A2S;
 using OperationStacked.Services.ExerciseCreationService;
 using OperationStacked.Services.ExerciseProgressionService;
@@ -44,7 +45,10 @@ namespace OperationStacked.Extensions.ServiceExtensions
                 .AddTransient<IExerciseRetrievalService, ExerciseRetrievalService>()
                 .AddTransient<IUserAccountService, UserAccountService>()
                 .AddTransient<IA2SHypertrophyService, A2SHypertrophyService>()
-                .AddTransient<LinearProgressionService>();
+                .AddTransient<IWorkoutExerciseService, WorkoutExerciseService>()
+                .AddTransient<LinearProgressionService>().AddTransient<IExerciseCompletionService,ExerciseCompletionService>();
+
+
 
      
         public static IServiceCollection AddRepositories(this IServiceCollection services)
@@ -70,6 +74,3 @@ namespace OperationStacked.Extensions.ServiceExtensions
     }
 
 }
-
-
-

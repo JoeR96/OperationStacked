@@ -39,5 +39,6 @@ namespace OperationStacked.Models
         public EquipmentStackKey? EquipmentStackKey { get; set; }
         public CreateEquipmentStackRequest? EquipmentStack { get; set; }
         public int RestTimer { get; internal set; }
+        public Guid ExerciseId { get; set; }
     }
 }

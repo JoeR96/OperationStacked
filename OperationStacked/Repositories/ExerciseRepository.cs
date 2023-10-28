@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MoreLinq.Extensions;
 using OperationStacked.Data;
 using OperationStacked.Entities;
 using OperationStacked.Requests;
@@ -20,53 +21,40 @@ namespace OperationStacked.Repositories
             _operationStackedContext = contextFactory.CreateDbContext();
         }
 
-        public async Task<List<Exercise>> GetExercises(Guid userId, int week, int day, bool completed)
+        public async Task<List<WorkoutExercise>> GetWorkoutExercisesByWeekAndDay(Guid userId, int week, int day)
         {
-            await GetAllExercisesAndUpdateCompletedReps(userId);
-            try
-            {
-                await _logger.LogMessageAsync("This is a log message!");
-
-                return completed
-                    ? await _operationStackedContext.Exercises
-                        .Where(x => x.LiftDay == day && x.LiftWeek == week && x.UserId == userId)
-                        .ToListAsync()
-                    : await _operationStackedContext.Exercises
-                        .Where(x => x.LiftDay == day && x.LiftWeek == week && x.UserId == userId && x.Completed == false)
-                        .ToListAsync();
-            }
-            catch (Exception e)
-            {
-                await _logger.LogMessageAsync($"Error {e}");
-                throw;
-            }
-           
+            return await _operationStackedContext.WorkoutExercises
+                .Include(we => we.Exercise) 
+                .Include(we => we.LinearProgressionExercise) 
+                .Where(we => we.Exercise.UserId == userId &&  
+                             we.LinearProgressionExercise.LiftWeek == week &&
+                             we.LiftDay == day)
+                .ToListAsync();
         }
-        public async Task<List<Exercise>> GetAllExercisesAndUpdateCompletedReps(Guid userId)
+
+
+
+
+        public async Task<List<LinearProgressionExercise>> GetAllExercisesAndUpdateCompletedReps(Guid userId)
         {
             try
             {
                 await _logger.LogMessageAsync("Starting to fetch and update exercises!");
 
                 // Fetch all exercises for the given userId
-                var exercises = await _operationStackedContext.Exercises
-                    .Where(x => x.UserId == userId)
+                var exercises = await _operationStackedContext.LinearProgressionExercises
+                    .Where(x => x.WorkoutExercise.Exercise.UserId  == userId)
                     .ToListAsync();
 
                 var random = new Random();  // Create a random object to generate random numbers
 
                 foreach (var exercise in exercises)
                 {
-                    if (exercise is LinearProgressionExercise lpExercise)  // Ensure exercise is of type LinearProgressionExercise
-                    {
-                        // Generate randomized set values between minimum and maximum reps
-                        var setsValues = Enumerable.Range(0, lpExercise.Sets)
-                            .Select(_ => random.Next(lpExercise.MinimumReps, lpExercise.MaximumReps + 1))
-                            .ToArray();
 
-                        // Convert the randomized set values to a comma-separated string
-                        exercise.CompletedReps = string.Join(",", setsValues);
-                    }
+                        // Generate randomized set values between minimum and maximum reps
+                        var setsValues = Enumerable.Range(0, exercise.Sets)
+                            .Select(_ => random.Next(exercise.MinimumReps, exercise.MaximumReps + 1))
+                            .ToArray();
                 }
 
                 // Update the changes in the context
@@ -81,15 +69,18 @@ namespace OperationStacked.Repositories
                 throw;
             }
         }
-        public async Task<(IEnumerable<Exercise> exercises, int totalCount)> GetAllExercisesWithCount(Guid userId, int pageIndex, int pageSize)
+        public async Task<(IEnumerable<WorkoutExercise> exercises, int totalCount)> GetAllWorkoutExercisesWithCount(Guid userId, int pageIndex, int pageSize)
         {
             try
             {
-                var totalCount = await _operationStackedContext.Exercises.CountAsync(x => x.UserId == userId);
-        
-                var exercises = await _operationStackedContext.Exercises
-                    .Where(x => x.UserId == userId)
-                    .OrderBy(e => e.Id)
+                var totalCount = await _operationStackedContext.WorkoutExercises
+                    .CountAsync(we => we.Exercise.UserId == userId);
+    
+                var exercises = await _operationStackedContext.WorkoutExercises
+                    .Include(we => we.Exercise)
+                    .Include(we => we.LinearProgressionExercise)
+                    .Where(we => we.Exercise.UserId == userId)
+                    .OrderBy(we => we.WorkoutId)
                     .Skip(pageIndex * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
@@ -106,6 +97,9 @@ namespace OperationStacked.Repositories
 
         public async Task<Exercise> GetExerciseById(Guid id) => await _operationStackedContext.Exercises
         .FirstOrDefaultAsync(x => x.Id == id);
+
+
+
 
         public async Task InsertExercise(Exercise nextExercise)
         {
@@ -205,6 +199,26 @@ namespace OperationStacked.Repositories
             }
         }
 
+        public Task<LinearProgressionExercise> GetLinearProgressionExerciseById(Guid id)
+        {
+            return _operationStackedContext.LinearProgressionExercises.Where(lp => lp.Id == id).FirstOrDefaultAsync();
+        }
+
+        public async Task InsertLinearProgressionExercise(LinearProgressionExercise nextExercise)
+        {
+            await _operationStackedContext.LinearProgressionExercises.AddAsync(nextExercise);
+        }
+
+        public async Task InsertWorkoutExercise(WorkoutExercise workoutExercise)
+        {
+            await _operationStackedContext.WorkoutExercises.AddAsync(workoutExercise);
+        }
+
+        public async Task InsertExerciseHistory(ExerciseHistory history)
+        {
+            await _operationStackedContext.ExerciseHistory.AddAsync(history);
+        }
+
 
         public async Task<bool> DeleteEquipmentStack(Guid equipmentStackId)
         {
@@ -234,7 +248,5 @@ namespace OperationStacked.Repositories
 
             return exercise;
         }
-
-       
     }
 }

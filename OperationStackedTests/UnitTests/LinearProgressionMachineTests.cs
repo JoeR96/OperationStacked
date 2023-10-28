@@ -74,7 +74,7 @@ public class LinearProgressionMachineTests
     {
         return new CompleteExerciseRequest
         {
-            Id = new Guid(),
+            ExerciseId = new Guid(),
             Reps = reps,
             Sets = reps.Length
         };

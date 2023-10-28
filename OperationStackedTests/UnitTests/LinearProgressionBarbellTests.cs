@@ -29,7 +29,7 @@ public class LinearProgressionTests
     {
         var createExerciseModel = new ExerciseModelBuilder().WithDefaultValues().Build();
 
-        var createdExercise = await _service.CreateExercise(createExerciseModel);
+        var createdExercise = await _service.CreateLinearProgressionExercise(createExerciseModel);
 
         createdExercise.ExerciseName.Should().Be(createExerciseModel.ExerciseName);
         createdExercise.MinimumReps.Should().Be(createExerciseModel.MinimumReps);
@@ -111,15 +111,15 @@ public class LinearProgressionTests
 
     private void SetupRepositoryWithExercise(LinearProgressionExercise exercise)
     {
-        var completeExerciseRequest = new CompleteExerciseRequest { Id = new Guid() };
-        _repository.GetExerciseById(completeExerciseRequest.Id).Returns(exercise);
+        var completeExerciseRequest = new CompleteExerciseRequest { ExerciseId = new Guid() };
+        _repository.GetExerciseById(completeExerciseRequest.ExerciseId).Returns(exercise);
     }
 
     private CompleteExerciseRequest CreateExerciseRequest(params int[] reps)
     {
         return new CompleteExerciseRequest
         {
-            Id = new Guid(),
+            ExerciseId = new Guid(),
             Reps = reps,
             Sets = reps.Length
         };
