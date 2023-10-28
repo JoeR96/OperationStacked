@@ -1,20 +1,14 @@
 ﻿using System.Reflection;
-using Amazon.Runtime;
-using Amazon.SecretsManager;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using OperationStacked.Abstractions;
 using OperationStacked.Data;
 using OperationStacked.Factories;
 using OperationStacked.Options;
 using OperationStacked.Repositories;
-using OperationStacked.Services;
 using OperationStacked.Services.A2S;
-using OperationStacked.Services.A2S.ToDoService;
 using OperationStacked.Services.ExerciseCreationService;
 using OperationStacked.Services.ExerciseProgressionService;
 using OperationStacked.Services.ExerciseRetrievalService;
-using OperationStacked.Services.RecipeService;
 using OperationStacked.Services.UserAccountsService;
 
 namespace OperationStacked.Extensions.ServiceExtensions
@@ -48,13 +42,9 @@ namespace OperationStacked.Extensions.ServiceExtensions
                 .AddTransient<IExerciseProgressionService, ExerciseProgressionService>()
                 .AddTransient<IExerciseCreationService, ExerciseCreationService>()
                 .AddTransient<IExerciseRetrievalService, ExerciseRetrievalService>()
-                .AddTransient<IToDoRepository, ToDoRepsitory>()
-                .AddTransient<IToDoService, ToDoService>()
                 .AddTransient<IUserAccountService, UserAccountService>()
                 .AddTransient<IA2SHypertrophyService, A2SHypertrophyService>()
-                .AddTransient<LinearProgressionService>()
-                .AddTransient<IRecipeRepository, RecipeRepository>()
-                .AddTransient<IRecipeService, RecipeService>();
+                .AddTransient<LinearProgressionService>();
 
      
         public static IServiceCollection AddRepositories(this IServiceCollection services)

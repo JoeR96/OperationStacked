@@ -36,7 +36,8 @@ public class ExerciseModelBuilder
             StartingWeight = 60m,
             WeightProgression = 2.50m,
             AttemptsBeforeDeload = 2,
-            Week = 1
+            Week = 1,
+            UserId = new Guid()
         };
         return this;
     }
@@ -103,9 +104,11 @@ public class ExerciseModelBuilder
         _model.StartingWeight = startingWeight;
         return this;
     }
-    // Additional builder methods can be added here based on your requirements
-
-    // Build the model
+    public ExerciseModelBuilder WithUserId(Guid userId)
+    {
+        _model.UserId = userId;
+        return this;
+    }
     public CreateExerciseModel Build() => _model;
 
     public OperationStacked.TestLib.CreateExerciseModel Adapt()
@@ -138,7 +141,7 @@ public class ExerciseModelBuilder
                 Week = _model.Week,
                 ParentId = _model.ParentId,
                 EquipmentStack = new EquipmentStackBuilder().WithDefaultValues().Adapt(),
-                RestTimer = _model.RestTimer
+                RestTimer = _model.RestTimer,
             };
         }
         catch (Exception ex)

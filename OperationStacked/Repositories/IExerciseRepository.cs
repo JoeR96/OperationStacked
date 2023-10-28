@@ -15,7 +15,7 @@ namespace OperationStacked.Repositories
         Task<EquipmentStackResponse> InsertEquipmentStack(CreateEquipmentStackRequest equipmentStack);
         Task<EquipmentStack> GetEquipmentStack(Guid equipmentStackId);
         Task<bool> DeleteEquipmentStack(Guid equipmentStackId);
-        Task<bool> UpdateExerciseById(Guid exerciseId, decimal weight, int weightIndex = -1);
+        Task<Exercise> UpdateExerciseById(UpdateExerciseRequest request, int weightIndex = -1);
         Task<(IEnumerable<Exercise> exercises, int totalCount)> GetAllExercisesWithCount(Guid userId, int pageIndex, int pageSize);
 
         Task<List<EquipmentStack>> GetAllEquipmentStacks(Guid userId);

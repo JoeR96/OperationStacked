@@ -7,6 +7,6 @@ namespace OperationStacked.Services.ExerciseProgressionService
     public interface IExerciseProgressionService
     {
         public Task<ExerciseCompletionResult> CompleteExercise(CompleteExerciseRequest request);
-        Task<decimal> UpdateWorkingWeight(Guid exerciseId, decimal weight);
+        Task<Exercise> UpdateWorkingWeight(UpdateExerciseRequest request);
     }
 }

@@ -58,7 +58,7 @@ namespace OperationStacked.Factories
         {
             var exercise = (LinearProgressionExercise)await _exerciseRepository.GetExerciseById(request.Id);
             exercise.Completed = true;
-            string completedRepsString = string.Join(",", request.Sets);
+            string completedRepsString = string.Join(",", request.Reps);
             exercise.CompletedReps = completedRepsString;
 
             await _exerciseRepository.UpdateAsync(exercise);

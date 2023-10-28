@@ -64,7 +64,6 @@ namespace OperationStacked.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("CompletedReps")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<Guid>("EquipmentStackId")

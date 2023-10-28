@@ -14,7 +14,7 @@ namespace OperationStacked.Entities
         public Guid Id { get; set; }
         public string ExerciseName { get; set; }
         public string Category { get; set; }
-        public string CompletedReps {get; set;}
+        public string? CompletedReps {get; set;}
         public EquipmentType EquipmentType { get; set; }
         public ExerciseTemplate Template { get; set; }
         public int LiftDay { get; set; } = 1;

@@ -68,6 +68,7 @@ public class DataSeed
                 .WithName(exerciseNameBarbell)
                 .WithEquipmentType(OperationStacked.Enums.EquipmentType.Barbell)
                 .WithLiftDay(i)
+                .WithUserId(UserId)
                 .Adapt();
 
             var linearProgressionMachine = new ExerciseModelBuilder()
@@ -76,6 +77,7 @@ public class DataSeed
                 .WithEquipmentType(OperationStacked.Enums.EquipmentType.Machine)
                 .WithLiftOrder(2)
                 .WithLiftDay(i) // Setting the day using the loop variable
+                .WithUserId(UserId)
                 .Adapt();
 
             var linearProgressionDumbell = new ExerciseModelBuilder()
@@ -84,6 +86,7 @@ public class DataSeed
                 .WithEquipmentType(OperationStacked.Enums.EquipmentType.Dumbbell)
                 .WithLiftOrder(3)
                 .WithLiftDay(i) // Setting the day using the loop variable
+                .WithUserId(UserId)
                 .Adapt();
 
             exercises.AddRange(new List<CreateExerciseModel>
@@ -96,11 +99,14 @@ public class DataSeed
 
         }
 
-        var work = await WorkoutClient.WorkoutCreationPOSTAsync((new CreateWorkoutRequest()
+        try
         {
-            ExerciseDaysAndOrders = exercises,
-            UserId = UserId
-        }));
+            var work = await WorkoutClient.WorkoutCreationPOSTAsync((new CreateWorkoutRequest()
+            {
+                ExerciseDaysAndOrders = exercises,
+                UserId = UserId
+            }));
+       
         var tasks = new List<Task>();
 
         foreach (var workExercise in work.Exercises)
@@ -109,6 +115,11 @@ public class DataSeed
         }
 
         await Task.WhenAll(tasks);
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
     }
 
     private int GenerateExerciseOutcome(double failWeight, double passWeight, double progressWeight)

@@ -226,13 +226,13 @@ namespace OperationStacked.Repositories
             return saveResult > 0;
         }
 
-        public async Task<bool> UpdateExerciseById(Guid exerciseId, decimal weight,int weightIndex = -1)
+        public async Task<Exercise> UpdateExerciseById(UpdateExerciseRequest request,int weightIndex = -1)
         {
-            var exercise = await _operationStackedContext.Exercises.Where(x => x.Id == exerciseId).FirstOrDefaultAsync();
+            var exercise = await _operationStackedContext.Exercises.Where(x => x.Id == request.Id).FirstOrDefaultAsync();
             _operationStackedContext.Update(exercise);
             var saveResult = await _operationStackedContext.SaveChangesAsync();
 
-            return saveResult > 0;
+            return exercise;
         }
 
        

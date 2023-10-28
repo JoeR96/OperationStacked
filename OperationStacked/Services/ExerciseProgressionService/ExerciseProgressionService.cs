@@ -42,15 +42,14 @@ public class ExerciseProgressionService : IExerciseProgressionService
         }
     }
 
-    public async Task<decimal> UpdateWorkingWeight(Guid exerciseId, decimal newWorkingWeight)
+    public async Task<Exercise> UpdateWorkingWeight(UpdateExerciseRequest request)
     {
-        var exercise = await _exerciseRepository.GetExerciseById(exerciseId);
+        var exercise = await _exerciseRepository.GetExerciseById(request.Id) as LinearProgressionExercise;
+
         bool success = false;
         if (exercise.EquipmentType is EquipmentType.Barbell or EquipmentType.SmithMachine or EquipmentType.Dumbbell or EquipmentType.SmithMachine)
         {
-            exercise.WorkingWeight = newWorkingWeight;
-            success = await _exerciseRepository.UpdateExerciseById(exercise.Id, newWorkingWeight);
-
+            exercise.WorkingWeight = request.WorkingWeight;
         }
 
         if (exercise.EquipmentType is EquipmentType.Cable or EquipmentType.Machine)
@@ -60,24 +59,17 @@ public class ExerciseProgressionService : IExerciseProgressionService
             var generatedStack = equipmentStack.GenerateStack();
 
 
-            var newIndex = FindClosestIndex(generatedStack, newWorkingWeight);
+            var newIndex = FindClosestIndex(generatedStack, request.WorkingWeight);
             var newWeight = (decimal)generatedStack[newIndex];
             exercise.WorkingWeight = newWeight;
             exercise.WeightIndex = newIndex;
-            await _exerciseRepository.UpdateExerciseById(exercise.Id, newWeight, newIndex);
-            
-            
-            
-            
-            
-            
-            
-            
-
+            await _exerciseRepository.UpdateExerciseById(request, newIndex);
         }
-
-        success = await _exerciseRepository.UpdateExerciseById(exercise.Id, newWorkingWeight);
-        return exercise.WorkingWeight;
+        exercise.MaximumReps = request.MaximumReps;
+        exercise.MinimumReps = request.MinimumReps;
+        exercise.Sets = request.Sets;
+        await _exerciseRepository.UpdateExerciseById(request);
+        return exercise;
         
     }
     private static int FindClosestIndex(decimal?[] arr, decimal target) 
