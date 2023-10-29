@@ -29,8 +29,8 @@ namespace OperationStacked.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<double>("IncrementCount")
-                        .HasColumnType("double");
+                    b.Property<decimal>("IncrementCount")
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("IncrementValue")
                         .HasColumnType("decimal(65,30)");
@@ -60,15 +60,6 @@ namespace OperationStacked.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<bool>("Completed")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("CompletedReps")
-                        .HasColumnType("longtext");
-
-                    b.Property<Guid>("EquipmentStackId")
-                        .HasColumnType("char(36)");
-
                     b.Property<int>("EquipmentType")
                         .HasColumnType("int");
 
@@ -76,88 +67,94 @@ namespace OperationStacked.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("LiftDay")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LiftOrder")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LiftWeek")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("ParentId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<int>("RestTimer")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Template")
-                        .HasColumnType("int");
-
                     b.Property<Guid>("UserId")
                         .HasColumnType("char(36)");
-
-                    b.Property<int>("WeightIndex")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("WorkingWeight")
-                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Exercises");
                 });
 
-            modelBuilder.Entity("OperationStacked.Entities.Recipe", b =>
+            modelBuilder.Entity("OperationStacked.Entities.ExerciseHistory", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("Name")
+                    b.Property<DateTime>("CompletedDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CompletedReps")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
-                    b.Property<string>("Steps")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Recipes");
-                });
-
-            modelBuilder.Entity("OperationStacked.Entities.RecipeIngredient", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Measurement")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("Quantity")
+                    b.Property<int>("CompletedSets")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("RecipeId")
+                    b.Property<Guid>("ExerciseId")
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("TemplateExerciseId")
                         .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RecipeId");
+                    b.HasIndex("ExerciseId");
 
-                    b.ToTable("Ingredients");
+                    b.HasIndex("TemplateExerciseId");
+
+                    b.ToTable("ExerciseHistory");
+                });
+
+            modelBuilder.Entity("OperationStacked.Entities.LinearProgressionExercise", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("AttemptsBeforeDeload")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CurrentAttempt")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("EquipmentStackId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("LiftWeek")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaximumReps")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MinimumReps")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("ParentId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("Sets")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WeightIndex")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("WeightProgression")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("WorkingWeight")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<Guid>("WorkoutExerciseId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WorkoutExerciseId")
+                        .IsUnique();
+
+                    b.ToTable("LinearProgressionExercise");
                 });
 
             modelBuilder.Entity("OperationStacked.Entities.Role", b =>
@@ -174,38 +171,6 @@ namespace OperationStacked.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Role");
-                });
-
-            modelBuilder.Entity("OperationStacked.Entities.ToDo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Completed")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime>("CompletedDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ToDos");
                 });
 
             modelBuilder.Entity("OperationStacked.Entities.User", b =>
@@ -259,6 +224,40 @@ namespace OperationStacked.Migrations
                     b.ToTable("UserRole");
                 });
 
+            modelBuilder.Entity("OperationStacked.Entities.WorkoutExercise", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("Completed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<Guid>("ExerciseId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("LiftDay")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LiftOrder")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RestTimer")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Template")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("WorkoutId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExerciseId");
+
+                    b.ToTable("WorkoutExercises");
+                });
+
             modelBuilder.Entity("OperationStacked.Entities.A2SHypertrophyExercise", b =>
                 {
                     b.HasBaseType("OperationStacked.Entities.Exercise");
@@ -296,41 +295,32 @@ namespace OperationStacked.Migrations
                     b.ToTable("A2SHypertrophyExercise");
                 });
 
-            modelBuilder.Entity("OperationStacked.Entities.LinearProgressionExercise", b =>
+            modelBuilder.Entity("OperationStacked.Entities.ExerciseHistory", b =>
                 {
-                    b.HasBaseType("OperationStacked.Entities.Exercise");
-
-                    b.Property<int>("AttemptsBeforeDeload")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CurrentAttempt")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MaximumReps")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MinimumReps")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("PrimaryExercise")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("Sets")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("WeightProgression")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.ToTable("LinearProgressionExercise");
-                });
-
-            modelBuilder.Entity("OperationStacked.Entities.RecipeIngredient", b =>
-                {
-                    b.HasOne("OperationStacked.Entities.Recipe", null)
-                        .WithMany("Ingredients")
-                        .HasForeignKey("RecipeId")
+                    b.HasOne("OperationStacked.Entities.Exercise", "Exercise")
+                        .WithMany()
+                        .HasForeignKey("ExerciseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("OperationStacked.Entities.LinearProgressionExercise", "TemplateExercise")
+                        .WithMany()
+                        .HasForeignKey("TemplateExerciseId");
+
+                    b.Navigation("Exercise");
+
+                    b.Navigation("TemplateExercise");
+                });
+
+            modelBuilder.Entity("OperationStacked.Entities.LinearProgressionExercise", b =>
+                {
+                    b.HasOne("OperationStacked.Entities.WorkoutExercise", "WorkoutExercise")
+                        .WithOne("LinearProgressionExercise")
+                        .HasForeignKey("OperationStacked.Entities.LinearProgressionExercise", "WorkoutExerciseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WorkoutExercise");
                 });
 
             modelBuilder.Entity("OperationStacked.Entities.UserRole", b =>
@@ -352,6 +342,17 @@ namespace OperationStacked.Migrations
                     b.Navigation("UserAccount");
                 });
 
+            modelBuilder.Entity("OperationStacked.Entities.WorkoutExercise", b =>
+                {
+                    b.HasOne("OperationStacked.Entities.Exercise", "Exercise")
+                        .WithMany()
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Exercise");
+                });
+
             modelBuilder.Entity("OperationStacked.Entities.A2SHypertrophyExercise", b =>
                 {
                     b.HasOne("OperationStacked.Entities.Exercise", null)
@@ -359,20 +360,6 @@ namespace OperationStacked.Migrations
                         .HasForeignKey("OperationStacked.Entities.A2SHypertrophyExercise", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("OperationStacked.Entities.LinearProgressionExercise", b =>
-                {
-                    b.HasOne("OperationStacked.Entities.Exercise", null)
-                        .WithOne()
-                        .HasForeignKey("OperationStacked.Entities.LinearProgressionExercise", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("OperationStacked.Entities.Recipe", b =>
-                {
-                    b.Navigation("Ingredients");
                 });
 
             modelBuilder.Entity("OperationStacked.Entities.Role", b =>
@@ -383,6 +370,12 @@ namespace OperationStacked.Migrations
             modelBuilder.Entity("OperationStacked.Entities.User", b =>
                 {
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("OperationStacked.Entities.WorkoutExercise", b =>
+                {
+                    b.Navigation("LinearProgressionExercise")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

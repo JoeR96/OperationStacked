@@ -30,12 +30,13 @@ namespace OperationStacked.Data
                 .WithMany()
                 .HasForeignKey(we => we.ExerciseId);
             
-            
-            modelBuilder.Entity<EquipmentStack>()
-                .Property(e => e.InitialIncrements)
-                .HasConversion(
-                    v => v != null ? string.Join(',', v) : null,
-                    v => v != null ? v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(x => (decimal?)decimal.Parse(x)).ToArray() : null);
+
+                modelBuilder.Entity<EquipmentStack>()
+                    .Property(e => e.InitialIncrements)
+                    .HasConversion(
+                        v => string.Join(",", v),
+                        v => v.Split(new char[] { ',' }).Select(decimal.Parse).ToList());
+
 
             modelBuilder.Entity<WorkoutExercise>()
                 .HasOne(we => we.LinearProgressionExercise)

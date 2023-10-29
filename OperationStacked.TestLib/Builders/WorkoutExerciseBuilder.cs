@@ -1,5 +1,5 @@
-﻿using OperationStacked.Entities;
-using OperationStacked.Models;
+﻿using OperationStacked.TestLib;
+using ExerciseTemplate = OperationStacked.Models.ExerciseTemplate;
 
 public class WorkoutExerciseBuilder
 {
@@ -10,7 +10,7 @@ public class WorkoutExerciseBuilder
         _workoutExercise.Id = Guid.NewGuid();
         _workoutExercise.ExerciseId = Guid.Empty; // or some default value
         _workoutExercise.WorkoutId = Guid.Empty; // or some default value
-        _workoutExercise.Template = ExerciseTemplate.LinearProgression; // or some default value
+        _workoutExercise.Template = (OperationStacked.TestLib.ExerciseTemplate)ExerciseTemplate.LinearProgression; // or some default value
         _workoutExercise.LiftDay = 1;
         _workoutExercise.LiftOrder = 1;
         _workoutExercise.Completed = false;
@@ -32,7 +32,7 @@ public class WorkoutExerciseBuilder
 
     public WorkoutExerciseBuilder WithTemplate(ExerciseTemplate template)
     {
-        _workoutExercise.Template = template;
+        _workoutExercise.Template = (OperationStacked.TestLib.ExerciseTemplate)template;
         return this;
     }
 

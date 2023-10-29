@@ -10,10 +10,9 @@ namespace OperationStacked.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         public string ExerciseName { get; set; }
-        public string Category { get; set; }
+        public Category Category { get; set; }
         public EquipmentType EquipmentType { get; set; }
         public Guid UserId { get; set; }
-
 
     }
 }

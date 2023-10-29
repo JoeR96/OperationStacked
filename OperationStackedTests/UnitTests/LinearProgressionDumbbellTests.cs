@@ -8,6 +8,7 @@ using OperationStacked.Factories;
 using OperationStacked.Models;
 using OperationStacked.Repositories;
 using OperationStacked.Requests;
+using OperationStacked.TestLib.Adapters;
 
 [TestFixture]
 public class LinearProgressionDumbbellTests
@@ -26,7 +27,7 @@ public class LinearProgressionDumbbellTests
     public async Task LinearProgressionExercise_DumbbellProgressesBy1KGIfUnder10KG ()
     {
         var exercise = CreateExercise();
-        SetupRepositoryWithExercise(exercise);
+        SetupRepositoryWithExercise(exercise.WorkoutExercise.Exercise);
 
         var (nextExercise, status) = await _service.ProgressExercise(CreateExerciseRequest(12, 12, 12, 12));
 
@@ -38,7 +39,7 @@ public class LinearProgressionDumbbellTests
     public async Task LinearProgressionExercise_DumbbellProgressesBy2KGIfOver10KG ()
     {
         var exercise = CreateExercise(workingWeight:10);
-        SetupRepositoryWithExercise(exercise);
+        SetupRepositoryWithExercise(exercise.WorkoutExercise.Exercise);
 
         var (nextExercise, status) = await _service.ProgressExercise(CreateExerciseRequest(12, 12, 12, 12));
 
@@ -49,7 +50,7 @@ public class LinearProgressionDumbbellTests
     public async Task LinearProgressionExercise_DumbbellDeloadsBy1KGIf10KGorUnder ()
     {
         var exercise = CreateExercise(failedAttempts:2,workingWeight:10);
-        SetupRepositoryWithExercise(exercise);
+        SetupRepositoryWithExercise(exercise.WorkoutExercise.Exercise);
 
         var (nextExercise, status) = await _service.ProgressExercise(CreateExerciseRequest(7, 12, 12, 12));
 
@@ -61,7 +62,7 @@ public class LinearProgressionDumbbellTests
     public async Task LinearProgressionExercise_DumbbellDeloadsBy2KGIfOver10KG ()
     {
         var exercise = CreateExercise(workingWeight:12,failedAttempts:2);
-        SetupRepositoryWithExercise(exercise);
+        SetupRepositoryWithExercise(exercise.WorkoutExercise.Exercise);
 
         var (nextExercise, status) = await _service.ProgressExercise(CreateExerciseRequest(7, 12, 12, 12));
 
@@ -76,9 +77,8 @@ public class LinearProgressionDumbbellTests
             .WithSets(4)
             .WithWorkingWeight(workingWeight)
             .WithFailedAttempt(failedAttempts)
-            .WithEquipmentType(EquipmentType.Dumbbell)
             .WithReps(8, 12)
-            .Build();
+            .Build().AdaptToEntity();
     }
 
     private void SetupRepositoryWithExercise(Exercise exercise)

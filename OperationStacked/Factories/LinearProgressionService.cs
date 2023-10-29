@@ -15,8 +15,11 @@ namespace OperationStacked.Factories
         {
             _exerciseRepository = exerciseRepository;
         }
-        public async Task<LinearProgressionExercise> CreateLinearProgressionExercise(CreateExerciseModel createExerciseModel,
-            Guid requestUserId = new Guid())
+        public async Task<LinearProgressionExercise> CreateLinearProgressionExercise(
+            CreateLinearProgressionExerciseRequest createExerciseModel,
+            WorkoutExercise workoutExercise,
+        Guid requestUserId = new Guid()
+            )
         {
             var _exercise = new LinearProgressionExercise();
             _exercise.MinimumReps = createExerciseModel.MinimumReps;
@@ -25,6 +28,7 @@ namespace OperationStacked.Factories
             _exercise.WeightIndex = createExerciseModel.WeightIndex;
             _exercise.WeightProgression = createExerciseModel.WeightProgression;
             _exercise.AttemptsBeforeDeload = createExerciseModel.AttemptsBeforeDeload;
+            _exercise.WorkoutExerciseId = workoutExercise.Id; // or perhaps workoutExercise.Id depending on your structure
 
             if (createExerciseModel.EquipmentType is EquipmentType.Cable or EquipmentType.Machine)
             {
@@ -49,7 +53,7 @@ namespace OperationStacked.Factories
                 }
             }
 
-            await _exerciseRepository.InsertLinearProgressionExercise(_exercise);
+            _exerciseRepository.InsertLinearProgressionExercise(_exercise);
             return _exercise;
         }
 

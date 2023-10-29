@@ -1,48 +1,55 @@
-﻿using System;
-using OperationStacked.Entities;
-using OperationStacked.Enums;
-using OperationStacked.Models;
+﻿using OperationStacked.TestLib;
+using Category = OperationStacked.Enums.Category;
+using EquipmentType = OperationStacked.Enums.EquipmentType;
+using Exercise = OperationStacked.Entities.Exercise;
 
-public class ExerciseBuilder<T, TB> where T : Exercise, new() where TB : ExerciseBuilder<T, TB>, new()
+public class ExerciseBuilder
 {
-    protected T _exercise = new();
-    protected virtual TB Self() => (TB)this;
+    protected Exercise _exercise = new Exercise();
 
-    public virtual TB WithDefaultValues()
+    public ExerciseBuilder WithDefaultValues()
     {
-        _exercise = new T()
-        {
-            ExerciseName = "Default Exercise",
-            Category = "Default Category",
-            EquipmentType = EquipmentType.Barbell,
-            Template = ExerciseTemplate.LinearProgression,
-            LiftDay = 1,
-            LiftOrder = 1,
-            LiftWeek = 1,
-            WorkingWeight = 60.00M,
-            Completed = false,
-            RestTimer = 0
-        };
-        return Self();
+        _exercise.ExerciseName = "Default Exercise";
+        _exercise.Category = Category.Shoulders;
+        _exercise.EquipmentType = EquipmentType.Barbell;
+        _exercise.UserId = Guid.Empty; // or some default user id
+        return this;
     }
 
-    public virtual TB WithEquipmentType(EquipmentType equipmentType)
+    public ExerciseBuilder WithExerciseName(string name)
+    {
+        _exercise.ExerciseName = name;
+        return this;
+    }
+
+    public ExerciseBuilder WithCategory(Category category)
+    {
+        _exercise.Category = category;
+        return this;
+    }
+
+    public ExerciseBuilder WithEquipmentType(EquipmentType equipmentType)
     {
         _exercise.EquipmentType = equipmentType;
-        return Self();
+        return this;
     }
 
-    public  virtual TB WithTemplate(ExerciseTemplate exerciseTemplate)
+    public ExerciseBuilder WithUserId(Guid userId)
     {
-        _exercise.Template = exerciseTemplate;
-        return Self();
+        _exercise.UserId = userId;
+        return this;
     }
 
-    public virtual TB WithWorkingWeight(decimal workingWeight)
+    public Exercise Build() => _exercise;
+
+    public CreateExerciseRequest BuildCreateExerciseRequest()
     {
-        _exercise.WorkingWeight = workingWeight;
-        return Self();
+        return new CreateExerciseRequest
+        {
+            ExerciseName = _exercise.ExerciseName,
+            Category = (OperationStacked.TestLib.Category)_exercise.Category,
+            EquipmentType = (OperationStacked.TestLib.EquipmentType)_exercise.EquipmentType,
+            UserId = _exercise.UserId
+        };
     }
-
-    public T Build() => _exercise;
 }

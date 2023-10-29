@@ -10,7 +10,7 @@ public class EquipmentStackBuilder
         {
             Id = Guid.NewGuid(),
             StartWeight = 10,
-            InitialIncrements = new Decimal?[]{},
+            InitialIncrements = new decimal[]{},
             IncrementValue = 2.5m,
             IncrementCount = 20,
             EquipmentStackKey = "DefaultKey",
@@ -28,7 +28,7 @@ public class EquipmentStackBuilder
         _stack.IncrementCount = incrementCount;
         return this;
     }
-    public EquipmentStackBuilder WithInitialIncrements(decimal?[] increments)
+    public EquipmentStackBuilder WithInitialIncrements(decimal[] increments)
     {
         _stack.InitialIncrements = increments;
         return this;
@@ -44,10 +44,7 @@ public class EquipmentStackBuilder
     {
         return new CreateEquipmentStackRequest
         {
-            StartWeight = _stack.StartWeight,
-            InitialIncrements = _stack.InitialIncrements,
-            IncrementValue = _stack.IncrementValue,
-            IncrementCount = _stack.IncrementCount,
+
             UserID = _stack.UserID,
             EquipmentStackKey = _stack.EquipmentStackKey
         };
@@ -55,5 +52,18 @@ public class EquipmentStackBuilder
     // Add other builder methods as needed...
 
     public Entities.EquipmentStack Build() => _stack;
-}
 
+    public OperationStacked.TestLib.CreateEquipmentStackRequest BuildCreateRequest()
+    {
+        // This method creates a CreateEquipmentStackRequest object from the built EquipmentStack entity.
+        return new OperationStacked.TestLib.CreateEquipmentStackRequest
+        {
+            StartWeight = _stack.StartWeight,
+            InitialIncrements = _stack.InitialIncrements,
+            IncrementValue = _stack.IncrementValue,
+            IncrementCount = _stack.IncrementCount,
+            EquipmentStackKey = _stack.EquipmentStackKey,
+            UserID = _stack.UserID // Assuming the builder sets this property somewhere before this method is called.
+        };
+    }
+}

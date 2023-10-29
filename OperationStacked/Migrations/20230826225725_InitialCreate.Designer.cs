@@ -31,8 +31,8 @@ namespace OperationStacked.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<double>("IncrementCount")
-                        .HasColumnType("double");
+                    b.Property<decimal>("IncrementCount")
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("IncrementValue")
                         .HasColumnType("decimal(65,30)");

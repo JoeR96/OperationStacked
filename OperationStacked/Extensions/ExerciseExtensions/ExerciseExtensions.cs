@@ -3,18 +3,19 @@ using OperationStacked.Entities;
 using OperationStacked.Models;
 using OperationStacked.Repositories;
 using OperationStacked.Requests;
+using CreateExerciseRequest = OperationStacked.Models.CreateExerciseRequest;
 
 namespace OperationStacked.Factories
 {
     public static class ExerciseExtensions
     {
-        public static void PopulateBaseValues(this Exercise e, CreateExerciseModel _createExerciseModel, Guid userId)
+        public static void PopulateBaseValues(this Exercise e, CreateExerciseRequest createExerciseRequest, Guid userId)
         {
 
-            e.ExerciseName = _createExerciseModel.ExerciseName;
-            e.Category = _createExerciseModel.Category;
+            e.ExerciseName = createExerciseRequest.ExerciseName;
+            e.Category = createExerciseRequest.Category;
             e.UserId = userId;
-            e.EquipmentType = _createExerciseModel.EquipmentType;
+            e.EquipmentType = createExerciseRequest.EquipmentType;
         }
 
     }

@@ -22,7 +22,7 @@ namespace OperationStacked.Migrations
                     InitialIncrements = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     IncrementValue = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    IncrementCount = table.Column<double>(type: "double", nullable: false),
+                    IncrementCount = table.Column<decimal>(type: "decimal", nullable: false),
                     EquipmentStackKey = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     UserID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")

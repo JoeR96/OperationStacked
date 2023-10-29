@@ -8,6 +8,7 @@ using OperationStacked.Factories;
 using OperationStacked.Models;
 using OperationStacked.Repositories;
 using OperationStacked.Requests;
+using OperationStacked.TestLib.Adapters;
 
 namespace OperationStackedAuth.Tests.UnitTests;
 
@@ -27,12 +28,14 @@ public class LinearProgressionTests
     [Test]
     public async Task LinearProgressionExercise_CreatesWithValues()
     {
-        var createExerciseModel = new ExerciseModelBuilder().WithDefaultValues().Build();
+        var createExerciseModel = new ExerciseBuilder().WithDefaultValues().Build();
+        var workoutExercise = new WorkoutExerciseBuilder().WithDefaultValues().Build();
+        var linearProgressionExercise =
+            new LinearProgressionExerciseBuilder().WithDefaultValues().AdaptToCreateRequest(workoutExercise.AdaptToCreateRequest());
+        var createdExercise = await _service.CreateLinearProgressionExercise(linearProgressionExercise.AdaptToCreateRequest(),workoutExercise.AdaptToEntity());
 
-        var createdExercise = await _service.CreateLinearProgressionExercise(createExerciseModel);
-
-        createdExercise.ExerciseName.Should().Be(createExerciseModel.ExerciseName);
-        createdExercise.MinimumReps.Should().Be(createExerciseModel.MinimumReps);
+        createdExercise.WorkoutExercise.Exercise.ExerciseName.Should().Be(createExerciseModel.ExerciseName);
+        createdExercise.MinimumReps.Should().Be(linearProgressionExercise.MinimumReps);
     }
 
     [Test]
@@ -102,17 +105,16 @@ public class LinearProgressionTests
     {
         return new LinearProgressionExerciseBuilder()
             .WithDefaultValues()
-            .WithEquipmentType(EquipmentType.Barbell)
             .WithSets(4)
             .WithFailedAttempt(failedAttempts)
             .WithReps(8, 12)
-            .Build();
+            .Build().AdaptToEntity();
     }
 
     private void SetupRepositoryWithExercise(LinearProgressionExercise exercise)
     {
         var completeExerciseRequest = new CompleteExerciseRequest { ExerciseId = new Guid() };
-        _repository.GetExerciseById(completeExerciseRequest.ExerciseId).Returns(exercise);
+        _repository.GetExerciseById(completeExerciseRequest.ExerciseId).Returns(exercise.WorkoutExercise.Exercise);
     }
 
     private CompleteExerciseRequest CreateExerciseRequest(params int[] reps)

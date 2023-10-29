@@ -8,6 +8,7 @@ using OperationStacked.Factories;
 using OperationStacked.Models;
 using OperationStacked.Repositories;
 using OperationStacked.Requests;
+using OperationStacked.TestLib.Adapters;
 using OperationStacked.TestLib.Builders;
 
 public class LinearProgressionMachineTests
@@ -51,7 +52,7 @@ public class LinearProgressionMachineTests
 
     private void SetupRepository(LinearProgressionExercise exercise, EquipmentStack equipmentStack)
     {
-        _repository.GetExerciseById(Arg.Any<Guid>()).Returns(exercise);
+        _repository.GetExerciseById(Arg.Any<Guid>()).Returns(exercise.WorkoutExercise.Exercise);
         _repository.GetEquipmentStack(exercise.EquipmentStackId).Returns(equipmentStack);
     }
 
@@ -65,9 +66,8 @@ public class LinearProgressionMachineTests
             .WithSets(4)
             .WithWorkingWeight(workingWeight)
             .WithFailedAttempt(failedAttempts)
-            .WithEquipmentType(EquipmentType.Machine)
             .WithReps(8, 12)
-            .Build();
+            .Build().AdaptToEntity();
     }
 
     private CompleteExerciseRequest CreateExerciseRequest(params int[] reps)

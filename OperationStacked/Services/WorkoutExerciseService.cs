@@ -1,19 +1,19 @@
 ﻿using OperationStacked.Entities;
-using OperationStacked.Models;
 using OperationStacked.Repositories;
+using OperationStacked.Requests;
 
 namespace OperationStacked.Services;
 
 public class WorkoutExerciseService : IWorkoutExerciseService
 {
-    private IExerciseRepository _exerciseRepository;
+    private readonly IExerciseRepository _exerciseRepository;
 
     public WorkoutExerciseService(IExerciseRepository exerciseRepository)
     {
         _exerciseRepository = exerciseRepository;
     }
 
-    public async Task<WorkoutExercise> CreateWorkoutExercise(CreateExerciseModel request)
+    public async Task<WorkoutExercise> CreateWorkoutExercise(CreateWorkoutExerciseRequest request)
     {
         var workoutExercise = new WorkoutExercise
         {

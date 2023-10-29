@@ -1,6 +1,7 @@
 using Amazon;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using OperationStacked.Data;
 using OperationStacked.Extensions.AuthenticationExtensions;
 using OperationStacked.Extensions.CorsExtensions;
@@ -12,7 +13,11 @@ await builder.Services.SetAWSOptionsAsync();
 await builder.Services.ConfigureConnectionStringFromOptionsAsync();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+    {
+        c.MapType<decimal>(() => new OpenApiSchema { Type = "number", Format = "decimal" });
+    })
+    ;
 builder.Services.AddControllers();
 builder.Services.AddServices();
 builder.Services.AddHealthChecks();
@@ -33,7 +38,7 @@ app.MapHealthChecks("/health");
 
 using var scope = app.Services.CreateScope();
 var dbContext = scope.ServiceProvider.GetRequiredService<OperationStackedContext>();
-app.UseCors("MyPolicy");
+// app.UseCors("MyPolicy");
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Operation Stacked Workout V1.2"));
 app.UseHttpsRedirection();

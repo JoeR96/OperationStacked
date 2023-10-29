@@ -103,12 +103,14 @@ namespace OperationStacked.Repositories
 
         public async Task InsertExercise(Exercise nextExercise)
         {
+            _operationStackedContext = await _contextFactory.CreateDbContextAsync();
             await _operationStackedContext.Exercises.AddAsync(nextExercise);
             await _operationStackedContext.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Exercise exercise)
         {
+            _operationStackedContext = await _contextFactory.CreateDbContextAsync();
             _operationStackedContext.Exercises.Update(exercise);
             await _operationStackedContext.SaveChangesAsync();
         }
@@ -186,7 +188,7 @@ namespace OperationStacked.Repositories
             try 
             {
                 List<EquipmentStack> equipmentStack;
-                using (var context = _contextFactory.CreateDbContext())
+                await using (var context = await _contextFactory.CreateDbContextAsync())
                 {
                     equipmentStack = await context.EquipmentStacks.Where(x => x.UserID == userId).ToListAsync();
                 }
@@ -206,17 +208,23 @@ namespace OperationStacked.Repositories
 
         public async Task InsertLinearProgressionExercise(LinearProgressionExercise nextExercise)
         {
+            _operationStackedContext = await _contextFactory.CreateDbContextAsync();
             await _operationStackedContext.LinearProgressionExercises.AddAsync(nextExercise);
+            await _operationStackedContext.SaveChangesAsync();
         }
 
         public async Task InsertWorkoutExercise(WorkoutExercise workoutExercise)
         {
+            _operationStackedContext = await _contextFactory.CreateDbContextAsync();
             await _operationStackedContext.WorkoutExercises.AddAsync(workoutExercise);
+            await _operationStackedContext.SaveChangesAsync();
         }
 
         public async Task InsertExerciseHistory(ExerciseHistory history)
         {
+            _operationStackedContext = await _contextFactory.CreateDbContextAsync();
             await _operationStackedContext.ExerciseHistory.AddAsync(history);
+            await _operationStackedContext.SaveChangesAsync();
         }
 
 

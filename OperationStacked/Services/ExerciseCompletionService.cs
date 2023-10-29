@@ -8,6 +8,7 @@ public class ExerciseCompletionService : IExerciseCompletionService
 {
     private IExerciseRepository _exerciseRepository;
 
+
     public ExerciseCompletionService(IExerciseRepository exerciseRepository)
     {
         _exerciseRepository = exerciseRepository;
@@ -26,6 +27,6 @@ public class ExerciseCompletionService : IExerciseCompletionService
         };
 
         _exerciseRepository.InsertExerciseHistory(history);
-        
+
     }
 }

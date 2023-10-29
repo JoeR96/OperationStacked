@@ -4,7 +4,8 @@ namespace OperationStacked.Requests
 {
     public class CreateWorkoutRequest 
     {
-        public Guid userId { get; set; }
-        public List<CreateExerciseModel> ExerciseDaysAndOrders { get; set; }
+        public Guid UserId { get; set; }
+        public string WorkoutName { get; set; }
+        public List<CreateLinearProgressionExerciseRequest> Exercises { get; set; }
     }
 }

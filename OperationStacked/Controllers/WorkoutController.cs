@@ -6,6 +6,7 @@ using OperationStacked.Services.ExerciseCreationService;
 using OperationStacked.Services.ExerciseProgressionService;
 using OperationStacked.Services.ExerciseRetrievalService;
 using System.ComponentModel;
+using OperationStacked.Entities;
 
 namespace OperationStacked.Controllers
 {
@@ -32,7 +33,15 @@ namespace OperationStacked.Controllers
             _exerciseRepository = exerciseRepository;
         }
 
-        
+
+        [HttpPost("CreateExercises")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Exercise>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateExercisesAsync(
+            [FromBody] List<CreateExerciseRequest> requests)
+            => Ok(await _exerciseCreationService.CreateExercises(requests));
+
+
         [HttpPost]
         [ProducesResponseType(200, Type = typeof(WorkoutCreationResult))]
         public async Task<IActionResult> GenerateWorkoutAsync(

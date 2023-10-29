@@ -5,6 +5,7 @@ using OperationStacked.Factories;
 using OperationStacked.Models;
 using OperationStacked.Requests;
 using OperationStacked.Response;
+using CreateExerciseRequest = OperationStacked.Requests.CreateExerciseRequest;
 
 namespace OperationStacked.Services.ExerciseCreationService
 {
@@ -13,72 +14,86 @@ namespace OperationStacked.Services.ExerciseCreationService
         private readonly OperationStackedContext _operationStackedContext;
         private readonly LinearProgressionService _linearProgressionService;
         private readonly IWorkoutExerciseService _workoutExerciseService;
+        private readonly IExerciseCreationService _exerciseCreationService;
+
         public ExerciseCreationService(
-            OperationStackedContext operationStackedContext, LinearProgressionService linearProgressionService)
+            OperationStackedContext operationStackedContext, LinearProgressionService linearProgressionService,
+            IWorkoutExerciseService workoutExerciseService)
         {
             _operationStackedContext = operationStackedContext;
             _linearProgressionService = linearProgressionService;
+            _workoutExerciseService = workoutExerciseService;
         }
 
+        public async Task<List<Exercise>> CreateExercises(List<CreateExerciseRequest> requests)
+        {
+            return requests.Select(request => new Exercise
+            {
+                ExerciseName = request.ExerciseName,
+                Category = request.Category,
+                EquipmentType = request.EquipmentType,
+                UserId = request.UserId
+                // Id is not set here as it's assumed to be handled by the database context
+            }).ToList();
+        }
+
+        public async Task<Exercise> CreateExercise(CreateExerciseRequest request)
+        {
+            return new Exercise
+            {
+                ExerciseName = request.ExerciseName,
+                Category = request.Category,
+                EquipmentType = request.EquipmentType,
+                UserId = request.UserId
+                // Id is not set here as it's assumed to be handled by the database context
+            };
+        }
         public async Task<WorkoutCreationResult> CreateWorkout(CreateWorkoutRequest request)
         {
-            var workoutExercises =await Task.WhenAll(
-                request.ExerciseDaysAndOrders.Select(async exercise => await  _workoutExerciseService.CreateWorkoutExercise(exercise)));
-
-
-            //exercises are already created so we create the first week for each template
-            var linearProgressionExercises = await Task.WhenAll(
-                workoutExercises.Select(async workoutExercise =>
-                {
-                    var exerciseModel = request.ExerciseDaysAndOrders.First(e => e.ExerciseId == workoutExercise.ExerciseId);
-
-                    switch (exerciseModel.Template)
-                    {
-                        case ExerciseTemplate.LinearProgression:
-                            var linearProgressionExercise = await _linearProgressionService.CreateLinearProgressionExercise(exerciseModel, request.userId);
-
-                            // Link WorkoutExercise to LinearProgressionExercise
-                            linearProgressionExercise.WorkoutExerciseId = workoutExercise.ExerciseId; // or perhaps workoutExercise.Id depending on your structure
-                            workoutExercise.LinearProgressionExercise = linearProgressionExercise;
-
-                            return linearProgressionExercise;
-
-                        case ExerciseTemplate.A2SHypertrophy:
-                            return null;
-
-                        default:
-                            throw new InvalidOperationException($"Unsupported exercise template: {exerciseModel.Template}");
-                    }
-                })
-            );
-
-
-            await _operationStackedContext.SaveChangesAsync();
-
-            // Cast each item in the exercises collection individually
-            // var castExercises = exercises
-            //     .Select(exercise => exercise as Exercise)
-            //     .Where(exercise => exercise != null);
-            //
-            return new WorkoutCreationResult(
-                workoutExercises.Any() ? WorkoutCreatedStatus.Created : WorkoutCreatedStatus.Error,
-                (linearProgressionExercises));
-        }
-
-
-        private Type ResolveType(ExerciseTemplate template)
-        {
-            switch (template)
+            try
             {
-                case ExerciseTemplate.A2SHypertrophy:
-                    return typeof(A2SHypertrophyExercise);
-                case ExerciseTemplate.LinearProgression:
-                    return typeof(LinearProgressionExercise);
-                default:
-                    throw new ArgumentException($"Type of {template} not registered");
+                List<LinearProgressionExercise> linearProgressionExercises = new List<LinearProgressionExercise>();
+
+                foreach (var lpRequest in request.Exercises)
+                {
+                    // Determine if we need to create a new exercise or use an existing one.
+                    Exercise exercise =
+                        await _exerciseCreationService.CreateExercise(lpRequest.WorkoutExercise.Exercise);
+
+                    // Create the WorkoutExercise.
+                    WorkoutExercise workoutExercise = await _workoutExerciseService.CreateWorkoutExercise(
+                        new CreateWorkoutExerciseRequest()
+                        {
+                            ExerciseId = exercise.Id,
+                            Template = lpRequest.WorkoutExercise.Template,
+                            LiftDay = lpRequest.WorkoutExercise.LiftDay,
+                            LiftOrder = lpRequest.WorkoutExercise.LiftOrder,
+                            RestTimer = lpRequest.WorkoutExercise.RestTimer,
+                        });
+
+
+                   var linearProgressionExercise = await _linearProgressionService.CreateLinearProgressionExercise(
+                        lpRequest, workoutExercise, request.UserId);
+
+                    workoutExercise.LinearProgressionExercise = linearProgressionExercise;
+
+                    if (linearProgressionExercise != null)
+                    {
+                        linearProgressionExercises.Add(linearProgressionExercise);
+                    }
+                }
+
+                await _operationStackedContext.SaveChangesAsync();
+
+                return new WorkoutCreationResult(
+                    linearProgressionExercises.Any() ? WorkoutCreatedStatus.Created : WorkoutCreatedStatus.Error,
+                    linearProgressionExercises);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception, wrap it in a more user-friendly message, or handle it as needed.
+                throw new InvalidOperationException("An error occurred while creating the workout.", ex);
             }
         }
     }
-
-
 }
