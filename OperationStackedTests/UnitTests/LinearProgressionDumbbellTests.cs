@@ -83,14 +83,14 @@ public class LinearProgressionDumbbellTests
 
     private void SetupRepositoryWithExercise(Exercise exercise)
     {
-        var completeExerciseRequest = new CompleteExerciseRequest { ExerciseId = new Guid() };
-        _repository.GetExerciseById(completeExerciseRequest.ExerciseId).Returns(exercise);
+        var completeExerciseRequest = new CompleteExerciseRequest { LinearProgressionExerciseId = new Guid() };
+        _repository.GetExerciseById(completeExerciseRequest.LinearProgressionExerciseId).Returns(exercise);
     }
     private CompleteExerciseRequest CreateExerciseRequest(params int[] reps)
     {
         return new CompleteExerciseRequest
         {
-            ExerciseId = new Guid(),
+            LinearProgressionExerciseId = new Guid(),
             Reps = reps,
             Sets = reps.Length
         };

@@ -12,7 +12,7 @@ public class CreateLinearProgressionExerciseRequest
     public decimal WeightProgression { get; set; }
     public int AttemptsBeforeDeload { get; set; }
     public EquipmentType EquipmentType { get; set; }
-    public EquipmentStackKey EquipmentStackKey { get; set; }
-    public CreateEquipmentStackRequest EquipmentStack { get; set; }
+    public EquipmentStackKey? EquipmentStackKey { get; set; }
+    public CreateEquipmentStackRequest? EquipmentStack { get; set; }
     public CreateWorkoutExerciseRequest WorkoutExercise { get; set; }
 }

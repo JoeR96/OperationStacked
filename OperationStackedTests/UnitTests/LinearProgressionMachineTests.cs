@@ -53,7 +53,7 @@ public class LinearProgressionMachineTests
     private void SetupRepository(LinearProgressionExercise exercise, EquipmentStack equipmentStack)
     {
         _repository.GetExerciseById(Arg.Any<Guid>()).Returns(exercise.WorkoutExercise.Exercise);
-        _repository.GetEquipmentStack(exercise.EquipmentStackId).Returns(equipmentStack);
+        _repository.GetEquipmentStack(exercise.WorkoutExercise.EquipmentStackId).Returns(equipmentStack);
     }
 
     private EquipmentStack CreateDefaultEquipmentStack() 
@@ -74,7 +74,7 @@ public class LinearProgressionMachineTests
     {
         return new CompleteExerciseRequest
         {
-            ExerciseId = new Guid(),
+            LinearProgressionExerciseId = new Guid(),
             Reps = reps,
             Sets = reps.Length
         };

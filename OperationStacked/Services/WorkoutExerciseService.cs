@@ -22,9 +22,10 @@ public class WorkoutExerciseService : IWorkoutExerciseService
             LiftDay = request.LiftDay,
             LiftOrder = request.LiftOrder,
             RestTimer = request.RestTimer,
+
         };
 
-        _exerciseRepository.InsertWorkoutExercise(workoutExercise);
+
 
         return workoutExercise;
     }

@@ -19,9 +19,10 @@ namespace OperationStacked.Repositories
         Task<(IEnumerable<WorkoutExercise> exercises, int totalCount)> GetAllWorkoutExercisesWithCount(Guid userId, int pageIndex, int pageSize);
 
         Task<List<EquipmentStack>> GetAllEquipmentStacks(Guid userId);
-        Task<LinearProgressionExercise> GetLinearProgressionExerciseById(Guid id);
+        Task<LinearProgressionExercise> GetLinearProgressionExerciseByIdAsync(Guid id);
         Task InsertLinearProgressionExercise(LinearProgressionExercise nextExercise);
         Task InsertWorkoutExercise(WorkoutExercise workoutExercise);
         Task InsertExerciseHistory(ExerciseHistory history);
+        Task<WorkoutExercise> GetWorkoutExerciseById(Guid requestWorkoutExerciseId);
     }
 }

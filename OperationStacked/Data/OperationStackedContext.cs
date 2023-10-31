@@ -25,11 +25,7 @@ namespace OperationStacked.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<WorkoutExercise>()
-                .HasOne(we => we.Exercise)
-                .WithMany()
-                .HasForeignKey(we => we.ExerciseId);
-            
+
 
                 modelBuilder.Entity<EquipmentStack>()
                     .Property(e => e.InitialIncrements)
@@ -38,11 +34,13 @@ namespace OperationStacked.Data
                         v => v.Split(new char[] { ',' }).Select(decimal.Parse).ToList());
 
 
-            modelBuilder.Entity<WorkoutExercise>()
-                .HasOne(we => we.LinearProgressionExercise)
-                .WithOne(lpe => lpe.WorkoutExercise)
-                .HasForeignKey<LinearProgressionExercise>(lpe => lpe.WorkoutExerciseId)
-                .OnDelete(DeleteBehavior.Cascade);
+                modelBuilder.Entity<WorkoutExercise>()
+                    .HasMany(we => we.LinearProgressionExercises)
+                    .WithOne(lpe => lpe.WorkoutExercise)
+                    .HasForeignKey(lpe => lpe.WorkoutExerciseId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+
         }
 
         public virtual DbSet<LinearProgressionExercise> LinearProgressionExercises { get; set; }

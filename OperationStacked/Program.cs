@@ -1,6 +1,5 @@
+using System.Text.Json.Serialization;
 using Amazon;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OperationStacked.Data;
 using OperationStacked.Extensions.AuthenticationExtensions;
@@ -18,14 +17,19 @@ builder.Services.AddSwaggerGen(c =>
         c.MapType<decimal>(() => new OpenApiSchema { Type = "number", Format = "decimal" });
     })
     ;
-builder.Services.AddControllers();
-builder.Services.AddServices();
-builder.Services.AddHealthChecks();
-builder.Services.AddRepositories();
+
+
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.PropertyNamingPolicy = null;
+
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+
 });
+builder.Services.AddServices();
+builder.Services.AddHealthChecks();
+builder.Services.AddRepositories();
+
 builder.Services.AddCustomCorsPolicy();
 
 builder.Services.AddCognitoAuthentication();

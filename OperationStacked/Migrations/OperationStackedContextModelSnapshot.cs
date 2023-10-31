@@ -30,7 +30,7 @@ namespace OperationStacked.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<decimal>("IncrementCount")
-                        .HasColumnType("decimal");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<decimal>("IncrementValue")
                         .HasColumnType("decimal(65,30)");
@@ -56,9 +56,8 @@ namespace OperationStacked.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<int>("Category")
+                        .HasColumnType("int");
 
                     b.Property<int>("EquipmentType")
                         .HasColumnType("int");
@@ -113,35 +112,17 @@ namespace OperationStacked.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<int>("AttemptsBeforeDeload")
-                        .HasColumnType("int");
-
                     b.Property<int>("CurrentAttempt")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("EquipmentStackId")
-                        .HasColumnType("char(36)");
-
                     b.Property<int>("LiftWeek")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MaximumReps")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MinimumReps")
                         .HasColumnType("int");
 
                     b.Property<Guid>("ParentId")
                         .HasColumnType("char(36)");
 
-                    b.Property<int>("Sets")
-                        .HasColumnType("int");
-
                     b.Property<int>("WeightIndex")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("WeightProgression")
-                        .HasColumnType("decimal(65,30)");
 
                     b.Property<decimal>("WorkingWeight")
                         .HasColumnType("decimal(65,30)");
@@ -151,8 +132,7 @@ namespace OperationStacked.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("WorkoutExerciseId")
-                        .IsUnique();
+                    b.HasIndex("WorkoutExerciseId");
 
                     b.ToTable("LinearProgressionExercise");
                 });
@@ -230,8 +210,14 @@ namespace OperationStacked.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<int>("AttemptsBeforeDeload")
+                        .HasColumnType("int");
+
                     b.Property<bool>("Completed")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<Guid>("EquipmentStackId")
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("ExerciseId")
                         .HasColumnType("char(36)");
@@ -242,11 +228,23 @@ namespace OperationStacked.Migrations
                     b.Property<int>("LiftOrder")
                         .HasColumnType("int");
 
+                    b.Property<int>("MaximumReps")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MinimumReps")
+                        .HasColumnType("int");
+
                     b.Property<int>("RestTimer")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Sets")
                         .HasColumnType("int");
 
                     b.Property<int>("Template")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("WeightProgression")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<Guid>("WorkoutId")
                         .HasColumnType("char(36)");
@@ -315,8 +313,8 @@ namespace OperationStacked.Migrations
             modelBuilder.Entity("OperationStacked.Entities.LinearProgressionExercise", b =>
                 {
                     b.HasOne("OperationStacked.Entities.WorkoutExercise", "WorkoutExercise")
-                        .WithOne("LinearProgressionExercise")
-                        .HasForeignKey("OperationStacked.Entities.LinearProgressionExercise", "WorkoutExerciseId")
+                        .WithMany("LinearProgressionExercises")
+                        .HasForeignKey("WorkoutExerciseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -374,8 +372,7 @@ namespace OperationStacked.Migrations
 
             modelBuilder.Entity("OperationStacked.Entities.WorkoutExercise", b =>
                 {
-                    b.Navigation("LinearProgressionExercise")
-                        .IsRequired();
+                    b.Navigation("LinearProgressionExercises");
                 });
 #pragma warning restore 612, 618
         }

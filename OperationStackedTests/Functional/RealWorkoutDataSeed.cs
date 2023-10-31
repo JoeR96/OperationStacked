@@ -1,12 +1,15 @@
 ﻿using Concise.Steps;
 using MoreLinq.Extensions;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using OperationStacked.Data;
 using OperationStacked.Requests;
 using OperationStacked.TestLib;
 using OperationStacked.TestLib.Adapters;
+using OperationStacked.TestLib.Builders;
 using OperationStackedAuth.Tests;
 using CompleteExerciseRequest = OperationStacked.TestLib.CompleteExerciseRequest;
+using CreateEquipmentStackRequest = OperationStacked.TestLib.CreateEquipmentStackRequest;
 using CreateLinearProgressionExerciseRequest = OperationStacked.TestLib.CreateLinearProgressionExerciseRequest;
 using CreateWorkoutRequest = OperationStacked.TestLib.CreateWorkoutRequest;
 
@@ -25,10 +28,11 @@ public class RealWorkoutDataSeed
         WorkoutClient = client;
         UserId = _userId;
     }
-    public List<CreateLinearProgressionExerciseRequest> GenerateFiveDaySplit(Guid userId)
+     [Test]
+    public async Task GenerateFiveDaySplit()
     {
         var fiveDayWorkout = new List<CreateLinearProgressionExerciseRequest>();
-
+        var userId = UserId;
         // Assuming different weight progression for compound (2.5kg) and isolation (1kg) exercises
         decimal compoundProgression = 2.5m;
         decimal isolationProgression = 1.0m;
@@ -85,123 +89,97 @@ fiveDayWorkout.AddRange(new List<CreateLinearProgressionExerciseRequest>
     CreateExerciseRequest("Dumbbell Hammer Curls", Category._3, EquipmentType._2, 10, 12, 3, 14, 1.0m, 5, 5, userId)
 });
 
+var createWorkoutRequest = new CreateWorkoutRequest()
+{
+    Exercises = fiveDayWorkout,
+    UserId = UserId,
+    WorkoutName = "Joe's BigDaddyWorkout"
+};
 
-        return fiveDayWorkout;
+// Serialize the request to JSON
+var workoutRequestJson = JsonConvert.SerializeObject(createWorkoutRequest, Formatting.Indented);
+
+Console.WriteLine(workoutRequestJson);
+
+await WorkoutClient.WorkoutCreationPOSTAsync(new CreateWorkoutRequest()
+{
+    Exercises = fiveDayWorkout,
+    UserId = userId,
+    WorkoutName = "Joe's BigDaddyWorkout"
+});
     }
 
-    public CreateLinearProgressionExerciseRequest CreateExerciseRequest(
-        string name,
-        Category category,
-        EquipmentType equipmentType,
-        int minReps,
-        int maxReps,
-        int sets,
-        decimal startingWeight,
-        decimal weightProgression,
-        int liftDay,
-        int liftOrder,
-        Guid userId)
+public CreateLinearProgressionExerciseRequest CreateExerciseRequest(
+    string name,
+    Category category,
+    EquipmentType equipmentType,
+    int minReps,
+    int maxReps,
+    int sets,
+    decimal startingWeight,
+    decimal weightProgression,
+    int liftDay,
+    int liftOrder,
+    Guid userId)
+{
+    // Initialize builders
+    var exerciseBuilder = new ExerciseBuilder()
+        .WithExerciseName(name)
+        .WithCategory((OperationStacked.Enums.Category)category)
+        .WithEquipmentType((OperationStacked.Enums.EquipmentType)equipmentType)
+        .WithUserId(userId);
+
+    var linearProgressionBuilder = new LinearProgressionExerciseBuilder()
+        .WithDefaultValues()
+        .WithReps(minReps, maxReps)
+        .WithSets(sets)
+        .WithWeightProgression(weightProgression);
+
+    var workoutExerciseBuilder = new WorkoutExerciseBuilder()
+        .WithDefaultValues()
+        .WithLiftDay(liftDay)
+        .WithLiftOrder(liftOrder);
+
+    CreateEquipmentStackRequest equipmentStackRequest = null;
+
+    // Check for specific equipment types that require a stack
+    if (equipmentType == EquipmentType._3 || equipmentType == EquipmentType._4)
     {
-        // Initialize builders
-        var exerciseBuilder = new ExerciseBuilder()
-            .WithExerciseName(name)
-            .WithCategory((OperationStacked.Enums.Category)category)
-            .WithEquipmentType((OperationStacked.Enums.EquipmentType)equipmentType)
+        // Use the EquipmentStackBuilder to build the CreateEquipmentStackRequest
+        var equipmentStackBuilder = new EquipmentStackBuilder()
+            .WithDefaultValues()
+            .WithStartWeight(startingWeight)
+            // Add additional configurations as necessary
+            .WithIncrementValue(weightProgression)
             .WithUserId(userId);
 
-        var linearProgressionBuilder = new LinearProgressionExerciseBuilder()
-            .WithDefaultValues()
-            .WithReps(minReps, maxReps)
-            .WithSets(sets)
-            .WithWeightProgression(weightProgression);
-
-        var workoutExerciseBuilder = new WorkoutExerciseBuilder()
-            .WithDefaultValues()
-            .WithLiftDay(liftDay)
-            .WithLiftOrder(liftOrder);
-
-        // Build and return the request
-        return new CreateLinearProgressionExerciseRequest
-        {
-            MinimumReps = minReps,
-            MaximumReps = maxReps,
-            TargetSets = sets,
-            WeightIndex = 0, // Assuming this starts at 0 for a new workout plan
-            WeightProgression = weightProgression,
-            AttemptsBeforeDeload = 3, // Adjust as needed
-            EquipmentType = equipmentType,
-            WorkoutExercise = new OperationStacked.TestLib.CreateWorkoutExerciseRequest
-            {
-                LiftDay = liftDay,
-                LiftOrder = liftOrder,
-                Exercise = exerciseBuilder.BuildCreateExerciseRequest(),
-                ExerciseId = Guid.NewGuid(), // Assuming a new ID is generated for each new exercise
-                RestTimer = 90 // Assuming 90 seconds rest between sets
-            }
-        };
+        equipmentStackRequest = equipmentStackBuilder.BuildCreateRequest();
     }
 
-    public CreateLinearProgressionExerciseRequest GenerateLinearProgressionExercise(
-        string name,
-        Category category,
-        EquipmentType equipmentType,
-        int minReps,
-        int maxReps,
-        int sets,
-        decimal startingWeight,
-        decimal weightProgression,
-        Guid userId,
-        int liftDay,
-        int liftOrder)
+    // Build and return the request
+    var createLinearProgressionExerciseRequest = new CreateLinearProgressionExerciseRequest
     {
-        // Build the exercise
-        var exercise = new ExerciseBuilder()
-            .WithExerciseName(name)
-            .WithCategory((OperationStacked.Enums.Category)category)
-            .WithEquipmentType((OperationStacked.Enums.EquipmentType)equipmentType)
-            .WithUserId(userId)
-            .Build();
-
-        // Build the linear progression details
-        var linearProgression = new LinearProgressionExerciseBuilder()
-            .WithDefaultValues()
-            .WithReps(minReps, maxReps)
-            .WithSets(sets)
-            .WithWorkingWeight(startingWeight)
-            .WithWeightProgression(weightProgression)
-            .Build();
-
-        // Build the workout exercise
-        var workoutExercise = new WorkoutExerciseBuilder()
-            .WithDefaultValues()
-            .WithLiftDay(liftDay)
-            .WithLiftOrder(liftOrder)
-            .Build();
-
-        // Create the request
-        return new CreateLinearProgressionExerciseRequest
+        MinimumReps = minReps,
+        MaximumReps = maxReps,
+        TargetSets = sets,
+        WeightIndex = 0, // Assuming this starts at 0 for a new workout plan
+        WeightProgression = weightProgression,
+        AttemptsBeforeDeload = 3, // Adjust as needed
+        EquipmentType = equipmentType,
+        WorkoutExercise = new OperationStacked.TestLib.CreateWorkoutExerciseRequest
         {
-            MinimumReps = linearProgression.MinimumReps,
-            MaximumReps = linearProgression.MaximumReps,
-            TargetSets = linearProgression.Sets,
-            WeightIndex = linearProgression.WeightIndex,
-            WeightProgression = linearProgression.WeightProgression,
-            AttemptsBeforeDeload = linearProgression.AttemptsBeforeDeload,
-            EquipmentType = (EquipmentType)exercise.EquipmentType,
-            WorkoutExercise = new OperationStacked.TestLib.CreateWorkoutExerciseRequest
-            {
-                LiftDay = workoutExercise.LiftDay,
-                LiftOrder = workoutExercise.LiftOrder,
-                Exercise = new OperationStacked.TestLib.CreateExerciseRequest
-                {
-                    ExerciseName = exercise.ExerciseName,
-                    Category = (Category)exercise.Category,
-                    EquipmentType = (EquipmentType)exercise.EquipmentType,
-                    UserId = exercise.UserId
-                }
-            }
-        };
-    }
+            LiftDay = liftDay,
+            LiftOrder = liftOrder,
+            Exercise = exerciseBuilder.BuildCreateExerciseRequest(),
+            ExerciseId = Guid.NewGuid(), // Assuming a new ID is generated for each new exercise
+            RestTimer = 90 // Assuming 90 seconds rest between sets
+        },
+        EquipmentStack = equipmentStackRequest // Assign the built equipment stack request here
+    };
+
+    return createLinearProgressionExerciseRequest;
+}
+
 
     private int GenerateExerciseOutcome(double failWeight, double passWeight, double progressWeight)
     {

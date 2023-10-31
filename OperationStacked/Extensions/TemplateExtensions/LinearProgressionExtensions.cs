@@ -5,32 +5,28 @@ namespace OperationStacked.Extensions.TemplateExtensions
     public static class LinearProgressExtensions
     {
         public static bool SetCountReached(this LinearProgressionExercise e, int sets)
-            => sets >= e.Sets ? true : false;
+            => sets >= e.WorkoutExercise.Sets ? true : false;
         public static bool TargetRepCountReached(this LinearProgressionExercise e, int[] reps)
-            => !reps.Any(rep => rep < e.MaximumReps) ? true : false;
+            => !reps.Any(rep => rep < e.WorkoutExercise.MaximumReps) ? true : false;
         public static bool WithinRepRange(this LinearProgressionExercise e, int[] reps)
-            => !reps.Any(rep => rep < e.MinimumReps) ? true : false;
+            => !reps.Any(rep => rep < e.WorkoutExercise.MinimumReps) ? true : false;
 
         public static bool IsLastAttemptBeforeDeload(this LinearProgressionExercise e)
-            => e.CurrentAttempt >= e.AttemptsBeforeDeload;
+            => e.CurrentAttempt >= e.WorkoutExercise.AttemptsBeforeDeload;
         public static LinearProgressionExercise GenerateNextExercise(this LinearProgressionExercise e,decimal workingWeight, int weightIndexModifier, int attemptModifier,EquipmentStack stack = null)
             => new()
             {
-                MinimumReps = e.MinimumReps,
-                MaximumReps = e.MaximumReps,
-                Sets = e.Sets,
-                WeightProgression = e.WeightProgression,
-                AttemptsBeforeDeload = e.AttemptsBeforeDeload,
+                WorkoutExerciseId = e.WorkoutExerciseId,
                 CurrentAttempt = e.CurrentAttempt + attemptModifier
             };
         public static decimal ProgressedWeight(this LinearProgressionExercise exercise)
         {
-            return exercise.WorkingWeight + exercise.WeightProgression;
+            return exercise.WorkingWeight + exercise.WorkoutExercise.WeightProgression;
         }
         
         public static decimal DeloadWeight(this LinearProgressionExercise exercise)
         {
-            return exercise.WorkingWeight - exercise.WeightProgression;
+            return exercise.WorkingWeight - exercise.WorkoutExercise.WeightProgression;
         }
         public static Decimal?[] GenerateStack(this EquipmentStack e)
         {

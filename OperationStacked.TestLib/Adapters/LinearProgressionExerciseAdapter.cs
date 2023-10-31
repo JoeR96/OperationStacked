@@ -12,17 +12,11 @@ public static  class LinearProgressionExerciseAdapter
             WorkoutExerciseId = original.WorkoutExerciseId,
             WorkoutExercise = original.WorkoutExercise.AdaptToEntity(),
             Id = original.Id,
-            MinimumReps = original.MinimumReps,
-            MaximumReps = original.MaximumReps,
-            Sets = original.Sets,
-            WeightProgression = original.WeightProgression,
-            AttemptsBeforeDeload = original.AttemptsBeforeDeload,
             CurrentAttempt = original.CurrentAttempt,
             ParentId = original.ParentId,
             LiftWeek = original.LiftWeek,
             WorkingWeight = original.WorkingWeight,
             WeightIndex = original.WeightIndex,
-            EquipmentStackId = original.EquipmentStackId
         };
     }
 

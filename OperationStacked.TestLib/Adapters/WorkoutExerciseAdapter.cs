@@ -6,13 +6,16 @@ public static class WorkoutExerciseAdapter
 {
     public static OperationStacked.Entities.WorkoutExercise AdaptToEntity(this WorkoutExercise original)
     {
+        var _ = original.LinearProgressionExercise.AdaptToEntity();
+        var lol = new List<Entities.LinearProgressionExercise> { };
+        lol.Add(_);
         var newWorkoutExercise = new OperationStacked.Entities.WorkoutExercise
         {
             Id = original.Id,
             WorkoutId = original.WorkoutId,
             ExerciseId = original.ExerciseId,
             Exercise = original.Exercise.AdaptToEntity(),
-            LinearProgressionExercise = original.LinearProgressionExercise.AdaptToEntity(), // Use the previously defined AdaptToEntity method for LinearProgressionExercise
+            LinearProgressionExercises = lol,
             Template = (Models.ExerciseTemplate)original.Template,
             LiftDay = original.LiftDay,
             LiftOrder = original.LiftOrder,
@@ -20,7 +23,7 @@ public static class WorkoutExerciseAdapter
             RestTimer = original.RestTimer
         };
 
-        newWorkoutExercise.LinearProgressionExercise.WorkoutExerciseId = newWorkoutExercise.Id;
+        newWorkoutExercise.LinearProgressionExercises.FirstOrDefault().WorkoutExerciseId = newWorkoutExercise.Id;
 
         return newWorkoutExercise;
     }

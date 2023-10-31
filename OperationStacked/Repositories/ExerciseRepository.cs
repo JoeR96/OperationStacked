@@ -24,13 +24,14 @@ namespace OperationStacked.Repositories
         public async Task<List<WorkoutExercise>> GetWorkoutExercisesByWeekAndDay(Guid userId, int week, int day)
         {
             return await _operationStackedContext.WorkoutExercises
-                .Include(we => we.Exercise) 
-                .Include(we => we.LinearProgressionExercise) 
-                .Where(we => we.Exercise.UserId == userId &&  
-                             we.LinearProgressionExercise.LiftWeek == week &&
-                             we.LiftDay == day)
+                .Include(we => we.Exercise)
+                .Include(we => we.LinearProgressionExercises) // Ensure this is a collection property
+                .Where(we => we.Exercise.UserId == userId &&
+                             we.LiftDay == day &&
+                             we.LinearProgressionExercises.Any(lpe => lpe.LiftWeek == week)) // Check any LinearProgressionExercise for the week
                 .ToListAsync();
         }
+
 
 
 
@@ -52,8 +53,8 @@ namespace OperationStacked.Repositories
                 {
 
                         // Generate randomized set values between minimum and maximum reps
-                        var setsValues = Enumerable.Range(0, exercise.Sets)
-                            .Select(_ => random.Next(exercise.MinimumReps, exercise.MaximumReps + 1))
+                        var setsValues = Enumerable.Range(0, exercise.WorkoutExercise.Sets)
+                            .Select(_ => random.Next(exercise.WorkoutExercise.MinimumReps, exercise.WorkoutExercise.MaximumReps + 1))
                             .ToArray();
                 }
 
@@ -73,12 +74,14 @@ namespace OperationStacked.Repositories
         {
             try
             {
+                // Count doesn't need any includes since it doesn't return the full entities
                 var totalCount = await _operationStackedContext.WorkoutExercises
                     .CountAsync(we => we.Exercise.UserId == userId);
-    
+
+                // Query adjusted for one-to-many relationship
                 var exercises = await _operationStackedContext.WorkoutExercises
                     .Include(we => we.Exercise)
-                    .Include(we => we.LinearProgressionExercise)
+                    .Include(we => we.LinearProgressionExercises) // Adjusted to include the collection of LinearProgressionExercises
                     .Where(we => we.Exercise.UserId == userId)
                     .OrderBy(we => we.WorkoutId)
                     .Skip(pageIndex * pageSize)
@@ -95,16 +98,17 @@ namespace OperationStacked.Repositories
         }
 
 
+
         public async Task<Exercise> GetExerciseById(Guid id) => await _operationStackedContext.Exercises
         .FirstOrDefaultAsync(x => x.Id == id);
 
 
 
 
-        public async Task InsertExercise(Exercise nextExercise)
+        public async Task InsertExercise(Exercise exercise)
         {
             _operationStackedContext = await _contextFactory.CreateDbContextAsync();
-            await _operationStackedContext.Exercises.AddAsync(nextExercise);
+            await _operationStackedContext.Exercises.AddAsync(exercise);
             await _operationStackedContext.SaveChangesAsync();
         }
 
@@ -201,17 +205,35 @@ namespace OperationStacked.Repositories
             }
         }
 
-        public Task<LinearProgressionExercise> GetLinearProgressionExerciseById(Guid id)
+        public async Task<LinearProgressionExercise> GetLinearProgressionExerciseByIdAsync(Guid id)
         {
-            return _operationStackedContext.LinearProgressionExercises.Where(lp => lp.Id == id).FirstOrDefaultAsync();
+            return await _operationStackedContext.LinearProgressionExercises
+                .Include(lp => lp.WorkoutExercise)
+                .ThenInclude(we => we.Exercise) // This line will include the Exercise table.
+                .FirstOrDefaultAsync(lp => lp.Id == id);
         }
+
 
         public async Task InsertLinearProgressionExercise(LinearProgressionExercise nextExercise)
         {
             _operationStackedContext = await _contextFactory.CreateDbContextAsync();
+
+            // Check if the context is already tracking an entity with the same Id.
+            var existingEntity = _operationStackedContext.ChangeTracker.Entries<WorkoutExercise>()
+                .FirstOrDefault(e => e.Entity.Id == nextExercise.WorkoutExerciseId);
+
+            if (existingEntity != null)
+            {
+                // If an existing tracked entity is found, detach it.
+                _operationStackedContext.Entry(existingEntity.Entity).State = EntityState.Detached;
+            }
+
+            // Now you can add the new entity
             await _operationStackedContext.LinearProgressionExercises.AddAsync(nextExercise);
             await _operationStackedContext.SaveChangesAsync();
         }
+
+
 
         public async Task InsertWorkoutExercise(WorkoutExercise workoutExercise)
         {
@@ -227,6 +249,13 @@ namespace OperationStacked.Repositories
             await _operationStackedContext.SaveChangesAsync();
         }
 
+        public Task<WorkoutExercise> GetWorkoutExerciseById(Guid requestWorkoutExerciseId)
+        {
+            return _operationStackedContext.WorkoutExercises
+                .Include(we => we.Exercise)
+                .Include(we => we.LinearProgressionExercises) // Changed to the collection property
+                .FirstOrDefaultAsync(we => we.Id == requestWorkoutExerciseId);
+        }
 
         public async Task<bool> DeleteEquipmentStack(Guid equipmentStackId)
         {

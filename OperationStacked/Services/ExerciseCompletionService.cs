@@ -22,8 +22,7 @@ public class ExerciseCompletionService : IExerciseCompletionService
             CompletedDate = DateTime.Now,
             CompletedReps = string.Join(",", request.Reps),
             CompletedSets = request.Sets,
-            ExerciseId = request.ExerciseId,
-            TemplateExerciseId = request.ExerciseTemplateId
+            ExerciseId = request.LinearProgressionExerciseId,
         };
 
         _exerciseRepository.InsertExerciseHistory(history);

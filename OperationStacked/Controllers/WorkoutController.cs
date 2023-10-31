@@ -6,7 +6,10 @@ using OperationStacked.Services.ExerciseCreationService;
 using OperationStacked.Services.ExerciseProgressionService;
 using OperationStacked.Services.ExerciseRetrievalService;
 using System.ComponentModel;
+using MoreLinq.Extensions;
 using OperationStacked.Entities;
+using OperationStacked.Models;
+using CreateExerciseRequest = OperationStacked.Requests.CreateExerciseRequest;
 
 namespace OperationStacked.Controllers
 {
@@ -63,8 +66,8 @@ namespace OperationStacked.Controllers
             [FromRoute] int week,
             [FromRoute] int day,
             [FromRoute] bool completed)
-            => Ok(Newtonsoft.Json.JsonConvert.SerializeObject(
-                await _exerciseRetrievalService.GetWorkout(userId, week, day, completed)));
+            => Ok(
+                await _exerciseRetrievalService.GetWorkout(userId, week, day, completed));
         
         [HttpGet]
         [Route("{userId}/all")]
@@ -101,5 +104,61 @@ namespace OperationStacked.Controllers
         [Route("update")]
         public async Task<IActionResult> UpdateExerciseById(
             UpdateExerciseRequest request) => Ok(await _exerciseProgressionService.UpdateWorkingWeight(request));
+
+        [HttpGet]
+        [Route("GenerateDummy/{userId}")]
+        public async Task<IActionResult> GenerateDummyData(
+            [FromRoute] Guid userId)
+        {
+            var result = await _exerciseRetrievalService.GetAllWorkouts(userId, 0, 100);
+            foreach (var exercise in result.Exercises)
+            {
+                // Assuming you have 15 iterations for each exercise.
+                await CompleteExerciseRecursivelyAsync(15, exercise
+                    .LinearProgressionExercises.FirstOrDefault());
+            }
+
+            // Assuming you want to return a success result after generating dummy data.
+            return Ok("Dummy data generated successfully.");
+        }
+
+        private int
+
+            GenerateExerciseOutcome(double failWeight, double passWeight, double progressWeight)
+        {
+            var random = new Random();
+            var value = random.NextDouble();
+
+            if (value < failWeight) return random.Next(1, 7);
+            if (value < failWeight + passWeight) return random.Next(8, 12);
+            return 12;
+        }
+
+        private async Task CompleteExerciseRecursivelyAsync(int count, LinearProgressionExercise exercise,
+            double failWeight = 0.05,
+            double passWeight = 0.4,
+            double progressWeight = 0.4)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                var outcomes = new List<int>();
+                for (int sets = 0; sets < 3; sets++)
+                {
+                    var outcome = GenerateExerciseOutcome(failWeight, passWeight, progressWeight);
+                    outcomes.Add(outcome);
+                }
+
+                var completeExerciseRequest = new CompleteExerciseRequest
+                {
+                    Reps = outcomes.ToArray(),
+                    LinearProgressionExerciseId = exercise.WorkoutExercise.LinearProgressionExercises.Where(x => x.LiftWeek == i + 1 ).FirstOrDefault().Id,
+                    Sets = outcomes.Count,
+                    Template = ExerciseTemplate.LinearProgression,
+                };
+
+                await _exerciseProgressionService.CompleteExercise(completeExerciseRequest);
+            }
+
+        }
     }
 }

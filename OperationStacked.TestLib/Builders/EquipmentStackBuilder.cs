@@ -66,4 +66,10 @@ public class EquipmentStackBuilder
             UserID = _stack.UserID // Assuming the builder sets this property somewhere before this method is called.
         };
     }
+
+    public EquipmentStackBuilder WithUserId(Guid userId)
+    {
+        _stack.UserID = userId;
+        return this;
+    }
 }
