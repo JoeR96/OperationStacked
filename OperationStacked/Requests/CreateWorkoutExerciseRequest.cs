@@ -10,4 +10,6 @@ public class CreateWorkoutExerciseRequest
     public Guid ExerciseId { get; set; }
     public ExerciseTemplate Template { get; set; }
     public int RestTimer { get; set; }
+    public Guid WorkoutId { get; set; }
+    public Guid EquipmentStackId { get; set; }
 }

@@ -17,5 +17,7 @@ namespace OperationStacked.Entities
         public int LiftWeek { get; set; } = 1;
         public decimal WorkingWeight { get; set; }
         public int WeightIndex { get; set; }
+
+
     }
 }

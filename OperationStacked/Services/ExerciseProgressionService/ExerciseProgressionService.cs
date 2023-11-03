@@ -16,8 +16,8 @@ public class ExerciseProgressionService : IExerciseProgressionService
     private readonly LinearProgressionService _linearProgressionService;
     private readonly IExerciseRepository _exerciseRepository;
     public ExerciseProgressionService(
-        OperationStackedContext operationStackedContext, 
-        LinearProgressionService linearProgressionService, 
+        OperationStackedContext operationStackedContext,
+        LinearProgressionService linearProgressionService,
         IExerciseRepository exerciseRepository)
     {
         _operationStackedContext = operationStackedContext;
@@ -27,25 +27,43 @@ public class ExerciseProgressionService : IExerciseProgressionService
 
     public async Task<ExerciseCompletionResult> CompleteExercise(CompleteExerciseRequest request)
     {
-        var lp = await _exerciseRepository.GetLinearProgressionExerciseByIdAsync(request.LinearProgressionExerciseId);
-        var workoutExercise = await _exerciseRepository.GetWorkoutExerciseById(lp.WorkoutExerciseId);
-
-        if (request.Template != null)
+        try
         {
-            switch (workoutExercise.Template)
+            var lp = await _exerciseRepository.GetLinearProgressionExerciseByIdAsync(
+                request.LinearProgressionExerciseId);
+            if (lp == null)
             {
-                case ExerciseTemplate.LinearProgression:
-                    return await HandleLinearProgression(request);
+                return new ExerciseCompletionResult(ExerciseCompletedStatus.Progressed, null);
 
-                case ExerciseTemplate.A2SHypertrophy:
-                    return await HandleA2SHypertrophy(request);
-
-                default:
-                    throw new InvalidOperationException($"Unsupported exercise template: {workoutExercise.Template}");
             }
-        }
+            var workoutExercise = await _exerciseRepository.GetWorkoutExerciseById(lp.WorkoutExerciseId);
 
-        return new ExerciseCompletionResult(ExerciseCompletedStatus.Progressed, null);
+            if (workoutExercise == null)
+            {
+                return new ExerciseCompletionResult(ExerciseCompletedStatus.Progressed, null);
+            }
+            if (request.Template != null)
+            {
+                switch (workoutExercise.Template)
+                {
+                    case ExerciseTemplate.LinearProgression:
+                        return await HandleLinearProgression(request);
+
+                    case ExerciseTemplate.A2SHypertrophy:
+                        return await HandleA2SHypertrophy(request);
+
+                    default:
+                        throw new InvalidOperationException(
+                            $"Unsupported exercise template: {workoutExercise.Template}");
+                }
+            }
+
+            return new ExerciseCompletionResult(ExerciseCompletedStatus.Progressed, null);
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
     }
 
     public async Task<LinearProgressionExercise> UpdateWorkingWeight(UpdateExerciseRequest request)

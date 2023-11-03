@@ -1,4 +1,5 @@
-﻿using OperationStacked.Abstractions;
+﻿using System.Linq.Expressions;
+using OperationStacked.Abstractions;
 using OperationStacked.Entities;
 using OperationStacked.Enums;
 using OperationStacked.Extensions.TemplateExtensions;
@@ -17,13 +18,10 @@ namespace OperationStacked.Factories
         }
         public async Task<LinearProgressionExercise> CreateLinearProgressionExercise(
             CreateLinearProgressionExerciseRequest createExerciseModel,
-            WorkoutExercise workoutExercise,
-        Guid requestUserId = new Guid()
+            WorkoutExercise workoutExercise
             )
         {
-            var _exercise = new LinearProgressionExercise();
-            _exercise.WeightIndex = createExerciseModel.WeightIndex;
-            _exercise.WorkoutExerciseId = workoutExercise.Id; // or perhaps workoutExercise.Id depending on your structure
+            var _exercise = createExerciseModel.ToLinearProgressionExercise(workoutExercise.Id,workoutExercise.Exercise.UserId);
 
             _exerciseRepository.InsertLinearProgressionExercise(_exercise);
             return _exercise;
@@ -31,7 +29,9 @@ namespace OperationStacked.Factories
 
         public async Task<(LinearProgressionExercise, ExerciseCompletedStatus)> ProgressExercise(CompleteExerciseRequest request)
         {
-            var linearProgressionExercise = await _exerciseRepository.GetLinearProgressionExerciseByIdAsync(request.LinearProgressionExerciseId);
+            try
+            {
+                 var linearProgressionExercise = await _exerciseRepository.GetLinearProgressionExerciseByIdAsync(request.LinearProgressionExerciseId);
 
             ExerciseCompletedStatus status = ExerciseCompletedStatus.Failed;
             int weightIndexModifier = 0;
@@ -76,8 +76,7 @@ namespace OperationStacked.Factories
                         linearProgressionExercise.WorkoutExercise.WeightProgression
                         , linearProgressionExercise.WorkoutExercise.Exercise.EquipmentType, linearProgressionExercise.WeightIndex,stack),
                     weightIndexModifier, attemptModifier,stack);
-            }0
-                #',m 0'/*<nbrrrider*/
+            }
             else
             {
                 nextExercise = linearProgressionExercise.GenerateNextExercise(await WorkingWeight(linearProgressionExercise.ParentId,linearProgressionExercise.WorkingWeight, weightIndexModifier,
@@ -89,8 +88,13 @@ namespace OperationStacked.Factories
             await _exerciseRepository.InsertLinearProgressionExercise(nextExercise);
             return (nextExercise, status);
 
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
-        
+
         public static async Task<decimal> WorkingWeight(Guid exerciseParentId, decimal workingWeight,
             int weightIndexModifier,
             decimal weightProgression, EquipmentType equipmentType, int weightIndex,

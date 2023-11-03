@@ -22,10 +22,8 @@ public class WorkoutExerciseService : IWorkoutExerciseService
             LiftDay = request.LiftDay,
             LiftOrder = request.LiftOrder,
             RestTimer = request.RestTimer,
-
+            WorkoutId = request.WorkoutId
         };
-
-
 
         return workoutExercise;
     }

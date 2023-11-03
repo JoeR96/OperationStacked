@@ -15,4 +15,5 @@ public class CreateLinearProgressionExerciseRequest
     public EquipmentStackKey? EquipmentStackKey { get; set; }
     public CreateEquipmentStackRequest? EquipmentStack { get; set; }
     public CreateWorkoutExerciseRequest WorkoutExercise { get; set; }
+    public decimal? StartingWeight { get; set; }
 }

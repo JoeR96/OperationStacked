@@ -1,11 +1,13 @@
 ﻿using OperationStacked.Abstractions;
 using OperationStacked.Data;
 using OperationStacked.Entities;
+using OperationStacked.Enums;
 using OperationStacked.Factories;
 using OperationStacked.Models;
 using OperationStacked.Repositories;
 using OperationStacked.Requests;
 using OperationStacked.Response;
+using OperationStacked.Services.WorkoutService;
 using CreateExerciseRequest = OperationStacked.Requests.CreateExerciseRequest;
 
 namespace OperationStacked.Services.ExerciseCreationService
@@ -17,15 +19,17 @@ namespace OperationStacked.Services.ExerciseCreationService
         private readonly IWorkoutExerciseService _workoutExerciseService;
         private readonly IExerciseCreationService _exerciseCreationService;
         private readonly IExerciseRepository _exerciseRepository;
+        private readonly IWorkoutService _workoutService;
 
         public ExerciseCreationService(
             OperationStackedContext operationStackedContext, LinearProgressionService linearProgressionService,
-            IWorkoutExerciseService workoutExerciseService, IExerciseRepository exerciseRepository)
+            IWorkoutExerciseService workoutExerciseService, IExerciseRepository exerciseRepository, IWorkoutService workoutService)
         {
             _operationStackedContext = operationStackedContext;
             _linearProgressionService = linearProgressionService;
             _workoutExerciseService = workoutExerciseService;
             _exerciseRepository = exerciseRepository;
+            _workoutService = workoutService;
         }
 
         public async Task<List<Exercise>> CreateExercises(List<CreateExerciseRequest> requests)
@@ -60,6 +64,9 @@ namespace OperationStacked.Services.ExerciseCreationService
         List<Exercise> exercisesToInsert = new List<Exercise>();
         List<WorkoutExercise> workoutExercisesToInsert = new List<WorkoutExercise>();
 
+
+        var workout = await _workoutService.CreateWorkout(request.WorkoutName,request.UserId);
+
         foreach (var lpRequest in request.Exercises)
         {
             // Determine if we need to create a new exercise or use an existing one.
@@ -77,6 +84,8 @@ namespace OperationStacked.Services.ExerciseCreationService
             Exercise exercise = exercisesToInsert.First(e => e.ExerciseName == lpRequest.WorkoutExercise.Exercise.ExerciseName && e.UserId == lpRequest.WorkoutExercise.Exercise.UserId && e.Category == lpRequest.WorkoutExercise.Exercise.Category); // Make sure this comparison is adequate for your scenario
 
             // Create the WorkoutExercise with the correct ExerciseId.
+
+            Guid equipmentStackId;
             WorkoutExercise workoutExercise = await _workoutExerciseService.CreateWorkoutExercise(
                 new CreateWorkoutExerciseRequest()
                 {
@@ -85,12 +94,21 @@ namespace OperationStacked.Services.ExerciseCreationService
                     LiftDay = lpRequest.WorkoutExercise.LiftDay,
                     LiftOrder = lpRequest.WorkoutExercise.LiftOrder,
                     RestTimer = lpRequest.WorkoutExercise.RestTimer,
+                    WorkoutId = workout.Id,
+
                 });
+
+            if (exercise.EquipmentType is EquipmentType.Cable or EquipmentType.Machine)
+            {
+                var response = await _exerciseRepository.InsertEquipmentStack(lpRequest.EquipmentStack);
+                workoutExercise.EquipmentStackId = response.Stack.Id;
+            }
+
             workoutExercisesToInsert.Add(workoutExercise);
             _operationStackedContext.WorkoutExercises.AddRange(workoutExercisesToInsert);
 
-            var linearProgressionExercise = await _linearProgressionService.CreateLinearProgressionExercise(
-                lpRequest, workoutExercise, request.UserId);
+            var linearProgressionExercise = await _linearProgressionService.CreateLinearProgressionExercise(lpRequest,
+                 workoutExercise);
 
 
             linearProgressionExercises.Add(linearProgressionExercise);
@@ -99,12 +117,9 @@ namespace OperationStacked.Services.ExerciseCreationService
 
         await _operationStackedContext.SaveChangesAsync();
 
-        // Add WorkoutExercise entities to the context.
         _operationStackedContext.LinearProgressionExercises.AddRange(linearProgressionExercises);
 
-        // If LinearProgressionExercises have a dependency on WorkoutExercises, they should be added here as well.
 
-        // Save all the remaining changes in one transaction.
         await _operationStackedContext.SaveChangesAsync();
 
         return new WorkoutCreationResult(
@@ -113,10 +128,11 @@ namespace OperationStacked.Services.ExerciseCreationService
     }
     catch (Exception ex)
     {
-        // Log the exception, wrap it in a more user-friendly message, or handle it as needed.
         throw new InvalidOperationException("An error occurred while creating the workout.", ex);
     }
 }
 
     }
+
+
 }

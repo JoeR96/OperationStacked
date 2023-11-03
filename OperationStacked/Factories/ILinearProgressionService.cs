@@ -9,8 +9,7 @@ public interface ILinearProgressionService
 {
     public Task<LinearProgressionExercise> CreateLinearProgressionExercise(
         CreateLinearProgressionExerciseRequest createExerciseRequest,
-        WorkoutExercise workoutExercise,
-        Guid requestUserId = new Guid()
+        WorkoutExercise workoutExercise
     );
     Task<(LinearProgressionExercise, ExerciseCompletedStatus)> ProgressExercise(CompleteExerciseRequest request);
 

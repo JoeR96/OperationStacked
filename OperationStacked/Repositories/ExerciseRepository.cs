@@ -32,10 +32,6 @@ namespace OperationStacked.Repositories
                 .ToListAsync();
         }
 
-
-
-
-
         public async Task<List<LinearProgressionExercise>> GetAllExercisesAndUpdateCompletedReps(Guid userId)
         {
             try
@@ -172,7 +168,7 @@ namespace OperationStacked.Repositories
             try 
             {
                 EquipmentStack equipmentStack;
-                using (var context = _contextFactory.CreateDbContext())
+                using (var context = await _contextFactory.CreateDbContextAsync())
                 {
                     // use 'context' here
                     equipmentStack = await context.EquipmentStacks.FirstOrDefaultAsync(x => x.Id == equipmentStackId);

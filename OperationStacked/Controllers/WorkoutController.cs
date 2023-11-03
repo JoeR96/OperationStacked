@@ -111,20 +111,19 @@ namespace OperationStacked.Controllers
             [FromRoute] Guid userId)
         {
             var result = await _exerciseRetrievalService.GetAllWorkouts(userId, 0, 100);
-            foreach (var exercise in result.Exercises)
-            {
-                // Assuming you have 15 iterations for each exercise.
-                await CompleteExerciseRecursivelyAsync(15, exercise
-                    .LinearProgressionExercises.FirstOrDefault());
-            }
+
+                foreach (var exercise in result.Exercises)
+                {
+                    // Assuming you have 15 iterations for each exercise.
+                    await CompleteExerciseAsync(15, exercise);
+                }
+
 
             // Assuming you want to return a success result after generating dummy data.
             return Ok("Dummy data generated successfully.");
         }
 
-        private int
-
-            GenerateExerciseOutcome(double failWeight, double passWeight, double progressWeight)
+        private static int  GenerateExerciseOutcome(double failWeight, double passWeight, double progressWeight)
         {
             var random = new Random();
             var value = random.NextDouble();
@@ -134,12 +133,12 @@ namespace OperationStacked.Controllers
             return 12;
         }
 
-        private async Task CompleteExerciseRecursivelyAsync(int count, LinearProgressionExercise exercise,
+        private async Task CompleteExerciseAsync(int count, WorkoutExercise exercise,
             double failWeight = 0.05,
             double passWeight = 0.4,
             double progressWeight = 0.4)
         {
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < count ; i++)
             {
                 var outcomes = new List<int>();
                 for (int sets = 0; sets < 3; sets++)
@@ -148,17 +147,26 @@ namespace OperationStacked.Controllers
                     outcomes.Add(outcome);
                 }
 
-                var completeExerciseRequest = new CompleteExerciseRequest
+                var exerciseForWeek = exercise.LinearProgressionExercises?.FirstOrDefault(x => x.LiftWeek == i + 1);
+                if (exerciseForWeek != null)
                 {
-                    Reps = outcomes.ToArray(),
-                    LinearProgressionExerciseId = exercise.WorkoutExercise.LinearProgressionExercises.Where(x => x.LiftWeek == i + 1 ).FirstOrDefault().Id,
-                    Sets = outcomes.Count,
-                    Template = ExerciseTemplate.LinearProgression,
-                };
+                    var completeExerciseRequest = new CompleteExerciseRequest
+                    {
+                        Reps = outcomes.ToArray(),
+                        LinearProgressionExerciseId = exerciseForWeek.Id,
+                        Sets = outcomes.Count,
+                        Template = ExerciseTemplate.LinearProgression,
+                    };
 
-                await _exerciseProgressionService.CompleteExercise(completeExerciseRequest);
+                    // Await the completion of the exercise. The next iteration of the loop won't start until this async call completes.
+                    await _exerciseProgressionService.CompleteExercise(completeExerciseRequest);
+                }
+                else
+                {
+                    // Handle the case where there's no exercise scheduled for the current week.
+                }
             }
-
         }
+
     }
 }

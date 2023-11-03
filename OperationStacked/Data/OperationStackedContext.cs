@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Globalization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using OperationStacked.Entities;
 using OperationStacked.Options;
@@ -25,13 +26,18 @@ namespace OperationStacked.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<EquipmentStack>()
+                .Property(e => e.InitialIncrements)
+                .HasConversion(
+                    v => v != null ? string.Join(',', v) : null,
+                    v => v != null
+                        ? v.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                            .Select(x => SafeParseDecimal(x))
+                            .Where(x => x.HasValue)
+                            .Select(x => x.Value)
+                            .ToList() // Convert to List<decimal>, which implements ICollection<decimal>
+                        : null);
 
-
-                modelBuilder.Entity<EquipmentStack>()
-                    .Property(e => e.InitialIncrements)
-                    .HasConversion(
-                        v => string.Join(",", v),
-                        v => v.Split(new char[] { ',' }).Select(decimal.Parse).ToList());
 
 
                 modelBuilder.Entity<WorkoutExercise>()
@@ -51,6 +57,17 @@ namespace OperationStacked.Data
 
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<EquipmentStack> EquipmentStacks { get; set; }
+        public virtual DbSet<Workout>  Workouts { get; set; }
+
+        public static decimal? SafeParseDecimal(string value)
+        {
+            if (decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var result))
+            {
+                return result;
+            }
+
+            return null;
+        }
 
     }
 }

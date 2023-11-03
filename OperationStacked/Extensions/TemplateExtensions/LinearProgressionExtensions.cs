@@ -1,4 +1,5 @@
 ﻿using OperationStacked.Entities;
+using OperationStacked.Requests;
 
 namespace OperationStacked.Extensions.TemplateExtensions
 {
@@ -13,12 +14,7 @@ namespace OperationStacked.Extensions.TemplateExtensions
 
         public static bool IsLastAttemptBeforeDeload(this LinearProgressionExercise e)
             => e.CurrentAttempt >= e.WorkoutExercise.AttemptsBeforeDeload;
-        public static LinearProgressionExercise GenerateNextExercise(this LinearProgressionExercise e,decimal workingWeight, int weightIndexModifier, int attemptModifier,EquipmentStack stack = null)
-            => new()
-            {
-                WorkoutExerciseId = e.WorkoutExerciseId,
-                CurrentAttempt = e.CurrentAttempt + attemptModifier
-            };
+
         public static decimal ProgressedWeight(this LinearProgressionExercise exercise)
         {
             return exercise.WorkingWeight + exercise.WorkoutExercise.WeightProgression;
@@ -48,5 +44,64 @@ namespace OperationStacked.Extensions.TemplateExtensions
 
             return stack.ToArray();
         }
+
+        public static LinearProgressionExercise ToLinearProgressionExercise(
+            this CreateLinearProgressionExerciseRequest request,
+            Guid workoutExerciseId,
+            Guid userId)
+        {
+            var linearProgressionExercise = new LinearProgressionExercise
+            {
+                WorkoutExerciseId = workoutExerciseId,
+                WeightIndex = request.WeightIndex,
+                CurrentAttempt = 0,
+                ParentId = userId, // or another appropriate value
+                LiftWeek = 1, // defaulting to week 1
+            };
+
+            if (request.StartingWeight != null)
+            {
+                linearProgressionExercise.WorkingWeight = (decimal)request.StartingWeight;
+            }
+            return linearProgressionExercise;
+        }
+
+        public static LinearProgressionExercise GenerateNextExercise(this
+            LinearProgressionExercise currentExercise,
+            decimal workingWeightModifier,
+            int weightIndexModifier,
+            int attemptModifier)
+        {
+            return new LinearProgressionExercise
+            {
+                WorkoutExerciseId = currentExercise.WorkoutExerciseId,
+                ParentId = currentExercise.ParentId,
+                LiftWeek = currentExercise.LiftWeek + 1, // Assuming LiftWeek should be incremented
+                WorkingWeight = currentExercise.WorkingWeight + workingWeightModifier,
+                WeightIndex = currentExercise.WeightIndex + weightIndexModifier,
+                CurrentAttempt = currentExercise.CurrentAttempt + attemptModifier
+            };
+        }
+
+        public static LinearProgressionExercise GenerateNextExercise(this
+            LinearProgressionExercise currentExercise,
+            decimal workingWeightModifier,
+            int weightIndexModifier,
+            int attemptModifier,
+            EquipmentStack equipmentStack)
+        {
+            var stackWeightModifier = equipmentStack.GenerateStack();
+            var weightIndex = currentExercise.WeightIndex + weightIndexModifier;
+            return new LinearProgressionExercise
+            {
+                WorkoutExerciseId = currentExercise.WorkoutExerciseId,
+                ParentId = currentExercise.ParentId,
+                LiftWeek = currentExercise.LiftWeek + 1, // Assuming LiftWeek should be incremented
+                WorkingWeight = (decimal)stackWeightModifier[weightIndex],
+                WeightIndex = weightIndex,
+                CurrentAttempt = currentExercise.CurrentAttempt + attemptModifier
+            };
+        }
+
     }
 }
