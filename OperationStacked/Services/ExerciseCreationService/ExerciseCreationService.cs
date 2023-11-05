@@ -1,5 +1,4 @@
-﻿using OperationStacked.Abstractions;
-using OperationStacked.Data;
+﻿using OperationStacked.Data;
 using OperationStacked.Entities;
 using OperationStacked.Enums;
 using OperationStacked.Factories;
@@ -20,16 +19,18 @@ namespace OperationStacked.Services.ExerciseCreationService
         private readonly IExerciseCreationService _exerciseCreationService;
         private readonly IExerciseRepository _exerciseRepository;
         private readonly IWorkoutService _workoutService;
+        private IEquipmentStackRepository _equipmentStackRepository;
 
         public ExerciseCreationService(
             OperationStackedContext operationStackedContext, LinearProgressionService linearProgressionService,
-            IWorkoutExerciseService workoutExerciseService, IExerciseRepository exerciseRepository, IWorkoutService workoutService)
+            IWorkoutExerciseService workoutExerciseService, IExerciseRepository exerciseRepository, IWorkoutService workoutService, IEquipmentStackRepository equipmentStackRepository)
         {
             _operationStackedContext = operationStackedContext;
             _linearProgressionService = linearProgressionService;
             _workoutExerciseService = workoutExerciseService;
             _exerciseRepository = exerciseRepository;
             _workoutService = workoutService;
+            _equipmentStackRepository = equipmentStackRepository;
         }
 
         public async Task<List<Exercise>> CreateExercises(List<CreateExerciseRequest> requests)
@@ -60,6 +61,8 @@ namespace OperationStacked.Services.ExerciseCreationService
 {
     try
     {
+        using var context = _operationStackedContext;
+
         List<LinearProgressionExercise> linearProgressionExercises = new List<LinearProgressionExercise>();
         List<Exercise> exercisesToInsert = new List<Exercise>();
         List<WorkoutExercise> workoutExercisesToInsert = new List<WorkoutExercise>();
@@ -89,6 +92,11 @@ namespace OperationStacked.Services.ExerciseCreationService
             WorkoutExercise workoutExercise = await _workoutExerciseService.CreateWorkoutExercise(
                 new CreateWorkoutExerciseRequest()
                 {
+                    Sets = lpRequest.TargetSets,
+                    AttemptsBeforeDeload = lpRequest.AttemptsBeforeDeload,
+                    WeightProgression = lpRequest.WeightProgression,
+                    MinimumReps = lpRequest.MinimumReps,
+                    MaximumReps = lpRequest.MaximumReps,
                     ExerciseId = exercise.Id,
                     Template = lpRequest.WorkoutExercise.Template,
                     LiftDay = lpRequest.WorkoutExercise.LiftDay,
@@ -100,12 +108,12 @@ namespace OperationStacked.Services.ExerciseCreationService
 
             if (exercise.EquipmentType is EquipmentType.Cable or EquipmentType.Machine)
             {
-                var response = await _exerciseRepository.InsertEquipmentStack(lpRequest.EquipmentStack);
+                var response = await _equipmentStackRepository.InsertEquipmentStack(lpRequest.EquipmentStack);
                 workoutExercise.EquipmentStackId = response.Stack.Id;
             }
 
             workoutExercisesToInsert.Add(workoutExercise);
-            _operationStackedContext.WorkoutExercises.AddRange(workoutExercisesToInsert);
+            context.WorkoutExercises.AddRange(workoutExercisesToInsert);
 
             var linearProgressionExercise = await _linearProgressionService.CreateLinearProgressionExercise(lpRequest,
                  workoutExercise);
@@ -113,14 +121,14 @@ namespace OperationStacked.Services.ExerciseCreationService
 
             linearProgressionExercises.Add(linearProgressionExercise);
         }
-        _operationStackedContext.WorkoutExercises.AddRange(workoutExercisesToInsert);
+        context.WorkoutExercises.AddRange(workoutExercisesToInsert);
 
-        await _operationStackedContext.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
-        _operationStackedContext.LinearProgressionExercises.AddRange(linearProgressionExercises);
+        context.LinearProgressionExercises.AddRange(linearProgressionExercises);
 
 
-        await _operationStackedContext.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return new WorkoutCreationResult(
             linearProgressionExercises.Any() ? WorkoutCreatedStatus.Created : WorkoutCreatedStatus.Error,

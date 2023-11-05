@@ -2,8 +2,6 @@
 using NSubstitute;
 using NUnit.Framework;
 using OperationStacked.Entities;
-using OperationStacked.Enums;
-using OperationStacked.Extensions.TemplateExtensions;
 using OperationStacked.Factories;
 using OperationStacked.Models;
 using OperationStacked.Repositories;
@@ -13,14 +11,16 @@ using OperationStacked.TestLib.Adapters;
 [TestFixture]
 public class LinearProgressionDumbbellTests
 {
-    private IExerciseRepository _repository;
+    private IExerciseRepository _exerciseRepository;
+    private IEquipmentStackRepository _equipmentStackRepository;
     private LinearProgressionService _service;
 
     [SetUp]
     public void SetUp()
     {
-        _repository = Substitute.For<IExerciseRepository>();
-        _service = new LinearProgressionService(_repository);
+        _equipmentStackRepository = Substitute.For<IEquipmentStackRepository>();
+        _exerciseRepository = Substitute.For<IExerciseRepository>();
+        _service = new LinearProgressionService(_exerciseRepository,_equipmentStackRepository);
     }
     
     [Test]
@@ -84,7 +84,7 @@ public class LinearProgressionDumbbellTests
     private void SetupRepositoryWithExercise(Exercise exercise)
     {
         var completeExerciseRequest = new CompleteExerciseRequest { LinearProgressionExerciseId = new Guid() };
-        _repository.GetExerciseById(completeExerciseRequest.LinearProgressionExerciseId).Returns(exercise);
+        _exerciseRepository.GetExerciseById(completeExerciseRequest.LinearProgressionExerciseId).Returns(exercise);
     }
     private CompleteExerciseRequest CreateExerciseRequest(params int[] reps)
     {

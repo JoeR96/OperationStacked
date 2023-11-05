@@ -1,4 +1,5 @@
-﻿using OperationStacked.Data;
+﻿using Ardalis.GuardClauses;
+using OperationStacked.Data;
 using OperationStacked.Entities;
 using OperationStacked.Enums;
 using OperationStacked.Extensions.TemplateExtensions;
@@ -10,19 +11,24 @@ using OperationStacked.Response;
 
 namespace OperationStacked.Services.ExerciseProgressionService;
 
-public class ExerciseProgressionService : IExerciseProgressionService
+public class WorkoutExerciseProgressionService : IWorkoutExerciseProgressionService
 {
     private readonly OperationStackedContext _operationStackedContext;
     private readonly LinearProgressionService _linearProgressionService;
     private readonly IExerciseRepository _exerciseRepository;
-    public ExerciseProgressionService(
+    private readonly IEquipmentStackRepository _equipmentStackRepository;
+    private readonly IExerciseHistoryService _exerciseHistoryService;
+
+    public WorkoutExerciseProgressionService(
         OperationStackedContext operationStackedContext,
         LinearProgressionService linearProgressionService,
-        IExerciseRepository exerciseRepository)
+        IExerciseRepository exerciseRepository, IEquipmentStackRepository equipmentStackRepository, IExerciseHistoryService exerciseHistoryService)
     {
         _operationStackedContext = operationStackedContext;
         _linearProgressionService = linearProgressionService;
         _exerciseRepository = exerciseRepository;
+        _equipmentStackRepository = equipmentStackRepository;
+        _exerciseHistoryService = exerciseHistoryService;
     }
 
     public async Task<ExerciseCompletionResult> CompleteExercise(CompleteExerciseRequest request)
@@ -31,17 +37,15 @@ public class ExerciseProgressionService : IExerciseProgressionService
         {
             var lp = await _exerciseRepository.GetLinearProgressionExerciseByIdAsync(
                 request.LinearProgressionExerciseId);
-            if (lp == null)
-            {
-                return new ExerciseCompletionResult(ExerciseCompletedStatus.Progressed, null);
-
-            }
+            
             var workoutExercise = await _exerciseRepository.GetWorkoutExerciseById(lp.WorkoutExerciseId);
 
             if (workoutExercise == null)
             {
                 return new ExerciseCompletionResult(ExerciseCompletedStatus.Progressed, null);
             }
+            await _exerciseHistoryService.CompleteExercise(request);
+
             if (request.Template != null)
             {
                 switch (workoutExercise.Template)
@@ -57,6 +61,7 @@ public class ExerciseProgressionService : IExerciseProgressionService
                             $"Unsupported exercise template: {workoutExercise.Template}");
                 }
             }
+
 
             return new ExerciseCompletionResult(ExerciseCompletedStatus.Progressed, null);
         }
@@ -79,7 +84,7 @@ public class ExerciseProgressionService : IExerciseProgressionService
         if (exercise.WorkoutExercise.Exercise.EquipmentType is EquipmentType.Cable or EquipmentType.Machine)
         {
             var stackId = exercise.WorkoutExercise.EquipmentStackId;
-            var equipmentStack = await _exerciseRepository.GetEquipmentStack(stackId);
+            var equipmentStack = await _equipmentStackRepository.GetEquipmentStack(stackId);
             var generatedStack = equipmentStack.GenerateStack();
 
 

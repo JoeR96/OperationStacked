@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-using OperationStacked.Abstractions;
-using OperationStacked.Entities;
+﻿using OperationStacked.Entities;
 using OperationStacked.Enums;
 using OperationStacked.Extensions.TemplateExtensions;
 using OperationStacked.Models;
@@ -12,9 +10,12 @@ namespace OperationStacked.Factories
     public class LinearProgressionService : ILinearProgressionService
     {
         private readonly IExerciseRepository _exerciseRepository;
-        public LinearProgressionService(IExerciseRepository exerciseRepository)
+        private IEquipmentStackRepository _equipmentStackRepository;
+
+        public LinearProgressionService(IExerciseRepository exerciseRepository, IEquipmentStackRepository equipmentStackRepository)
         {
             _exerciseRepository = exerciseRepository;
+            _equipmentStackRepository = equipmentStackRepository;
         }
         public async Task<LinearProgressionExercise> CreateLinearProgressionExercise(
             CreateLinearProgressionExerciseRequest createExerciseModel,
@@ -71,7 +72,7 @@ namespace OperationStacked.Factories
             LinearProgressionExercise nextExercise = new LinearProgressionExercise();
             if (linearProgressionExercise.WorkoutExercise.Exercise.EquipmentType is EquipmentType.Cable or EquipmentType.Machine)
             {
-                var stack = await _exerciseRepository.GetEquipmentStack(linearProgressionExercise.WorkoutExercise.EquipmentStackId);
+                var stack = await _equipmentStackRepository.GetEquipmentStack(linearProgressionExercise.WorkoutExercise.EquipmentStackId);
                 nextExercise = linearProgressionExercise.GenerateNextExercise(await WorkingWeight(linearProgressionExercise.ParentId,linearProgressionExercise.WorkingWeight,linearProgressionExercise.WeightIndex + weightIndexModifier,
                         linearProgressionExercise.WorkoutExercise.WeightProgression
                         , linearProgressionExercise.WorkoutExercise.Exercise.EquipmentType, linearProgressionExercise.WeightIndex,stack),

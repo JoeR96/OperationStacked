@@ -6,44 +6,34 @@ using OperationStacked.Services.ExerciseCreationService;
 using OperationStacked.Services.ExerciseProgressionService;
 using OperationStacked.Services.ExerciseRetrievalService;
 using System.ComponentModel;
-using MoreLinq.Extensions;
 using OperationStacked.Entities;
 using OperationStacked.Models;
-using CreateExerciseRequest = OperationStacked.Requests.CreateExerciseRequest;
+using OperationStacked.Repositories.WorkoutRepository;
 
 namespace OperationStacked.Controllers
 {
-
-
     [ApiController]
     [DisplayName("Workout Generation")]
-    [Route("workout-creation/")]
-    public class ExerciseController : ControllerBase
+    [Route("workout/")]
+    public class WorkoutController : ControllerBase
     {
         private readonly IExerciseCreationService _exerciseCreationService;
-        private readonly IExerciseProgressionService _exerciseProgressionService;
+        private readonly IWorkoutExerciseProgressionService _workoutExerciseProgressionService;
         private readonly IExerciseRetrievalService _exerciseRetrievalService;
         private readonly IExerciseRepository _exerciseRepository;
+        private IWorkoutRepository _workoutRepository;
 
-        public ExerciseController(IExerciseCreationService workoutCreationService,
-            IExerciseProgressionService exerciseProgressionService,
+        public WorkoutController(IExerciseCreationService workoutCreationService,
+            IWorkoutExerciseProgressionService workoutExerciseProgressionService,
             IExerciseRetrievalService exerciseRetrievalService, 
-            IExerciseRepository exerciseRepository)
+            IExerciseRepository exerciseRepository, IWorkoutRepository workoutRepository)
         {
             _exerciseCreationService = workoutCreationService;
-            _exerciseProgressionService = exerciseProgressionService;
+            _workoutExerciseProgressionService = workoutExerciseProgressionService;
             _exerciseRetrievalService = exerciseRetrievalService;
             _exerciseRepository = exerciseRepository;
+            _workoutRepository = workoutRepository;
         }
-
-
-        [HttpPost("CreateExercises")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Exercise>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateExercisesAsync(
-            [FromBody] List<CreateExerciseRequest> requests)
-            => Ok(await _exerciseCreationService.CreateExercises(requests));
-
 
         [HttpPost]
         [ProducesResponseType(200, Type = typeof(WorkoutCreationResult))]
@@ -56,7 +46,7 @@ namespace OperationStacked.Controllers
         [ProducesResponseType(200, Type = typeof(ExerciseCompletionResult))]
         public async Task<IActionResult> CompleteExerciseAsync(
             [FromBody] CompleteExerciseRequest request)
-            => Ok(await _exerciseProgressionService.CompleteExercise(request));
+            => Ok(await _workoutExerciseProgressionService.CompleteExercise(request));
 
         [HttpGet]
         [Route("{userId}/{week}/{day}/{completed}")]
@@ -79,38 +69,16 @@ namespace OperationStacked.Controllers
         {
             // Pass pageIndex and pageSize to the service
             var result = await _exerciseRetrievalService.GetAllWorkouts(userId, pageIndex, pageSize);
-            return Ok(Newtonsoft.Json.JsonConvert.SerializeObject(result));
+            return Ok(result);
         }
 
-        [HttpDelete]
-        [ProducesResponseType(200, Type = typeof(bool))]
-        [Route("{exerciseId}/delete")]
-        public async Task<IActionResult> DeleteExercise(
-            [FromRoute] Guid exerciseId) => Ok(await _exerciseRepository.DeleteExercise(exerciseId));
-        [HttpDelete]
-        [ProducesResponseType(200, Type = typeof(bool))]
-        [Route("{userId}/delete-all")]
-        public async Task<IActionResult> DeleteAllExercisesForUser(
-            [FromRoute] Guid userId) => Ok(await _exerciseRepository.DeleteAllExercisesForUser(userId));
+
 
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(GetExerciseResult))]
-        [Route("{exerciseId}")]
-        public async Task<IActionResult> GetExerciseById(
-            [FromRoute] Guid exerciseId) => Ok(await _exerciseRepository.GetExerciseById(exerciseId));
-        
-        [HttpPut]
-        [ProducesResponseType(200,Type = typeof(decimal))]
-        [Route("update")]
-        public async Task<IActionResult> UpdateExerciseById(
-            UpdateExerciseRequest request) => Ok(await _exerciseProgressionService.UpdateWorkingWeight(request));
-
-        [HttpGet]
-        [Route("GenerateDummy/{userId}")]
-        public async Task<IActionResult> GenerateDummyData(
-            [FromRoute] Guid userId)
+        [Route("GenerateDummy/")]
+        public async Task<IActionResult> GenerateDummyData()
         {
-            var result = await _exerciseRetrievalService.GetAllWorkouts(userId, 0, 100);
+            var result = await _exerciseRetrievalService.GetAllWorkouts(Guid.Parse("5af5dae7-801e-47c0-bfc9-3eac5b25491c"), 0, 100);
 
                 foreach (var exercise in result.Exercises)
                 {
@@ -147,7 +115,8 @@ namespace OperationStacked.Controllers
                     outcomes.Add(outcome);
                 }
 
-                var exerciseForWeek = exercise.LinearProgressionExercises?.FirstOrDefault(x => x.LiftWeek == i + 1);
+                exercise = await _exerciseRepository.GetWorkoutExerciseById(exercise.Id);
+                var exerciseForWeek = exercise.LinearProgressionExercises?.Where(x => x.LiftWeek == i + 1).FirstOrDefault();
                 if (exerciseForWeek != null)
                 {
                     var completeExerciseRequest = new CompleteExerciseRequest
@@ -156,10 +125,10 @@ namespace OperationStacked.Controllers
                         LinearProgressionExerciseId = exerciseForWeek.Id,
                         Sets = outcomes.Count,
                         Template = ExerciseTemplate.LinearProgression,
+                        ExerciseId = exerciseForWeek.WorkoutExercise.ExerciseId
                     };
 
-                    // Await the completion of the exercise. The next iteration of the loop won't start until this async call completes.
-                    await _exerciseProgressionService.CompleteExercise(completeExerciseRequest);
+                    await _workoutExerciseProgressionService.CompleteExercise(completeExerciseRequest);
                 }
                 else
                 {

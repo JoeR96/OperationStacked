@@ -28,5 +28,6 @@ namespace OperationStacked.Entities
         [ForeignKey(nameof(LinearProgressionExercise))]
         public Guid? TemplateExerciseId { get; set; }
         public virtual LinearProgressionExercise? TemplateExercise { get; set; }
+
     }
 }

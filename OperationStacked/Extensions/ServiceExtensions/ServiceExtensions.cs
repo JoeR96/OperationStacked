@@ -42,24 +42,21 @@ namespace OperationStacked.Extensions.ServiceExtensions
 
         public static IServiceCollection AddServices(this IServiceCollection services)
             => services
-                .AddTransient<IExerciseProgressionService, ExerciseProgressionService>()
+                .AddTransient<IWorkoutExerciseProgressionService, WorkoutExerciseProgressionService>()
                 .AddTransient<IExerciseCreationService, ExerciseCreationService>()
                 .AddTransient<IExerciseRetrievalService, ExerciseRetrievalService>()
                 .AddTransient<IUserAccountService, UserAccountService>()
                 .AddTransient<IA2SHypertrophyService, A2SHypertrophyService>()
                 .AddTransient<IWorkoutExerciseService, WorkoutExerciseService>()
                 .AddTransient<LinearProgressionService>()
-                .AddTransient<IExerciseCompletionService, ExerciseCompletionService>()
+                .AddTransient<IExerciseHistoryService, ExerciseHistoryService>()
                 .AddTransient<IWorkoutService, WorkoutService>();
-
-
-
 
         public static IServiceCollection AddRepositories(this IServiceCollection services)
             => services.AddTransient<IExerciseRepository, ExerciseRepository>()
-                .AddTransient<IWorkoutRepository, WorkoutRepository>();
-     
-        
+                .AddTransient<IWorkoutRepository, WorkoutRepository>()
+                .AddTransient<IEquipmentStackRepository, EquipmentStackRepository>(); // Added line
+
         public static IServiceCollection AddOperationStackedContext(this IServiceCollection services)
         {
             services.AddDbContext<OperationStackedContext>((serviceProvider, options) =>

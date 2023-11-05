@@ -12,13 +12,8 @@ namespace OperationStacked.Repositories
         Task UpdateAsync(Exercise exercise);
         Task<bool> DeleteAllExercisesForUser(Guid userId);
         Task<bool> DeleteExercise(Guid exerciseId);
-        Task<EquipmentStackResponse> InsertEquipmentStack(CreateEquipmentStackRequest equipmentStack);
-        Task<EquipmentStack> GetEquipmentStack(Guid equipmentStackId);
-        Task<bool> DeleteEquipmentStack(Guid equipmentStackId);
         Task<Exercise> UpdateExerciseById(UpdateExerciseRequest request, int weightIndex = -1);
         Task<(IEnumerable<WorkoutExercise> exercises, int totalCount)> GetAllWorkoutExercisesWithCount(Guid userId, int pageIndex, int pageSize);
-
-        Task<List<EquipmentStack>> GetAllEquipmentStacks(Guid userId);
         Task<LinearProgressionExercise> GetLinearProgressionExerciseByIdAsync(Guid id);
         Task InsertLinearProgressionExercise(LinearProgressionExercise nextExercise);
         Task InsertWorkoutExercise(WorkoutExercise workoutExercise);

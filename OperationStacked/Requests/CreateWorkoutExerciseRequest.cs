@@ -12,4 +12,9 @@ public class CreateWorkoutExerciseRequest
     public int RestTimer { get; set; }
     public Guid WorkoutId { get; set; }
     public Guid EquipmentStackId { get; set; }
+    public decimal WeightProgression { get; set; }
+    public int MinimumReps { get; set; }
+    public int MaximumReps { get; set; }
+    public int Sets { get; set; }
+    public int AttemptsBeforeDeload { get; set; }
 }

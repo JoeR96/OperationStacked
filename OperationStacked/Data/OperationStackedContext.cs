@@ -32,18 +32,28 @@ namespace OperationStacked.Data
                     v => v != null ? string.Join(',', v) : null,
                     v => v != null
                         ? v.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                            .Select(x => SafeParseDecimal(x))
+                            .Select(SafeParseDecimal)
                             .Where(x => x.HasValue)
                             .Select(x => x.Value)
                             .ToList() // Convert to List<decimal>, which implements ICollection<decimal>
                         : null);
 
-
-
                 modelBuilder.Entity<WorkoutExercise>()
                     .HasMany(we => we.LinearProgressionExercises)
                     .WithOne(lpe => lpe.WorkoutExercise)
                     .HasForeignKey(lpe => lpe.WorkoutExerciseId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                modelBuilder.Entity<Exercise>()
+                    .HasKey(e => e.Id); // Assuming 'Id' is the primary key on the Exercise table
+
+                modelBuilder.Entity<Exercise>()
+                    .HasKey(e => e.Id);
+
+                modelBuilder.Entity<Exercise>()
+                    .HasMany(e => e.ExerciseHistories)
+                    .WithOne(h => h.Exercise)
+                    .HasForeignKey(h => h.ExerciseId)
                     .OnDelete(DeleteBehavior.Cascade);
 
 

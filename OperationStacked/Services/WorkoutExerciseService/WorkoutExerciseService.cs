@@ -17,6 +17,11 @@ public class WorkoutExerciseService : IWorkoutExerciseService
     {
         var workoutExercise = new WorkoutExercise
         {
+            Sets = request.Sets,
+            AttemptsBeforeDeload = request.AttemptsBeforeDeload,
+            WeightProgression = request.WeightProgression,
+            MinimumReps = request.MinimumReps,
+            MaximumReps = request.MaximumReps,
             ExerciseId = request.ExerciseId,
             Template = request.Template,
             LiftDay = request.LiftDay,

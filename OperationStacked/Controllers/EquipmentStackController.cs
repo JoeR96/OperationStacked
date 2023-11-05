@@ -11,11 +11,11 @@ namespace OperationStacked.Controllers;
 [Route("equipment-stack/")]
 public class EquipmentStackController : ControllerBase
 {
-    private readonly IExerciseRepository _exerciseRepository;
+    private readonly IEquipmentStackRepository _equipmentStackRepository;
 
-    public EquipmentStackController(IExerciseRepository exerciseRepository)
+    public EquipmentStackController(IEquipmentStackRepository equipmentStackRepository)
     {
-        _exerciseRepository = exerciseRepository;
+        _equipmentStackRepository = equipmentStackRepository;
     }
 
     [HttpPost]
@@ -23,19 +23,19 @@ public class EquipmentStackController : ControllerBase
     [Route("create")]
     public async Task<IActionResult> CreateEquipmentStack(
         [FromBody] CreateEquipmentStackRequest equipmentStack) =>
-        Ok(await _exerciseRepository.InsertEquipmentStack(equipmentStack));
+        Ok(await _equipmentStackRepository.InsertEquipmentStack(equipmentStack));
 
     [HttpGet]
     [ProducesResponseType(200,Type = typeof(List<EquipmentStackResponse>))]
     [Route("{userId}/all")]
     public async Task<IActionResult> GetAllEquipmentStacks([FromRoute] Guid userId) =>
-        Ok(await _exerciseRepository.GetAllEquipmentStacks(userId));
+        Ok(await _equipmentStackRepository.GetAllEquipmentStacks(userId));
 
     [HttpGet]
     [ProducesResponseType(200,Type = typeof(EquipmentStackResponse))]
     [Route("{equipmentStackId}")]
     public async Task<IActionResult> EquipmentStack(
-        [FromRoute] Guid equipmentStackId) => Ok(await _exerciseRepository.GetEquipmentStack(equipmentStackId));
+        [FromRoute] Guid equipmentStackId) => Ok(await _equipmentStackRepository.GetEquipmentStack(equipmentStackId));
 
 
     [HttpDelete]
@@ -43,5 +43,5 @@ public class EquipmentStackController : ControllerBase
     [Route("{equipmentStackId}")]
     public async Task<IActionResult> DeleteEquipmentStack(
         [FromRoute] Guid equipmentStackId) =>
-        Ok(await _exerciseRepository.DeleteEquipmentStack(equipmentStackId));
+        Ok(await _equipmentStackRepository.DeleteEquipmentStack(equipmentStackId));
 }
