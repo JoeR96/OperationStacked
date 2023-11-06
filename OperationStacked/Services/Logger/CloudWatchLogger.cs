@@ -1,69 +1,94 @@
-﻿using Amazon.CloudWatchLogs;
+﻿using Amazon;
+using Amazon.CloudWatchLogs;
 using Amazon.CloudWatchLogs.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace OperationStacked.Services.Logger;
-
-public class CloudWatchLogger
+namespace OperationStacked.Services.Logger
 {
-    private IAmazonCloudWatchLogs _client;
-    private string _logGroup = "operation-stacked";
-    private string _logStream;
-
-    private CloudWatchLogger( )
+    public interface ICloudWatchLogger
     {
-        _client = new AmazonCloudWatchLogsClient();
+        Task InitializeAsync();
+        Task LogMessageAsync(string message);
     }
 
-    public static async Task<CloudWatchLogger> GetLoggerAsync()
+    public class CloudWatchLogger : ICloudWatchLogger
     {
-        var logger = new CloudWatchLogger();
-
-        // Create a log group for our logger
-        await logger.CreateLogGroupAsync();
-
-        // Create a log stream
-        await logger.CreateLogStreamAsync();
-
-        return logger;
-    }
-
-    private async Task CreateLogGroupAsync()
-    {
-        var existingLogGroups = await _client.DescribeLogGroupsAsync();
-        if (existingLogGroups.LogGroups.Any(x => x.LogGroupName == _logGroup))
-            return;
-
-        _ = await _client.CreateLogGroupAsync(new CreateLogGroupRequest()
+        private readonly IAmazonCloudWatchLogs _client;
+        private readonly string _logGroup;
+        private string _logStream;
+        private string _nextSequenceToken;
+        
+        public CloudWatchLogger(string logGroup, RegionEndpoint region)
         {
-            LogGroupName = _logGroup
-        });
-    }
-    
-    private async Task CreateLogStreamAsync()
-    {
-        _logStream = DateTime.UtcNow.ToString("yyyyMMddHHmmssfff");
+            _logGroup = logGroup ?? throw new ArgumentNullException(nameof(logGroup));
+            _client = new AmazonCloudWatchLogsClient(region ?? RegionEndpoint.EUWest2);
+        }
 
-        _ = await _client.CreateLogStreamAsync(new CreateLogStreamRequest()
+        public async Task InitializeAsync()
         {
-            LogGroupName = _logGroup,
-            LogStreamName = _logStream
-        });
-    }
-    
-    public async Task LogMessageAsync(string message)
-    {
-        _ = await _client.PutLogEventsAsync(new PutLogEventsRequest()
+            await CreateLogGroupIfNotExistsAsync();
+            await CreateLogStreamAsync();
+        }
+
+        private async Task CreateLogGroupIfNotExistsAsync()
         {
-            LogGroupName = _logGroup,
-            LogStreamName = _logStream,
-            LogEvents = new List<InputLogEvent>()
+            try
             {
-                new InputLogEvent()
+                var existingLogGroups = await _client.DescribeLogGroupsAsync(new DescribeLogGroupsRequest { LogGroupNamePrefix = _logGroup });
+                
+                if (!existingLogGroups.LogGroups.Any(x => x.LogGroupName == _logGroup))
                 {
-                    Message = message,
-                    Timestamp = DateTime.UtcNow
+                    await _client.CreateLogGroupAsync(new CreateLogGroupRequest { LogGroupName = _logGroup });
                 }
             }
-        });
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating/checking log group: {ex.Message}");
+            }
+        }
+
+        private async Task CreateLogStreamAsync()
+        {
+            try
+            {
+                _logStream = DateTime.UtcNow.ToString("yyyyMMddHHmmssfff");
+                await _client.CreateLogStreamAsync(new CreateLogStreamRequest { LogGroupName = _logGroup, LogStreamName = _logStream });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating log stream: {ex.Message}");
+            }
+        }
+
+        public async Task LogMessageAsync(string message)
+        {
+            try
+            {
+                var response = await _client.PutLogEventsAsync(new PutLogEventsRequest
+                {
+                    LogGroupName = _logGroup,
+                    LogStreamName = _logStream,
+                    LogEvents = new List<InputLogEvent>
+                    {
+                        new InputLogEvent { Message = message, Timestamp = DateTime.UtcNow }
+                    },
+                    SequenceToken = _nextSequenceToken 
+                });
+
+                _nextSequenceToken = response.NextSequenceToken;
+            }
+            catch (InvalidSequenceTokenException ex)
+            {
+                _nextSequenceToken = ex.ExpectedSequenceToken;
+                await LogMessageAsync(message); // Retry with the correct sequence token.
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error logging message: {ex.Message}");
+            }
+        }
     }
 }

@@ -71,3 +71,4 @@ jobs:
             -e AWS_DEFAULT_REGION=${{ secrets.AWS_REGION }} \
             --name operation-stacked-workout \
             ${{ secrets.ECR_URL }}/operation-stacked-workout:latest
+          

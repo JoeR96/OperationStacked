@@ -1,14 +1,18 @@
 ﻿using System.Reflection;
-using OperationStacked.Abstractions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using OperationStacked.Data;
+using OperationStacked.Factories;
+using OperationStacked.Options;
 using OperationStacked.Repositories;
+using OperationStacked.Repositories.WorkoutRepository;
 using OperationStacked.Services;
 using OperationStacked.Services.A2S;
-using OperationStacked.Services.A2S.ToDoService;
 using OperationStacked.Services.ExerciseCreationService;
 using OperationStacked.Services.ExerciseProgressionService;
 using OperationStacked.Services.ExerciseRetrievalService;
 using OperationStacked.Services.UserAccountsService;
+using OperationStacked.Services.WorkoutService;
 
 namespace OperationStacked.Extensions.ServiceExtensions
 {
@@ -38,27 +42,37 @@ namespace OperationStacked.Extensions.ServiceExtensions
 
         public static IServiceCollection AddServices(this IServiceCollection services)
             => services
-                .AddTransient<IExerciseProgressionService, ExerciseProgressionService>()
+                .AddTransient<IWorkoutExerciseProgressionService, WorkoutExerciseProgressionService>()
                 .AddTransient<IExerciseCreationService, ExerciseCreationService>()
                 .AddTransient<IExerciseRetrievalService, ExerciseRetrievalService>()
-                .AddTransient<IToDoRepository, ToDoRepsitory>()
-                .AddTransient<IToDoService, ToDoService>()
-                .AddTransient<IUserAccountService, UserAccountService>();
+                .AddTransient<IUserAccountService, UserAccountService>()
+                .AddTransient<IA2SHypertrophyService, A2SHypertrophyService>()
+                .AddTransient<IWorkoutExerciseService, WorkoutExerciseService>()
+                .AddTransient<LinearProgressionService>()
+                .AddTransient<IExerciseHistoryService, ExerciseHistoryService>()
+                .AddTransient<IWorkoutService, WorkoutService>();
 
-     
         public static IServiceCollection AddRepositories(this IServiceCollection services)
-        => services.AddTransient<IExerciseRepository, ExerciseRepository>();
-        public static IServiceCollection RegisterA2S(this IServiceCollection services)
+            => services.AddTransient<IExerciseRepository, ExerciseRepository>()
+                .AddTransient<IWorkoutRepository, WorkoutRepository>()
+                .AddTransient<IEquipmentStackRepository, EquipmentStackRepository>(); // Added line
+
+        public static IServiceCollection AddOperationStackedContext(this IServiceCollection services)
         {
-            services.AddTransient<IA2SHypertrophyService, A2SHypertrophyService>();
+            services.AddDbContext<OperationStackedContext>((serviceProvider, options) =>
+            {
+                var connectionStringOptions = serviceProvider.GetRequiredService<IOptions<ConnectionStringOptions>>();
+                options.UseMySql(connectionStringOptions.Value.ConnectionString, new MySqlServerVersion(new Version(8, 0, 29)));
+            }, ServiceLifetime.Transient);
+
+            services.AddDbContextFactory<OperationStackedContext>((serviceProvider, options) =>
+            {
+                var connectionStringOptions = serviceProvider.GetRequiredService<IOptions<ConnectionStringOptions>>();
+                options.UseMySql(connectionStringOptions.Value.ConnectionString, new MySqlServerVersion(new Version(8, 0, 29)));
+            }, ServiceLifetime.Transient);
 
             return services;
         }
-
-
     }
 
 }
-
-
-

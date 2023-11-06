@@ -2,37 +2,40 @@
 using NSubstitute;
 using NUnit.Framework;
 using OperationStacked.Entities;
-using OperationStacked.Enums;
 using OperationStacked.Extensions.TemplateExtensions;
 using OperationStacked.Factories;
 using OperationStacked.Models;
 using OperationStacked.Repositories;
 using OperationStacked.Requests;
+using OperationStacked.TestLib.Adapters;
 
 namespace OperationStackedAuth.Tests.UnitTests;
 
 [TestFixture]
 public class LinearProgressionTests
 {
-    private IExerciseRepository _repository;
+    private IExerciseRepository _exerciseRepository;
+    private IEquipmentStackRepository _equipmentStackRepository;
     private LinearProgressionService _service;
 
     [SetUp]
     public void SetUp()
     {
-        _repository = Substitute.For<IExerciseRepository>();
-        _service = new LinearProgressionService(_repository);
+        _exerciseRepository = Substitute.For<IExerciseRepository>();
+        _service = new LinearProgressionService(_exerciseRepository,_equipmentStackRepository);
     }
 
     [Test]
     public async Task LinearProgressionExercise_CreatesWithValues()
     {
-        var createExerciseModel = new ExerciseModelBuilder().WithDefaultValues().Build();
+        var createExerciseModel = new ExerciseBuilder().WithDefaultValues().Build();
+        var workoutExercise = new WorkoutExerciseBuilder().WithDefaultValues().Build();
+        var linearProgressionExercise =
+            new LinearProgressionExerciseBuilder().WithDefaultValues().AdaptToCreateRequest(workoutExercise.AdaptToCreateRequest());
+        var createdExercise = await _service.CreateLinearProgressionExercise(linearProgressionExercise.AdaptToCreateRequest(),workoutExercise.AdaptToEntity());
 
-        var createdExercise = await _service.CreateExercise(createExerciseModel);
-
-        createdExercise.ExerciseName.Should().Be(createExerciseModel.ExerciseName);
-        createdExercise.MinimumReps.Should().Be(createExerciseModel.MinimumReps);
+        createdExercise.WorkoutExercise.Exercise.ExerciseName.Should().Be(createExerciseModel.ExerciseName);
+        createdExercise.WorkoutExercise.MinimumReps.Should().Be(linearProgressionExercise.MinimumReps);
     }
 
     [Test]
@@ -102,24 +105,23 @@ public class LinearProgressionTests
     {
         return new LinearProgressionExerciseBuilder()
             .WithDefaultValues()
-            .WithEquipmentType(EquipmentType.Barbell)
             .WithSets(4)
             .WithFailedAttempt(failedAttempts)
             .WithReps(8, 12)
-            .Build();
+            .Build().AdaptToEntity();
     }
 
     private void SetupRepositoryWithExercise(LinearProgressionExercise exercise)
     {
-        var completeExerciseRequest = new CompleteExerciseRequest { Id = new Guid() };
-        _repository.GetExerciseById(completeExerciseRequest.Id).Returns(exercise);
+        var completeExerciseRequest = new CompleteExerciseRequest { LinearProgressionExerciseId = new Guid() };
+        _exerciseRepository.GetExerciseById(completeExerciseRequest.LinearProgressionExerciseId).Returns(exercise.WorkoutExercise.Exercise);
     }
 
     private CompleteExerciseRequest CreateExerciseRequest(params int[] reps)
     {
         return new CompleteExerciseRequest
         {
-            Id = new Guid(),
+            LinearProgressionExerciseId = new Guid(),
             Reps = reps,
             Sets = reps.Length
         };

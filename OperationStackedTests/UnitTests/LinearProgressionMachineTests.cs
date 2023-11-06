@@ -2,24 +2,27 @@
 using NSubstitute;
 using NUnit.Framework;
 using OperationStacked.Entities;
-using OperationStacked.Enums;
 using OperationStacked.Extensions.TemplateExtensions;
 using OperationStacked.Factories;
 using OperationStacked.Models;
 using OperationStacked.Repositories;
 using OperationStacked.Requests;
+using OperationStacked.TestLib.Adapters;
 using OperationStacked.TestLib.Builders;
 
 public class LinearProgressionMachineTests
 {
-    private IExerciseRepository _repository;
+    private IExerciseRepository _exerciseRepository;
+    private IEquipmentStackRepository _equipmentStackRepository;
     private LinearProgressionService _service;
 
     [SetUp]
     public void SetUp()
     {
-        _repository = Substitute.For<IExerciseRepository>();
-        _service = new LinearProgressionService(_repository);
+        _exerciseRepository = Substitute.For<IExerciseRepository>();
+        _equipmentStackRepository = Substitute.For<IEquipmentStackRepository>();
+
+        _service = new LinearProgressionService(_exerciseRepository,_equipmentStackRepository);
     }
 
     [Test]
@@ -51,8 +54,8 @@ public class LinearProgressionMachineTests
 
     private void SetupRepository(LinearProgressionExercise exercise, EquipmentStack equipmentStack)
     {
-        _repository.GetExerciseById(Arg.Any<Guid>()).Returns(exercise);
-        _repository.GetEquipmentStack(exercise.EquipmentStackId).Returns(equipmentStack);
+        _exerciseRepository.GetExerciseById(Arg.Any<Guid>()).Returns(exercise.WorkoutExercise.Exercise);
+        _equipmentStackRepository.GetEquipmentStack(exercise.WorkoutExercise.EquipmentStackId).Returns(equipmentStack);
     }
 
     private EquipmentStack CreateDefaultEquipmentStack() 
@@ -65,16 +68,15 @@ public class LinearProgressionMachineTests
             .WithSets(4)
             .WithWorkingWeight(workingWeight)
             .WithFailedAttempt(failedAttempts)
-            .WithEquipmentType(EquipmentType.Machine)
             .WithReps(8, 12)
-            .Build();
+            .Build().AdaptToEntity();
     }
 
     private CompleteExerciseRequest CreateExerciseRequest(params int[] reps)
     {
         return new CompleteExerciseRequest
         {
-            Id = new Guid(),
+            LinearProgressionExerciseId = new Guid(),
             Reps = reps,
             Sets = reps.Length
         };

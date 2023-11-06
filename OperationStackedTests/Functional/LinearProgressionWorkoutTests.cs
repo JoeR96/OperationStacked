@@ -3,6 +3,7 @@ using MySqlX.XDevAPI;
 using NUnit.Framework;
 using OperationStacked.Extensions.TemplateExtensions;
 using OperationStacked.TestLib;
+using OperationStacked.TestLib.Adapters;
 using OperationStacked.TestLib.Builders;
 using EquipmentType = OperationStacked.Enums.EquipmentType;
 
@@ -21,70 +22,75 @@ public class LinearProgressionWorkoutTests
         _userId = userId;
     }
 
-
     [Test]
     public async Task LinearProgressionExercise_CreatesWithValues()
     {
-        var linearProgressionBarbell = new ExerciseModelBuilder()
-            .WithEquipmentType(EquipmentType.Barbell)
-            .Adapt();
-        
-        var linearProgressionMachine = new ExerciseModelBuilder()
-            .WithEquipmentType(EquipmentType.Machine)
-            .WithLiftOrder(2)
-            .Adapt();
-        
-        var linearProgressionDumbell = new ExerciseModelBuilder()
-            .WithEquipmentType(EquipmentType.Dumbbell)
-            .WithLiftOrder(3)
-            .Adapt();
-
-        var exercises = new List<CreateExerciseModel>();
-
-        exercises.Add(linearProgressionBarbell);
-        exercises.Add(linearProgressionMachine);
-        exercises.Add(linearProgressionDumbell);
-
-        var CreateWorkoutRequest = new CreateWorkoutRequest()
+        // Create exercise builders with specific details
+        var exerciseBuilders = new List<ExerciseBuilder>
         {
-            ExerciseDaysAndOrders = exercises,
-            UserId = _userId
+            new ExerciseBuilder().WithDefaultValues().WithExerciseName("Barbell Squat").WithCategory((OperationStacked.Enums.Category)Category._5).WithEquipmentType(EquipmentType.Barbell).WithUserId(_userId),
+            new ExerciseBuilder().WithDefaultValues().WithExerciseName("Leg Press").WithCategory((OperationStacked.Enums.Category)Category._5).WithEquipmentType(EquipmentType.Machine).WithUserId(_userId),
+            new ExerciseBuilder().WithDefaultValues().WithExerciseName("Dumbbell Lunges").WithCategory((OperationStacked.Enums.Category)Category._5).WithEquipmentType(EquipmentType.Dumbbell).WithUserId(_userId)
         };
-        var createdExercise = await _workoutClient.WorkoutCreationPOSTAsync(CreateWorkoutRequest);
-        var workout = await _workoutClient.WorkoutCreationGETAsync(_userId, 1, 1, false);
+
+        // Create workout exercise builders with lift day and order
+        var workoutExerciseBuilders = new List<WorkoutExerciseBuilder>
+        {
+            new WorkoutExerciseBuilder().WithDefaultValues().WithLiftDay(1).WithLiftOrder(1),
+            new WorkoutExerciseBuilder().WithDefaultValues().WithLiftDay(1).WithLiftOrder(2),
+            new WorkoutExerciseBuilder().WithDefaultValues().WithLiftDay(1).WithLiftOrder(3)
+        };
+
+        // Build the exercises
+        var exercises = exerciseBuilders.Zip(workoutExerciseBuilders, (exBuilder, wExBuilder) =>
+        {
+            var exercise = exBuilder.Build();
+            var workoutExercise = wExBuilder.WithExerciseId(exercise.Id).Build();
+            return  new LinearProgressionExerciseBuilder().WithDefaultValues().WithWorkingWeight(100).AdaptToCreateRequest(workoutExercise.AdaptToCreateRequest());
+        }).ToList();
+
+        var createWorkoutRequest = new CreateWorkoutRequest
+        {
+            UserId = _userId,
+            Exercises = exercises
+        };
+
+        var createdWorkout = await _workoutClient.WorkoutCreationPOSTAsync(createWorkoutRequest);
+        createdWorkout.Should().NotBeNull();
 
         var completeBarbellResponse = await _workoutClient.CompleteAsync(new CompleteExerciseRequest()
         {
-            Id = workout.Exercises.ToList()[0].Id,
+            ExerciseId = createdWorkout.Exercises.ToList()[0].Id,
             Reps = new int[]{12,12,12},
             Sets = 3
         });
 
-        var barbellProgressWeight = linearProgressionBarbell.StartingWeight +=
-            linearProgressionBarbell.WeightProgression;
+        var barbellProgression = createdWorkout.Exercises.ToList()[1].WorkingWeight;
+        var barbellProgressWeight = barbellProgression + createdWorkout.Exercises.ToList()[2].WeightProgression;
         completeBarbellResponse.Exercise.WorkingWeight.Should().Be(barbellProgressWeight);
         
         var completeMachineResponse = await _workoutClient.CompleteAsync(new CompleteExerciseRequest()
         {
-            Id = workout.Exercises.ToList()[1].Id,
+            ExerciseId = createdWorkout.Exercises.ToList()[1].Id,
             Reps = new int[]{12,12,12},
             Sets = 3
         });
 
         var machineProgressWeight = new EquipmentStackBuilder().WithDefaultValues().Build().GenerateStack();
-        var weight = (double)machineProgressWeight[completeMachineResponse.Exercise.WeightIndex];
+        var weight = machineProgressWeight[completeMachineResponse.Exercise.WeightIndex];
         
         completeMachineResponse.Exercise.WorkingWeight.Should().Be(weight);
         
         var completeDumbBellResponse = await _workoutClient.CompleteAsync(new CompleteExerciseRequest()
         {
-            Id = workout.Exercises.ToList()[2].Id,
+            ExerciseId = createdWorkout.Exercises.ToList()[2].Id,
             Reps = new int[]{12,12,12},
             Sets = 3
         });
         
         //in our context dumbells go up in 1's up until 10 then 12,14,16,18 etc.. in 2's
-        var dumbBellProgressWeight = linearProgressionDumbell.StartingWeight + 2;
+        var dumbbellProgression =createdWorkout.Exercises.ToList()[2].WorkingWeight;
+        var dumbBellProgressWeight = dumbbellProgression + createdWorkout.Exercises.ToList()[2].WeightProgression;
         completeDumbBellResponse.Exercise.WorkingWeight.Should().Be(dumbBellProgressWeight);
         completeDumbBellResponse.Exercise.LiftWeek.Should().Be(2);
     }

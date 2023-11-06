@@ -1,4 +1,5 @@
-﻿using OperationStacked.Requests;
+﻿using OperationStacked.Entities;
+using OperationStacked.Requests;
 using OperationStacked.Response;
 
 namespace OperationStacked.Services.ExerciseCreationService
@@ -7,5 +8,9 @@ namespace OperationStacked.Services.ExerciseCreationService
     {
 
         Task<WorkoutCreationResult> CreateWorkout(CreateWorkoutRequest request);
+        Task<List<Exercise>> CreateExercises(List<CreateExerciseRequest> requests);
+        Task<Exercise> CreateExercise(CreateExerciseRequest requests);
+
+
     }
 }

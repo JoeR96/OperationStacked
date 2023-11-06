@@ -16,7 +16,7 @@ public class EquipmentStackTests
         var equipmentStack = new EquipmentStackBuilder()
             .WithDefaultValues()
             .WithIncrementValue(7.0m)
-            .WithInitialIncrements(new decimal?[]{4.5m})
+            .WithInitialIncrements(new decimal[]{4.5m})
             .WithStartWeight(4.5m)
             .WithIncrementCount(2)
             .Build();

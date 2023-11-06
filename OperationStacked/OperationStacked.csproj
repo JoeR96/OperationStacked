@@ -42,8 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Migrations" />
-    <Folder Include="Models\ExerciseTemplates\" />
-    <Folder Include="Models\Requests\" />
+    <Folder Include="Repositories\IWorkoutExerciseRepository" />
     <Folder Include="Services\AuthenticationService\" />
   </ItemGroup>
   <ItemGroup>
