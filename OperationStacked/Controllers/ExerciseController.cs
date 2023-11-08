@@ -58,5 +58,8 @@ public class ExerciseController : ControllerBase
         [FromRoute] Guid exerciseId) =>
         Ok(await _exerciseRepository.GetExerciseById(exerciseId));
 
-
+    [HttpGet]
+    [Route("{userId}/all")]
+    public async Task<IActionResult> GetAllExercisesByUserId(
+        [FromRoute] Guid userId) => Ok(await _exerciseRepository.GetAllExercisesByUserId(userId));
 }

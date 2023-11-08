@@ -42,6 +42,7 @@ app.MapHealthChecks("/health");
 
 using var scope = app.Services.CreateScope();
 var dbContext = scope.ServiceProvider.GetRequiredService<OperationStackedContext>();
+app.UseCors("MyPolicy");
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Operation Stacked Workout V1.2"));
 app.UseHttpsRedirection();

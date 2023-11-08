@@ -19,5 +19,6 @@ namespace OperationStacked.Repositories
         Task InsertWorkoutExercise(WorkoutExercise workoutExercise);
         Task InsertExerciseHistory(ExerciseHistory history);
         Task<WorkoutExercise> GetWorkoutExerciseById(Guid requestWorkoutExerciseId);
+        Task<List<Exercise>> GetAllExercisesByUserId(Guid userId);
     }
 }
