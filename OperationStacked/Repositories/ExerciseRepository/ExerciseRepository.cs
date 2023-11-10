@@ -146,6 +146,11 @@ namespace OperationStacked.Repositories
             return _operationStackedContext.Exercises.Where(e => e.UserId == userId).ToListAsync();
         }
 
+        public async Task<List<ExerciseHistory>> GetExerciseHistoryByExerciseId(Guid exerciseId)
+        {
+            return await _operationStackedContext.ExerciseHistory.Where(e => e.ExerciseId == exerciseId).ToListAsync();
+        }
+
         public async Task<Exercise> UpdateExerciseById(UpdateExerciseRequest request, int weightIndex = -1)
         {
             var exercise = await _operationStackedContext.Exercises.Where(x => x.Id == request.Id)

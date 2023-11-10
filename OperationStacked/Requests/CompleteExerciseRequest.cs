@@ -8,6 +8,6 @@ namespace OperationStacked.Requests
         public Guid LinearProgressionExerciseId { get; set; }
         public int[] Reps { get; set; }
         public int Sets { get; set; }
-        public ExerciseTemplate Template { get; set; }
+        public ExerciseTemplate? Template { get; set; }
     }
 }

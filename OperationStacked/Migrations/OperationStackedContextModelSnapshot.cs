@@ -101,8 +101,6 @@ namespace OperationStacked.Migrations
 
                     b.HasIndex("ExerciseId");
 
-                    b.HasIndex("TemplateExerciseId");
-
                     b.ToTable("ExerciseHistory");
                 });
 
@@ -319,13 +317,7 @@ namespace OperationStacked.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OperationStacked.Entities.LinearProgressionExercise", "TemplateExercise")
-                        .WithMany()
-                        .HasForeignKey("TemplateExerciseId");
-
                     b.Navigation("Exercise");
-
-                    b.Navigation("TemplateExercise");
                 });
 
             modelBuilder.Entity("OperationStacked.Entities.LinearProgressionExercise", b =>

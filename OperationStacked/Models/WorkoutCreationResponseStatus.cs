@@ -12,6 +12,7 @@
         StayedTheSame = 2,
         Failed = 3,
         Deload = 4,
-        Active = 5
+        Active = 5,
+        NonProgressable
     }
 }

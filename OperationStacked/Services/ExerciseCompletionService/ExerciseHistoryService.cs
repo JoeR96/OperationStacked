@@ -35,4 +35,9 @@ public class ExerciseHistoryService : IExerciseHistoryService
 
         await _exerciseRepository.InsertExerciseHistory(history);
     }
+
+    public async Task<List<ExerciseHistory>> GetExerciseHistoryById(Guid exerciseId)
+    {
+        return await _exerciseRepository.GetExerciseHistoryByExerciseId(exerciseId);
+    }
 }
