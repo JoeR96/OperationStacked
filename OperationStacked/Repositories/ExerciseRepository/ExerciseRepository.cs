@@ -126,13 +126,7 @@ namespace OperationStacked.Repositories
             await _operationStackedContext.SaveChangesAsync();
         }
 
-        public async Task InsertExerciseHistory(ExerciseHistory history)
-        {
-            using var context = _operationStackedContext;
-            await context.ExerciseHistory.AddAsync(history);
-            await context.SaveChangesAsync();
-        }
-
+     
         public Task<WorkoutExercise> GetWorkoutExerciseById(Guid requestWorkoutExerciseId)
         {
             return _operationStackedContext.WorkoutExercises
@@ -144,11 +138,6 @@ namespace OperationStacked.Repositories
         public Task<List<Exercise>> GetAllExercisesByUserId(Guid userId)
         {
             return _operationStackedContext.Exercises.Where(e => e.UserId == userId).ToListAsync();
-        }
-
-        public async Task<List<ExerciseHistory>> GetExerciseHistoryByExerciseId(Guid exerciseId)
-        {
-            return await _operationStackedContext.ExerciseHistory.Where(e => e.ExerciseId == exerciseId).ToListAsync();
         }
 
         public async Task<Exercise> UpdateExerciseById(UpdateExerciseRequest request, int weightIndex = -1)

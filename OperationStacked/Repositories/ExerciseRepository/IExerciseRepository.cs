@@ -17,7 +17,6 @@ namespace OperationStacked.Repositories
         Task<LinearProgressionExercise> GetLinearProgressionExerciseByIdAsync(Guid id);
         Task InsertLinearProgressionExercise(LinearProgressionExercise nextExercise);
         Task InsertWorkoutExercise(WorkoutExercise workoutExercise);
-        Task InsertExerciseHistory(ExerciseHistory history);
         Task<WorkoutExercise> GetWorkoutExerciseById(Guid requestWorkoutExerciseId);
         Task<List<Exercise>> GetAllExercisesByUserId(Guid userId);
     }

@@ -5,6 +5,7 @@ using OperationStacked.Data;
 using OperationStacked.Factories;
 using OperationStacked.Options;
 using OperationStacked.Repositories;
+using OperationStacked.Repositories.ExerciseHistoryRepository;
 using OperationStacked.Repositories.WorkoutRepository;
 using OperationStacked.Services;
 using OperationStacked.Services.A2S;
@@ -55,7 +56,8 @@ namespace OperationStacked.Extensions.ServiceExtensions
         public static IServiceCollection AddRepositories(this IServiceCollection services)
             => services.AddTransient<IExerciseRepository, ExerciseRepository>()
                 .AddTransient<IWorkoutRepository, WorkoutRepository>()
-                .AddTransient<IEquipmentStackRepository, EquipmentStackRepository>(); // Added line
+                .AddTransient<IEquipmentStackRepository, EquipmentStackRepository>()
+                .AddTransient<IExerciseHistoryRepository, ExerciseHistoryRepository>(); // Added line
 
         public static IServiceCollection AddOperationStackedContext(this IServiceCollection services)
         {

@@ -1,16 +1,17 @@
 ﻿using OperationStacked.Entities;
 using OperationStacked.Repositories;
+using OperationStacked.Repositories.ExerciseHistoryRepository;
 using OperationStacked.Requests;
 
 namespace OperationStacked.Services;
 
 public class ExerciseHistoryService : IExerciseHistoryService
 {
-    private readonly IExerciseRepository _exerciseRepository;
+    private readonly IExerciseHistoryRepository _exerciseHistoryRepository;
 
-    public ExerciseHistoryService(IExerciseRepository exerciseRepository)
+    public ExerciseHistoryService(IExerciseHistoryRepository exerciseHistoryRepository)
     {
-        _exerciseRepository = exerciseRepository;
+        _exerciseHistoryRepository = exerciseHistoryRepository;
     }
 
 
@@ -33,11 +34,16 @@ public class ExerciseHistoryService : IExerciseHistoryService
             history.TemplateExerciseId = Guid.Empty;;
         }
 
-        await _exerciseRepository.InsertExerciseHistory(history);
+        await _exerciseHistoryRepository.InsertExerciseHistory(history);
     }
 
     public async Task<List<ExerciseHistory>> GetExerciseHistoryById(Guid exerciseId)
     {
-        return await _exerciseRepository.GetExerciseHistoryByExerciseId(exerciseId);
+        return await _exerciseHistoryRepository.GetExerciseHistoryById(exerciseId);
+    }
+    
+    public async Task<List<ExerciseHistory>> GetExerciseHistoryById(List<Guid> exerciseIds)
+    {
+        return await _exerciseHistoryRepository.GetExerciseHistoriesByIds(exerciseIds);
     }
 }

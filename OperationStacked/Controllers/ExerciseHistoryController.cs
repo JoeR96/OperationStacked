@@ -7,8 +7,8 @@ namespace OperationStacked.Controllers;
 
 [ApiController]
 [DisplayName("Exercise History")]
-[Route("exercise-history/")]
-public class ExerciseHistoryController
+[Route("exercise-history/")] 
+public class ExerciseHistoryController : ControllerBase
 {
     private readonly IExerciseHistoryService _exerciseHistoryService;
 
