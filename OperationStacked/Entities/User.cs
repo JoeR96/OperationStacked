@@ -8,7 +8,7 @@ namespace OperationStacked.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         [Required]
         public string UserName { get; set; }
         [Required]

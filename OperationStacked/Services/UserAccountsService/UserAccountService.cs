@@ -21,8 +21,8 @@ namespace OperationStacked.Services.UserAccountsService
         public async Task<User> GetUserByCognitoUserId(Guid cognitoUserId) => await _context.Users.Where(x => x.CognitoUserId == cognitoUserId)?
                 .FirstOrDefaultAsync();
 
-        public async Task<User> GetUserById(Guid CognitoUserId)
-        => await _context.Users?.Where(x => x.CognitoUserId == CognitoUserId)?
+        public async Task<User> GetUserById(Guid userId)
+        => await _context.Users?.Where(x => x.UserId == userId)?
         .FirstOrDefaultAsync();
 
         public async Task<WeekAndDayResponse> ProgressWeekAndDay(Guid userid)
@@ -50,7 +50,11 @@ namespace OperationStacked.Services.UserAccountsService
 
         }
 
-        public WeekAndDayResponse GetWeekAndDay(Guid cognitoUserId) => GetUserById(cognitoUserId).Result.GetWeekAndDayResponse();
+        public async Task<WeekAndDayResponse> GetWeekAndDay(Guid cognitoUserId)
+        {
+            var _ = await GetUserById(cognitoUserId);
+            return _.GetWeekAndDayResponse();
+        }
 
         public async Task CreateUser(CreateUser request)
         {
@@ -95,4 +99,3 @@ public static class UserExtensions
     public static WeekAndDayResponse GetWeekAndDayResponse(this User user) =>
         new (user.CurrentWeek, user.CurrentDay, user.WorkoutDaysInWeek);
 }
-
