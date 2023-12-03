@@ -7,5 +7,5 @@ public interface IExerciseHistoryService
 {
     public Task CompleteExercise(CompleteExerciseRequest request);
 
-    Task<List<ExerciseHistory>> GetExerciseHistoryById(Guid exerciseId);
+    Task<List<ExerciseHistory>> GetExerciseHistoryById(List<Guid> exerciseIds);
 }

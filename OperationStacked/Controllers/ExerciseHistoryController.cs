@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using Microsoft.AspNetCore.Mvc;
+using OperationStacked.Entities;
 using OperationStacked.Response;
 using OperationStacked.Services;
 
@@ -16,11 +17,12 @@ public class ExerciseHistoryController : ControllerBase
     {
         _exerciseHistoryService = exerciseHistoryService;
     }
-
-    [HttpGet]
-    [ProducesResponseType(200, Type = typeof(GetExerciseResult))]
-    [Route("{exerciseId}")]
+    
+    [HttpPost]
+    [ProducesResponseType(200, Type = typeof(List<ExerciseHistory>))]
     public async Task<IActionResult> GetExerciseHistoryById(
-        [FromRoute] Guid exerciseId) =>
-        Ok(await _exerciseHistoryService.GetExerciseHistoryById(exerciseId));
+         List<Guid> exerciseIds) =>
+        Ok(await _exerciseHistoryService.GetExerciseHistoryById(exerciseIds));
+    
+    
 }
