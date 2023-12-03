@@ -153,9 +153,9 @@ namespace OperationStacked.Migrations
 
             modelBuilder.Entity("OperationStacked.Entities.User", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<Guid>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("CognitoUserId")
                         .HasMaxLength(255)
@@ -190,6 +190,9 @@ namespace OperationStacked.Migrations
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("UserAccountUserId")
+                        .HasColumnType("char(36)");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -197,7 +200,7 @@ namespace OperationStacked.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserAccountUserId");
 
                     b.ToTable("UserRole");
                 });
@@ -341,7 +344,7 @@ namespace OperationStacked.Migrations
 
                     b.HasOne("OperationStacked.Entities.User", "UserAccount")
                         .WithMany("UserRoles")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UserAccountUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

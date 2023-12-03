@@ -33,8 +33,8 @@ namespace OperationStacked.Controllers
         [Route("week-and-day/{userId}")]
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(WeekAndDayResponse))]
-        public IActionResult GetCurrentWeekAndDay([FromRoute] Guid userId)
-            => Ok(_userAccountService.GetWeekAndDay(userId));
+        public async Task<IActionResult> GetCurrentWeekAndDay([FromRoute] Guid userId)
+            => Ok(await _userAccountService.GetWeekAndDay(userId));
 
         [HttpPost("create-user")]
         [AllowAnonymous]

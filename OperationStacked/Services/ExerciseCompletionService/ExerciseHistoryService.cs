@@ -1,4 +1,5 @@
 ﻿using OperationStacked.Entities;
+using OperationStacked.Enums;
 using OperationStacked.Repositories;
 using OperationStacked.Repositories.ExerciseHistoryRepository;
 using OperationStacked.Requests;
@@ -41,9 +42,22 @@ public class ExerciseHistoryService : IExerciseHistoryService
     {
         return await _exerciseHistoryRepository.GetExerciseHistoryById(exerciseId);
     }
-    
-    public async Task<List<ExerciseHistory>> GetExerciseHistoryById(List<Guid> exerciseIds)
+
+    public async Task<Dictionary<Category, List<ExerciseHistory>>> GetExerciseHistorySortedByCategoryByIds(List<Guid> exerciseIds)
     {
-        return await _exerciseHistoryRepository.GetExerciseHistoriesByIds(exerciseIds);
+        var exercises = await _exerciseHistoryRepository.GetExerciseHistoriesByIds(exerciseIds);
+        var exerciseHistoryByCategory = exercises
+            .GroupBy(exercise => exercise.Exercise.Category)
+            .ToDictionary(group => group.Key,
+                group => group.ToList());
+
+        return exerciseHistoryByCategory;
     }
+
+    public async Task<List<ExerciseHistory>> GetExerciseHistoryByIds(List<Guid> exerciseIds)
+    {
+        var exercises = await _exerciseHistoryRepository.GetExerciseHistoriesByIds(exerciseIds);
+        return exercises;
+    }
+
 }
