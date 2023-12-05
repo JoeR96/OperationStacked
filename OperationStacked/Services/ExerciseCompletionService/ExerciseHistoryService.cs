@@ -1,6 +1,5 @@
 ﻿using OperationStacked.Entities;
 using OperationStacked.Enums;
-using OperationStacked.Repositories;
 using OperationStacked.Repositories.ExerciseHistoryRepository;
 using OperationStacked.Requests;
 
@@ -14,7 +13,6 @@ public class ExerciseHistoryService : IExerciseHistoryService
     {
         _exerciseHistoryRepository = exerciseHistoryRepository;
     }
-
 
     public async Task CompleteExercise(CompleteExerciseRequest request)
     {
