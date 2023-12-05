@@ -67,12 +67,9 @@ namespace OperationStacked.Controllers
             [FromQuery] int pageIndex = 0,
             [FromQuery] int pageSize = 10)
         {
-            // Pass pageIndex and pageSize to the service
             var result = await _exerciseRetrievalService.GetAllWorkouts(userId, pageIndex, pageSize);
             return Ok(result);
         }
-
-
 
         [HttpGet]
         [Route("GenerateDummy/")]
@@ -82,12 +79,9 @@ namespace OperationStacked.Controllers
 
                 foreach (var exercise in result.Exercises)
                 {
-                    // Assuming you have 15 iterations for each exercise.
                     await CompleteExerciseAsync(15, exercise);
                 }
 
-
-            // Assuming you want to return a success result after generating dummy data.
             return Ok("Dummy data generated successfully.");
         }
 
