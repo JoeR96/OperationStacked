@@ -1,4 +1,5 @@
-﻿using OperationStacked.Entities;
+﻿using OperationStacked.DTOs;
+using OperationStacked.Entities;
 using OperationStacked.Enums;
 using OperationStacked.Requests;
 
@@ -12,5 +13,5 @@ public interface IExerciseHistoryService
 
     public  Task<Dictionary<Category, List<ExerciseHistory>>> GetExerciseHistorySortedByCategoryByIds(
         List<Guid> exerciseIds);
-    Task<List<ExerciseHistory>> GetExerciseHistoryByIds(List<Guid> exerciseIds);
+    Task<List<ExerciseHistoryDTO>> GetExerciseHistoryByIds(List<Guid> exerciseIds);
 }

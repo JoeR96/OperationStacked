@@ -97,6 +97,9 @@ namespace OperationStacked.Migrations
                     b.Property<Guid?>("TemplateExerciseId")
                         .HasColumnType("char(36)");
 
+                    b.Property<decimal>("WorkingWeight")
+                        .HasColumnType("decimal(65,30)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ExerciseId");

@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using Microsoft.AspNetCore.Mvc;
+using OperationStacked.DTOs;
 using OperationStacked.Entities;
 using OperationStacked.Enums;
 using OperationStacked.Response;
@@ -26,23 +27,18 @@ public class ExerciseHistoryController : ControllerBase
         [FromRoute] Guid exerciseId) =>
         Ok(await _exerciseHistoryService.GetExerciseHistoryById(exerciseId));
 
-    [HttpPost]
-    [Route("sorted")]
-    [ProducesResponseType(200, Type = typeof(GetSortedHistoricalExerciseResults))]
-    public async Task<IActionResult> GetSortedExerciseHistoryById(
-        [FromBody] List<Guid> exerciseIds) =>
-        Ok(await _exerciseHistoryService.GetExerciseHistorySortedByCategoryByIds(exerciseIds));
+    // [HttpPost]
+    // [Route("sorted")]
+    // [ProducesResponseType(200, Type = typeof(GetSortedHistoricalExerciseResults))]
+    // public async Task<IActionResult> GetSortedExerciseHistoryById(
+    //     [FromBody] List<Guid> exerciseIds) =>
+    //     Ok(await _exerciseHistoryService.GetExerciseHistorySortedByCategoryByIds(exerciseIds));
 
     [HttpPost]
-    [ProducesResponseType(200, Type = typeof(GetHistoricalExerciseResults))]
+    [ProducesResponseType(200, Type = typeof(HistoricalExerciseResults))]
     public async Task<IActionResult> GetExerciseHistoryById(
         [FromBody] List<Guid> exerciseIds) =>
-        Ok(await _exerciseHistoryService.GetExerciseHistoryByIds(exerciseIds));
-}
-public class GetSortedHistoricalExerciseResults
-{    public sealed record SortedHistoricalExerciseResults(Dictionary<Category,ExerciseHistory> SortedExercisesByCategory);
+        Ok(new HistoricalExerciseResults(await _exerciseHistoryService.GetExerciseHistoryByIds(exerciseIds)));
 }
 
-public class GetHistoricalExerciseResults
-{    public sealed record HistoricalExerciseResults(List<ExerciseHistory> SortedExercisesByCategory);
-}
+  public sealed record HistoricalExerciseResults(List<ExerciseHistoryDTO> ExerciseHistories);

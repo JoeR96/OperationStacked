@@ -14,6 +14,5 @@ namespace OperationStacked.Entities
         public EquipmentType EquipmentType { get; set; }
         public Guid UserId { get; set; }
         public virtual ICollection<ExerciseHistory> ExerciseHistories { get; set; }
-
     }
 }

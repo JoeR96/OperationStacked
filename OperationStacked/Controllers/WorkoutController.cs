@@ -6,6 +6,7 @@ using OperationStacked.Services.ExerciseCreationService;
 using OperationStacked.Services.ExerciseProgressionService;
 using OperationStacked.Services.ExerciseRetrievalService;
 using System.ComponentModel;
+using OperationStacked.DTOs;
 using OperationStacked.Entities;
 using OperationStacked.Models;
 using OperationStacked.Repositories.WorkoutRepository;
@@ -39,8 +40,12 @@ namespace OperationStacked.Controllers
         [ProducesResponseType(200, Type = typeof(WorkoutCreationResult))]
         public async Task<IActionResult> GenerateWorkoutAsync(
             [FromBody] CreateWorkoutRequest request)
-            => Ok(await _exerciseCreationService.CreateWorkout(request));
-    
+        {
+            await _exerciseCreationService.CreateWorkout(request);
+            return Ok();
+
+        }
+
         [Route("complete")]
         [HttpPost]
         [ProducesResponseType(200, Type = typeof(ExerciseCompletionResult))]
@@ -75,11 +80,13 @@ namespace OperationStacked.Controllers
         [Route("GenerateDummy/")]
         public async Task<IActionResult> GenerateDummyData()
         {
-            var result = await _exerciseRetrievalService.GetAllWorkouts(Guid.Parse("5af5dae7-801e-47c0-bfc9-3eac5b25491c"), 0, 100);
+            var result = await _exerciseRetrievalService.GetAllWorkouts(Guid.Parse("894ce6d3-6990-454d-ba92-17a61d518d8c"), 0, 100);
 
                 foreach (var exercise in result.Exercises)
                 {
-                    await CompleteExerciseAsync(15, exercise);
+                    var e = MapToWorkoutExercise(exercise);
+
+                     await CompleteExerciseAsync(15, e);
                 }
 
             return Ok("Dummy data generated successfully.");
@@ -119,7 +126,9 @@ namespace OperationStacked.Controllers
                         LinearProgressionExerciseId = exerciseForWeek.Id,
                         Sets = outcomes.Count,
                         Template = ExerciseTemplate.LinearProgression,
-                        ExerciseId = exerciseForWeek.WorkoutExercise.ExerciseId
+                        ExerciseId = exerciseForWeek.WorkoutExercise.ExerciseId,
+                        WorkingWeight = exerciseForWeek.WorkingWeight,
+                        DummyTime = DateTime.Now.AddDays(i * 7)
                     };
 
                     await _workoutExerciseProgressionService.CompleteExercise(completeExerciseRequest);
@@ -131,5 +140,60 @@ namespace OperationStacked.Controllers
             }
         }
 
+    // Add this method in your ExerciseRetrievalService
+
+    private WorkoutExercise MapToWorkoutExercise(WorkoutExerciseDto dto)
+    {
+        var workoutExercise = new WorkoutExercise
+        {
+            Id = dto.Id,
+            WorkoutId = dto.WorkoutId,
+            ExerciseId = dto.ExerciseId,
+            Exercise = MapToExercise(dto.Exercise), // Assuming you have a similar reverse mapping for Exercise
+            LinearProgressionExercises = dto.LinearProgressionExercises.Select(MapToLinearProgressionExercise).ToList(), // Reverse map for LinearProgressionExercise
+            Template = dto.Template,
+            LiftDay = dto.LiftDay,
+            LiftOrder = dto.LiftOrder,
+            Completed = dto.Completed,
+            RestTimer = dto.RestTimer,
+            MinimumReps = dto.MinimumReps,
+            MaximumReps = dto.MaximumReps,
+            Sets = dto.Sets,
+            WeightProgression = dto.WeightProgression,
+            AttemptsBeforeDeload = dto.AttemptsBeforeDeload,
+            EquipmentStackId = dto.EquipmentStackId
+        };
+
+        return workoutExercise;
     }
+
+    private Exercise MapToExercise(ExerciseDto dto)
+    {
+        return new Exercise
+        {
+            Id = dto.Id,
+            ExerciseName = dto.ExerciseName,
+            Category = dto.Category,
+            EquipmentType = dto.EquipmentType,
+            UserId = dto.UserId
+        };
+    }
+
+    private LinearProgressionExercise MapToLinearProgressionExercise(LinearProgressionExerciseDto dto)
+    {
+        return new LinearProgressionExercise
+        {
+            WorkoutExerciseId = dto.WorkoutExerciseId,
+            Id = dto.Id,
+            CurrentAttempt = dto.CurrentAttempt,
+            ParentId = dto.ParentId,
+            LiftWeek = dto.LiftWeek,
+            WorkingWeight = dto.WorkingWeight,
+            WeightIndex = dto.WeightIndex
+        };
+    }
+
+
+    }
+
 }

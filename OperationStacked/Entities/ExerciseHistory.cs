@@ -26,6 +26,6 @@ namespace OperationStacked.Entities
         public virtual Exercise Exercise { get; set; }
 
         public Guid? TemplateExerciseId { get; set; }
-    
+        public decimal WorkingWeight { get; set; }
     }
 }
