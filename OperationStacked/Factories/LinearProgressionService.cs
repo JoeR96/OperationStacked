@@ -109,7 +109,7 @@ namespace OperationStacked.Factories
                 }
                 else if(weightIndexModifier == 0)
                 {
-                    return workingWeight;
+                    return workingWeight - workingWeight;
                 }
                 else
                 {

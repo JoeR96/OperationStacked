@@ -92,15 +92,16 @@ namespace OperationStacked.Controllers
             return Ok("Dummy data generated successfully.");
         }
 
-        private static int  GenerateExerciseOutcome(double failWeight, double passWeight, double progressWeight)
+        private static int GenerateExerciseOutcome(double failWeight, double passWeight, double progressWeight,
+            WorkoutExercise workoutExercise)
         {
-            var random = new Random();
-            var value = random.NextDouble();
+        var random = new Random();
+        var value = random.NextDouble();
 
-            if (value < failWeight) return random.Next(1, 7);
-            if (value < failWeight + passWeight) return random.Next(8, 12);
-            return 12;
-        }
+            if (value < failWeight) return random.Next(1, workoutExercise.MinimumReps);
+        if (value < failWeight + passWeight) return random.Next(workoutExercise.MinimumReps, workoutExercise.MaximumReps);
+        return 12;
+    }
 
         private async Task CompleteExerciseAsync(int count, WorkoutExercise exercise,
             double failWeight = 0.05,
@@ -112,7 +113,7 @@ namespace OperationStacked.Controllers
                 var outcomes = new List<int>();
                 for (int sets = 0; sets < 3; sets++)
                 {
-                    var outcome = GenerateExerciseOutcome(failWeight, passWeight, progressWeight);
+                    var outcome = GenerateExerciseOutcome(failWeight, passWeight, progressWeight,exercise);
                     outcomes.Add(outcome);
                 }
 
@@ -120,6 +121,7 @@ namespace OperationStacked.Controllers
                 var exerciseForWeek = exercise.LinearProgressionExercises?.Where(x => x.LiftWeek == i + 1).FirstOrDefault();
                 if (exerciseForWeek != null)
                 {
+                    var lol = i;
                     var completeExerciseRequest = new CompleteExerciseRequest
                     {
                         Reps = outcomes.ToArray(),
@@ -128,7 +130,7 @@ namespace OperationStacked.Controllers
                         Template = ExerciseTemplate.LinearProgression,
                         ExerciseId = exerciseForWeek.WorkoutExercise.ExerciseId,
                         WorkingWeight = exerciseForWeek.WorkingWeight,
-                        DummyTime = DateTime.Now.AddDays(i * 7)
+                        DummyTime = DateTime.Now.AddDays(lol * 7)
                     };
 
                     await _workoutExerciseProgressionService.CompleteExercise(completeExerciseRequest);
