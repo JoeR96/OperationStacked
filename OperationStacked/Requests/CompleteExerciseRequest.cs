@@ -9,5 +9,8 @@ namespace OperationStacked.Requests
         public int[] Reps { get; set; }
         public int Sets { get; set; }
         public ExerciseTemplate? Template { get; set; }
+        public decimal WorkingWeight { get; set; }
+        public DateTime DummyTime { get; set; }
+
     }
 }

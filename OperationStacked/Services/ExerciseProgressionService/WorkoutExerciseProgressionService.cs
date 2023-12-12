@@ -40,7 +40,11 @@ public class WorkoutExerciseProgressionService : IWorkoutExerciseProgressionServ
             {
                 var lp = await _exerciseRepository.GetLinearProgressionExerciseByIdAsync(
                     request.LinearProgressionExerciseId);
-            
+
+                if (lp == null)
+                {
+                    return new ExerciseCompletionResult(ExerciseCompletedStatus.Progressed, null);
+                }
                 var workoutExercise = await _exerciseRepository.GetWorkoutExerciseById(lp.WorkoutExerciseId);
 
                 if (workoutExercise == null)

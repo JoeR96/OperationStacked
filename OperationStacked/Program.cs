@@ -23,8 +23,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.PropertyNamingPolicy = null;
 
-    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-
+    // options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
 });
 builder.Services.AddServices();
 builder.Services.AddHealthChecks();
@@ -53,3 +52,4 @@ await dbContext.Database.EnsureCreatedAsync();
 app.Run();
 
 public partial class Program { }
+//894ce6d3-6990-454d-ba92-17a61d518d8c <- userid

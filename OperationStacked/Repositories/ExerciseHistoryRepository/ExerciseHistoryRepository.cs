@@ -22,6 +22,7 @@ public class ExerciseHistoryRepository : RepositoryBase, IExerciseHistoryReposit
     {
         return await _operationStackedContext.ExerciseHistory
             .Where(eh => exerciseIds.Contains(eh.Exercise.Id))
+            .Include(eh => eh.Exercise)
             .ToListAsync();
     }
 

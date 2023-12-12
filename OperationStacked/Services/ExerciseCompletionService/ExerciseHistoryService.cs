@@ -1,4 +1,5 @@
-﻿using OperationStacked.Entities;
+﻿using OperationStacked.DTOs;
+using OperationStacked.Entities;
 using OperationStacked.Enums;
 using OperationStacked.Repositories.ExerciseHistoryRepository;
 using OperationStacked.Requests;
@@ -22,8 +23,14 @@ public class ExerciseHistoryService : IExerciseHistoryService
             CompletedReps = string.Join(",", request.Reps),
             CompletedSets = request.Sets,
             ExerciseId = request.ExerciseId,
+            WorkingWeight = request.WorkingWeight,
         };
 
+        if (request.DummyTime != DateTime.MinValue){
+
+            history.CompletedDate = request.DummyTime;
+
+        }
         if (request.LinearProgressionExerciseId != Guid.Empty)
         {
             history.TemplateExerciseId = request.LinearProgressionExerciseId;
@@ -52,10 +59,30 @@ public class ExerciseHistoryService : IExerciseHistoryService
         return exerciseHistoryByCategory;
     }
 
-    public async Task<List<ExerciseHistory>> GetExerciseHistoryByIds(List<Guid> exerciseIds)
+    public async Task<List<ExerciseHistoryDTO>> GetExerciseHistoryByIds(List<Guid> exerciseIds)
     {
-        var exercises = await _exerciseHistoryRepository.GetExerciseHistoriesByIds(exerciseIds);
-        return exercises;
+        var exercisesHistories = await _exerciseHistoryRepository.GetExerciseHistoriesByIds(exerciseIds);
+
+        var exercisesHistoryDTOs = exercisesHistories.Select(eh => new ExerciseHistoryDTO
+        {
+            Id = eh.Id,
+            CompletedDate = eh.CompletedDate,
+            CompletedSets = eh.CompletedSets,
+            CompletedReps = eh.CompletedReps,
+            ExerciseId = eh.ExerciseId,
+            TemplateExerciseId = eh.TemplateExerciseId,
+            WorkingWeight= eh.WorkingWeight,
+            Exercise = eh.Exercise != null ? new ExerciseDTO
+            {
+                Id = eh.Exercise.Id,
+                ExerciseName = eh.Exercise.ExerciseName,
+                Category = eh.Exercise.Category,
+                EquipmentType = eh.Exercise.EquipmentType
+            } : null
+        }).ToList();
+
+        return exercisesHistoryDTOs;
     }
+
 
 }
