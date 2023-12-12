@@ -27,18 +27,24 @@ public class ExerciseHistoryController : ControllerBase
         [FromRoute] Guid exerciseId) =>
         Ok(await _exerciseHistoryService.GetExerciseHistoryById(exerciseId));
 
-    // [HttpPost]
-    // [Route("sorted")]
-    // [ProducesResponseType(200, Type = typeof(GetSortedHistoricalExerciseResults))]
-    // public async Task<IActionResult> GetSortedExerciseHistoryById(
-    //     [FromBody] List<Guid> exerciseIds) =>
-    //     Ok(await _exerciseHistoryService.GetExerciseHistorySortedByCategoryByIds(exerciseIds));
-
     [HttpPost]
-    [ProducesResponseType(200, Type = typeof(HistoricalExerciseResults))]
+    [ProducesResponseType(200, Type = typeof(PaginatedResult<ExerciseHistoryDTO>))]
     public async Task<IActionResult> GetExerciseHistoryById(
-        [FromBody] List<Guid> exerciseIds) =>
-        Ok(new HistoricalExerciseResults(await _exerciseHistoryService.GetExerciseHistoryByIds(exerciseIds)));
-}
+        [FromBody] List<Guid> exerciseIds,
+        [FromQuery] int pageIndex = 0,
+        [FromQuery] int pageSize = 10)
+    {
+        var results = await _exerciseHistoryService.GetExerciseHistoryByIds(exerciseIds, pageIndex, pageSize);
 
-  public sealed record HistoricalExerciseResults(List<ExerciseHistoryDTO> ExerciseHistories);
+        var totalCount = results.Count();
+        var paginatedResults = new PaginatedResult<ExerciseHistoryDTO>(results, totalCount);
+
+        return Ok(paginatedResults);
+    }
+     [HttpPost]
+     [Route("/all")]
+      [ProducesResponseType(200, Type = typeof(List<ExerciseHistoryDTO>))]
+      public async Task<IActionResult> GetExerciseHistoryById(
+          [FromBody] List<Guid> exerciseIds) =>
+          Ok(await _exerciseHistoryService.GetExerciseHistoryByIds(exerciseIds));
+  }

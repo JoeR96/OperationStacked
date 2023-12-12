@@ -13,5 +13,7 @@ public interface IExerciseHistoryService
 
     public  Task<Dictionary<Category, List<ExerciseHistory>>> GetExerciseHistorySortedByCategoryByIds(
         List<Guid> exerciseIds);
-    Task<List<ExerciseHistoryDTO>> GetExerciseHistoryByIds(List<Guid> exerciseIds);
+    public  Task<IEnumerable<ExerciseHistoryDTO>> GetExerciseHistoryByIds(List<Guid> exerciseIds, int pageIndex, int pageSize);
+    public  Task<IEnumerable<ExerciseHistoryDTO>> GetExerciseHistoryByIds(List<Guid> exerciseIds);
+
 }

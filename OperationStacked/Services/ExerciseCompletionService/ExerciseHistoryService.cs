@@ -59,9 +59,40 @@ public class ExerciseHistoryService : IExerciseHistoryService
         return exerciseHistoryByCategory;
     }
 
-    public async Task<List<ExerciseHistoryDTO>> GetExerciseHistoryByIds(List<Guid> exerciseIds)
+    public async Task<IEnumerable<ExerciseHistoryDTO>> GetExerciseHistoryByIds(List<Guid> exerciseIds, int pageIndex, int pageSize)
     {
         var exercisesHistories = await _exerciseHistoryRepository.GetExerciseHistoriesByIds(exerciseIds);
+
+        // Apply pagination
+        var paginatedHistories = exercisesHistories
+            .Skip(pageIndex * pageSize)
+            .Take(pageSize);
+
+        var exercisesHistoryDTOs = paginatedHistories.Select(eh => new ExerciseHistoryDTO
+        {
+            Id = eh.Id,
+            CompletedDate = eh.CompletedDate,
+            CompletedSets = eh.CompletedSets,
+            CompletedReps = eh.CompletedReps,
+            ExerciseId = eh.ExerciseId,
+            TemplateExerciseId = eh.TemplateExerciseId,
+            WorkingWeight= eh.WorkingWeight,
+            Exercise = eh.Exercise != null ? new ExerciseDTO
+            {
+                Id = eh.Exercise.Id,
+                ExerciseName = eh.Exercise.ExerciseName,
+                Category = eh.Exercise.Category,
+                EquipmentType = eh.Exercise.EquipmentType
+            } : null
+        }).ToList();
+
+        return exercisesHistoryDTOs;
+    }
+    public async Task<IEnumerable<ExerciseHistoryDTO>> GetExerciseHistoryByIds(List<Guid> exerciseIds)
+    {
+        var exercisesHistories = await _exerciseHistoryRepository.GetExerciseHistoriesByIds(exerciseIds);
+
+        // Apply pagination
 
         var exercisesHistoryDTOs = exercisesHistories.Select(eh => new ExerciseHistoryDTO
         {
@@ -83,6 +114,5 @@ public class ExerciseHistoryService : IExerciseHistoryService
 
         return exercisesHistoryDTOs;
     }
-
 
 }
