@@ -35,14 +35,20 @@ namespace OperationStacked.Services.ExerciseCreationService
 
         public async Task<List<Exercise>> CreateExercises(List<CreateExerciseRequest> requests)
         {
-            return requests.Select(request => new Exercise
+            var _ = requests.Select(request => new Exercise
             {
                 ExerciseName = request.ExerciseName,
                 Category = request.Category,
                 EquipmentType = request.EquipmentType,
                 UserId = request.UserId
-                // Id is not set here as it's assumed to be handled by the database context
             }).ToList();
+            _.ForEach(Action);
+            return _;
+        }
+
+        private async void Action(Exercise e)
+        {
+            await _exerciseRepository.InsertExercise(e);
         }
 
         public async Task<Exercise> CreateExercise(CreateExerciseRequest request)

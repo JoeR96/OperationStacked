@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:mysql://operation-stacked-db.cjmlgmxmo9qy.eu-west-2.rds.amazonaws.com:3306</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="@operation-stacked-db.cjmlgmxmo9qy.eu-west-2.rds.amazonaws.com" uuid="2e970bb6-4863-4ac4-bafd-fca9e0622d6f">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://operation-stacked-db.cjmlgmxmo9qy.eu-west-2.rds.amazonaws.com:3306</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

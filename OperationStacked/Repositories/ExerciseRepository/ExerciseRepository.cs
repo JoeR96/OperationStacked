@@ -60,8 +60,10 @@ namespace OperationStacked.Repositories
 
         public async Task InsertExercise(Exercise exercise)
         {
-            await _operationStackedContext.Exercises.AddAsync(exercise);
-            await _operationStackedContext.SaveChangesAsync();
+            using var context = _operationStackedContext;
+
+            await context.Exercises.AddAsync(exercise);
+            await context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Exercise exercise)
