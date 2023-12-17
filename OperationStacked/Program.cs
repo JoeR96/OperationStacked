@@ -44,6 +44,7 @@ app.MapHealthChecks("/health");
 using var scope = app.Services.CreateScope();
 var dbContext = scope.ServiceProvider.GetRequiredService<OperationStackedContext>();
 app.UseCors("MyPolicy");
+
 app.UseSwaggerUI(c =>
 {
     var swaggerJsonBasePath = isLocalDev ? "/" : "/workout/";
@@ -60,10 +61,12 @@ app.UseSwagger(c =>
 
 
 app.UseHttpsRedirection();
-app.UseAuthentication(); 
+app.UseRouting();
 app.UseAuthorization();
-app.MapControllers();
-await dbContext.Database.EnsureCreatedAsync();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});await dbContext.Database.EnsureCreatedAsync();
 app.Run();
 
 public partial class Program { }
