@@ -37,13 +37,28 @@ builder.Services.AddOperationStackedContext();
 
 
 var app = builder.Build();
+bool isLocalDev = app.Environment.IsDevelopment();
+
 app.MapHealthChecks("/health");
 
 using var scope = app.Services.CreateScope();
 var dbContext = scope.ServiceProvider.GetRequiredService<OperationStackedContext>();
 app.UseCors("MyPolicy");
-app.UseSwagger();
-app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Operation Stacked Workout V1.2"));
+app.UseSwaggerUI(c =>
+{
+    var swaggerJsonBasePath = isLocalDev ? "/" : "/workout/";
+    c.SwaggerEndpoint($"{swaggerJsonBasePath}swagger/v1/swagger.json", "Operation Stacked Workout V1");
+    c.RoutePrefix = isLocalDev ? "swagger" : "workout/swagger";
+});
+
+app.UsePathBase("/workout/");
+
+app.UseSwagger(c =>
+{
+    c.RouteTemplate = isLocalDev ? "swagger/{documentName}/swagger.json" : "workout/swagger/{documentName}/swagger.json";
+});
+
+
 app.UseHttpsRedirection();
 app.UseAuthentication(); 
 app.UseAuthorization();
@@ -52,4 +67,3 @@ await dbContext.Database.EnsureCreatedAsync();
 app.Run();
 
 public partial class Program { }
-//894ce6d3-6990-454d-ba92-17a61d518d8c <- userid
