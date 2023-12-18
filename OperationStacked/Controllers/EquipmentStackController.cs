@@ -37,7 +37,6 @@ public class EquipmentStackController : ControllerBase
     public async Task<IActionResult> EquipmentStack(
         [FromRoute] Guid equipmentStackId) => Ok(await _equipmentStackRepository.GetEquipmentStack(equipmentStackId));
 
-
     [HttpDelete]
     [ProducesResponseType(200, Type = typeof(bool))]
     [Route("{equipmentStackId}")]

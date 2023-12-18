@@ -22,7 +22,7 @@ namespace OperationStacked.Services.UserAccountsService
                 .FirstOrDefaultAsync();
 
         public async Task<User> GetUserById(Guid userId)
-        => await _context.Users?.Where(x => x.UserId == userId)?
+        => await _context.Users?.Where(x => x.CognitoUserId == userId)?
         .FirstOrDefaultAsync();
 
         public async Task<WeekAndDayResponse> ProgressWeekAndDay(Guid userid)
@@ -52,6 +52,7 @@ namespace OperationStacked.Services.UserAccountsService
 
         public async Task<WeekAndDayResponse> GetWeekAndDay(Guid cognitoUserId)
         {
+            Guid.Parse(cognitoUserId.ToString());
             var _ = await GetUserById(cognitoUserId);
             return _.GetWeekAndDayResponse();
         }
