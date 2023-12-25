@@ -53,6 +53,14 @@ namespace OperationStacked.Controllers
             [FromBody] CompleteExerciseRequest request)
             => Ok(await _workoutExerciseProgressionService.CompleteExercise(request));
 
+        [Route("complete")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(ExerciseCompletionResult))]
+        public async Task<IActionResult> CompleteExerciseAsync(
+            [FromBody] List<CompleteExerciseRequest> request)
+            => Ok(await _workoutExerciseProgressionService.CompleteExercises(request));
+
+        
         [HttpGet]
         [Route("{userId}/{week}/{day}/{completed}")]
         [ProducesResponseType(200, Type = typeof(GetWorkoutResult))]

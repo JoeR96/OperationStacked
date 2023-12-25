@@ -8,5 +8,6 @@ namespace OperationStacked.Services.ExerciseProgressionService
     {
         public Task<ExerciseCompletionResult> CompleteExercise(CompleteExerciseRequest request);
         Task<LinearProgressionExercise> UpdateWorkingWeight(UpdateExerciseRequest request);
+        Task<List<ExerciseCompletionResult>> CompleteExercises(List<CompleteExerciseRequest> request);
     }
 }

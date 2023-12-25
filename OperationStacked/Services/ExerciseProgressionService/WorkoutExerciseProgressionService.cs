@@ -110,6 +110,16 @@ public class WorkoutExerciseProgressionService : IWorkoutExerciseProgressionServ
         return exercise;
         
     }
+
+    public async Task<List<ExerciseCompletionResult>> CompleteExercises(List<CompleteExerciseRequest> requests)
+    {
+        var tasks = requests.Select(CompleteExercise).ToList();
+        var results = await Task.WhenAll(tasks);
+
+        return results.ToList();
+    }
+
+
     private static int FindClosestIndex(decimal?[] arr, decimal target) 
     {
         int closestIndex = 0;
