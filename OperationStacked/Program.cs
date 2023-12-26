@@ -59,7 +59,7 @@ app.UsePathBase("/workout/");
 
 app.UseSwagger(c =>
 {
-    c.RouteTemplate = isLocalDev ? "swagger/{documentName}/swagger.json" : "workout/swagger/{documentName}/swagger.json";
+    c.RouteTemplate = "workout/swagger/{documentName}/swagger.json";
 });
 
 
