@@ -49,6 +49,7 @@ app.UseSwaggerUI(c =>
 {
     // Correct Swagger JSON path based on whether the app is running in local development or behind the proxy
     var swaggerJsonBasePath = isLocalDev ? "/" : "/workout/";
+    Console.Write(swaggerJsonBasePath);
     c.SwaggerEndpoint($"{swaggerJsonBasePath}swagger/v1/swagger.json", "Operation Stacked Workout V1");
 
     // Set the route prefix for accessing the Swagger UI
@@ -59,7 +60,7 @@ app.UsePathBase("/workout/");
 
 app.UseSwagger(c =>
 {
-    c.RouteTemplate = "workout/swagger/{documentName}/swagger.json";
+    c.RouteTemplate = isLocalDev ? "swagger/{documentName}/swagger.json" : "workout/swagger/{documentName}/swagger.json";
 });
 
 
