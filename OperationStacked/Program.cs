@@ -47,17 +47,16 @@ app.UseCors("MyPolicy");
 
 app.UseSwaggerUI(c =>
 {
-    var swaggerJsonBasePath = isLocalDev ? "/" : "/workout/";
+    var swaggerJsonBasePath = "/workout/";
     c.SwaggerEndpoint($"{swaggerJsonBasePath}swagger/v1/swagger.json", "Operation Stacked Workout V1");
-    c.RoutePrefix = isLocalDev ? "swagger" : "workout/swagger";
+    c.RoutePrefix = "swagger";
 });
-
-app.UsePathBase("/workout/");
 
 app.UseSwagger(c =>
 {
-    c.RouteTemplate = isLocalDev ? "swagger/{documentName}/swagger.json" : "workout/swagger/{documentName}/swagger.json";
+    c.RouteTemplate = "swagger/{documentName}/swagger.json";
 });
+
 
 
 app.UseHttpsRedirection();
