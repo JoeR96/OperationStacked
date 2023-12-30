@@ -32,7 +32,17 @@ jobs:
       - name: Generate version number
         run: echo "APP_VERSION=${{ env.MAJOR_VERSION }}.$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
 
+      - name: Set AWS credentials as environment variables
+        run: |
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+          echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> $GITHUB_ENV
+
       - name: Store version in S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
         run: echo ${{ env.APP_VERSION }} | aws s3 cp - s3://${{ secrets.OPERATION_STACKED_WORKOUT_VERSION_BUCKET }}/${{ env.APP_VERSION }}
 
       - name: Build and push Docker image
