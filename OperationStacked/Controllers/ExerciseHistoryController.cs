@@ -48,8 +48,8 @@ public class ExerciseHistoryController : ControllerBase
 
 
       [HttpPost]
-      [Route("/delete/{exerciseId}")]
-      public async Task<IActionResult> DeleteExerciseHistoryById([FromRoute] Guid exerciseId)
+      [Route("/delete")]
+      public async Task<IActionResult> DeleteExerciseHistoryById([FromBody] Guid exerciseId)
       {
           await _exerciseHistoryService.DeleteExerciseHistoryById(exerciseId);
 
