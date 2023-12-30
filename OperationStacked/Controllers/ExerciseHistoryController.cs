@@ -45,4 +45,15 @@ public class ExerciseHistoryController : ControllerBase
       public async Task<IActionResult> GetExerciseHistoryById(
           [FromBody] List<Guid> exerciseIds) =>
           Ok(await _exerciseHistoryService.GetExerciseHistoryByIds(exerciseIds));
-  }
+
+
+      [HttpDelete]
+      [Route("/delete/{exerciseId}")]
+      public async Task<IActionResult> DeleteExerciseHistoryById([FromRoute] Guid exerciseId)
+      {
+          await _exerciseHistoryService.DeleteExerciseHistoryById(exerciseId);
+
+          return Ok();
+      }
+
+}

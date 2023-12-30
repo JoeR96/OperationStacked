@@ -8,4 +8,5 @@ public interface IExerciseHistoryRepository
 
     Task<List<ExerciseHistory>> GetExerciseHistoryById(Guid exerciseId);
     Task<List<ExerciseHistory>> GetExerciseHistoriesByIds(List<Guid> exerciseIds);
+    Task DeleteExerciseHistoryById(Guid exerciseId);
 }

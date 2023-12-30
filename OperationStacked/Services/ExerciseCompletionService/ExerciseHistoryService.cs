@@ -115,4 +115,8 @@ public class ExerciseHistoryService : IExerciseHistoryService
         return exercisesHistoryDTOs;
     }
 
+    public async Task DeleteExerciseHistoryById(Guid exerciseId)
+    {
+        await _exerciseHistoryRepository.DeleteExerciseHistoryById(exerciseId);
+    }
 }

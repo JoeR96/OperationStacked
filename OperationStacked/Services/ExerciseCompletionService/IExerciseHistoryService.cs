@@ -16,4 +16,5 @@ public interface IExerciseHistoryService
     public  Task<IEnumerable<ExerciseHistoryDTO>> GetExerciseHistoryByIds(List<Guid> exerciseIds, int pageIndex, int pageSize);
     public  Task<IEnumerable<ExerciseHistoryDTO>> GetExerciseHistoryByIds(List<Guid> exerciseIds);
 
+    public Task DeleteExerciseHistoryById(Guid exerciseId);
 }
