@@ -19,4 +19,10 @@ public class WorkoutRepository : IWorkoutRepository
 
        return workout;
     }
+
+    public async Task<List<Workout>> GetWorkouts(Guid userId)
+    {
+        Guid.Parse(userId.ToString());
+       return _operationStackedContext.Workouts.Where(wo => wo.UserId == userId).ToList();
+    }
 }

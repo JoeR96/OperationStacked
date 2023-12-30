@@ -85,6 +85,13 @@ namespace OperationStacked.Controllers
         }
 
         [HttpGet]
+        [Route("{userId}/workouts")]
+        public async Task<List<Workout>> GetWorkouts([FromRoute] Guid userId)
+        {
+            return await _workoutRepository.GetWorkouts(userId);
+        }
+
+        [HttpGet]
         [Route("GenerateDummy/")]
         public async Task<IActionResult> GenerateDummyData()
         {

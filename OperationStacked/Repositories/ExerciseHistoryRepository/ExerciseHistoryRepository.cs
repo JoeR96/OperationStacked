@@ -30,10 +30,13 @@ public class ExerciseHistoryRepository : RepositoryBase, IExerciseHistoryReposit
     {
         Guid.Parse(id.ToString());
 
-        _operationStackedContext.ExerciseHistory.RemoveRange(
-            _operationStackedContext.ExerciseHistory.Where(eh => eh.Id == id)
+        using var context = _operationStackedContext;
+
+        context.ExerciseHistory.RemoveRange(
+            context.ExerciseHistory.Where(eh => eh.Id == id)
         );
-        await _operationStackedContext.SaveChangesAsync();
+
+        await context.SaveChangesAsync();
     }
 
 
