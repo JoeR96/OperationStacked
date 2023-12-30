@@ -29,7 +29,7 @@ public class ExerciseHistoryRepository : RepositoryBase, IExerciseHistoryReposit
     public async Task DeleteExerciseHistoryById(Guid exerciseId)
     {
         var historiesToDelete = _operationStackedContext.ExerciseHistory
-            .Where(eh => eh.Exercise.Id == exerciseId);
+            .Where(eh => eh.ExerciseId == exerciseId);
 
         _operationStackedContext.ExerciseHistory.RemoveRange(historiesToDelete);
         await _operationStackedContext.SaveChangesAsync();
