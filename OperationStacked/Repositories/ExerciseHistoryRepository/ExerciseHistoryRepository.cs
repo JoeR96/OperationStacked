@@ -26,12 +26,12 @@ public class ExerciseHistoryRepository : RepositoryBase, IExerciseHistoryReposit
             .ToListAsync();
     }
 
-    public async Task DeleteExerciseHistoryById(Guid exerciseId)
+    public async Task DeleteExerciseHistoryById(Guid id)
     {
-        Guid.Parse(exerciseId.ToString());
+        Guid.Parse(id.ToString());
 
         var historiesToDelete = _operationStackedContext.ExerciseHistory
-            .Where(eh => eh.ExerciseId == exerciseId);
+            .Where(eh => eh.Id == id);
 
         _operationStackedContext.ExerciseHistory.RemoveRange(historiesToDelete);
         await _operationStackedContext.SaveChangesAsync();
