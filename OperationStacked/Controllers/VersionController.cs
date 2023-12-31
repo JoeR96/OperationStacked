@@ -8,6 +8,7 @@ public class VersionController : ControllerBase
 {
     private readonly string _appVersion;
 
+
     public VersionController(IConfiguration configuration)
     {
         _appVersion = configuration["AppVersion"];
