@@ -21,13 +21,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-        - name: Login to Amazon ECR
-          id: login-ecr
-          uses: aws-actions/amazon-ecr-login@v1
-          env:
-            AWS_REGION: ${{ secrets.AWS_REGION }}
-            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Generate version number
         run: echo "APP_VERSION=${{ env.MAJOR_VERSION }}.$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
@@ -55,10 +55,14 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
-            aws ecr get-login-password --region $AWS_REGION | sudo docker login --username AWS --password-stdin ${{ secrets.ECR_URL }}
+            # Stop and remove the existing container
             sudo docker stop operation-stacked-workout
             sudo docker rm operation-stacked-workout
+            
+            # Pull the latest image from ECR
             sudo docker pull ${{ secrets.ECR_URL }}/operation-stacked-workout:${{ env.APP_VERSION }}
+            
+            # Start the new container
             sudo docker run -d -p 5002:8080 \
               -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
               -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
@@ -68,7 +72,7 @@ jobs:
 
       - name: Validate deployment
         run: |
-          for i in {1..60}; do
+          for i in {1..60}; do  # 60 attempts * 3 seconds sleep = 180 seconds (3 minutes)
             echo "Checking if the deployed version is ${APP_VERSION} (Attempt $i)"
             DEPLOYED_VERSION=$(curl --silent https://app.operationstacked.com/workout/version/latest)
             if [ "$DEPLOYED_VERSION" = "${{ env.APP_VERSION }}" ]; then
