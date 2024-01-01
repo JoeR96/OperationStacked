@@ -8,10 +8,9 @@ public class VersionController : ControllerBase
 {
     private readonly string _appVersion;
 
-
     public VersionController(IConfiguration configuration)
     {
-        _appVersion = configuration["AppVersion"];
+        _appVersion = configuration["APP_VERSION"] ?? Environment.GetEnvironmentVariable("APP_VERSION");
     }
 
     [HttpGet]
