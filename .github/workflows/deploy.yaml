@@ -77,7 +77,7 @@ jobs:
         run: |
           for i in {1..60}; do  # 60 attempts * 3 seconds sleep = 180 seconds (3 minutes)
             echo "Checking if the deployed version is ${APP_VERSION} (Attempt $i)"
-            DEPLOYED_VERSION=$(curl --silent https://app.operationstacked.com/workout/version/latest)
+            DEPLOYED_VERSION=$(curl --silent https://app.operationstacked.com/workout/version)
             if [ "$DEPLOYED_VERSION" = "${{ env.APP_VERSION }}" ]; then
               echo "Deployment validation succeeded"
               exit 0
