@@ -56,6 +56,8 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
+            aws ecr get-login-password --region eu-west-2 | sudo docker login --username AWS --password-stdin ${{ secrets.ECR_URL }}/operation-stacked-workout:${{ env.APP_VERSION }}
+            
             # Stop and remove the existing container
             sudo docker stop operation-stacked-workout
             sudo docker rm operation-stacked-workout
