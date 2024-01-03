@@ -11,6 +11,6 @@ public class EquipmentStack
     public ICollection<Decimal> InitialIncrements { get; set; }
     public Decimal IncrementValue { get; set; }
     public decimal IncrementCount { get; set; }
-    public string EquipmentStackKey { get; set; }
+    public string Name { get; set; }
     public Guid UserID { get; set; }
 }
