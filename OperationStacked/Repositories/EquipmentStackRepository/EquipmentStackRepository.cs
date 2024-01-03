@@ -19,7 +19,7 @@ public class EquipmentStackRepository : RepositoryBase, IEquipmentStackRepositor
         var e = new EquipmentStack()
         {
             IncrementCount = equipmentStack.IncrementCount,
-            EquipmentStackKey = equipmentStack.EquipmentStackKey,
+            Name = equipmentStack.EquipmentStackKey,
             IncrementValue = equipmentStack.IncrementValue,
             InitialIncrements = equipmentStack.InitialIncrements,
             UserID = equipmentStack.UserID,

@@ -13,7 +13,7 @@ public class EquipmentStackBuilder
             InitialIncrements = new decimal[]{},
             IncrementValue = 2.5m,
             IncrementCount = 20,
-            EquipmentStackKey = "DefaultKey",
+            Name = "DefaultKey",
         };
         return this;
     }
@@ -46,7 +46,7 @@ public class EquipmentStackBuilder
         {
 
             UserID = _stack.UserID,
-            EquipmentStackKey = _stack.EquipmentStackKey
+            EquipmentStackKey = _stack.Name
         };
     }
     // Add other builder methods as needed...
@@ -62,7 +62,7 @@ public class EquipmentStackBuilder
             InitialIncrements = _stack.InitialIncrements,
             IncrementValue = _stack.IncrementValue,
             IncrementCount = _stack.IncrementCount,
-            EquipmentStackKey = _stack.EquipmentStackKey,
+            EquipmentStackKey = _stack.Name,
             UserID = _stack.UserID // Assuming the builder sets this property somewhere before this method is called.
         };
     }
