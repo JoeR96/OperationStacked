@@ -8,13 +8,14 @@ namespace OperationStacked.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid UserId { get; set; }
+        public Guid Id { get; set; }
         [Required]
         public string UserName { get; set; }
         [Required]
         [DataType(DataType.EmailAddress)]
         [StringLength(255)]
         public Guid CognitoUserId { get; set; }
+        //Below needs to move to a table with user workout informaton
         public int CurrentWeek { get; set; } = 1;
         public int CurrentDay { get; set; } = 1;
         public int WorkoutDaysInWeek { get; set; }

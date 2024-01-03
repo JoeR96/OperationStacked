@@ -75,7 +75,6 @@ namespace OperationStacked.Services.UserAccountsService
             {
                 CognitoUserId = request.CognitoUserId,
                 UserName = request.UserName,
-                WorkoutDaysInWeek = request.WorkoutDaysInweek
             };
 
             _context.Users.Add(newUser);
