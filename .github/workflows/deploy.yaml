@@ -56,8 +56,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             aws ecr get-login-password --region eu-west-2 | sudo docker login --username AWS --password-stdin ${{ secrets.ECR_URL }}/operation-stacked-workout:${{ env.APP_VERSION }}
-            sudo docker stop operation-stacked-workout
-            sudo docker rm operation-stacked-workout
             sudo docker pull ${{ secrets.ECR_URL }}/operation-stacked-workout:${{ env.APP_VERSION }}
             sudo docker run -d -p 5002:8080 \
               -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
