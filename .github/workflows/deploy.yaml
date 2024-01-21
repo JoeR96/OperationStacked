@@ -55,16 +55,29 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
-            aws ecr get-login-password --region eu-west-2 | sudo docker login --username AWS --password-stdin ${{ secrets.ECR_URL }}/operation-stacked-workout:${{ env.APP_VERSION }}
-            sudo docker stop operation-stacked-workout
-            sudo docker rm operation-stacked-workout
+            # Check if the container exists before attempting to stop and remove it
+            if sudo docker ps -a | grep -q operation-stacked-workout; then
+              # Stop the existing container (ignores errors if it's not running)
+              sudo docker stop operation-stacked-workout || true
+              
+              # Remove the existing container (ignores errors if it doesn't exist)
+              sudo docker rm operation-stacked-workout || true
+            fi
+
+            # Log in to ECR
+            aws ecr get-login-password --region eu-west-2 | sudo docker login --username AWS --password-stdin ${{ secrets.ECR_URL }}
+
+            # Pull the latest image from ECR
             sudo docker pull ${{ secrets.ECR_URL }}/operation-stacked-workout:${{ env.APP_VERSION }}
+
+            # Start the new container
             sudo docker run -d -p 5002:8080 \
               -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
               -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
               -e AWS_DEFAULT_REGION=${{ secrets.AWS_REGION }} \
               --name operation-stacked-workout \
               ${{ secrets.ECR_URL }}/operation-stacked-workout:${{ env.APP_VERSION }}
+
 
       - name: Validate deployment
         run: |
