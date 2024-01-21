@@ -56,6 +56,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             aws ecr get-login-password --region eu-west-2 | sudo docker login --username AWS --password-stdin ${{ secrets.ECR_URL }}/operation-stacked-workout:${{ env.APP_VERSION }}
+            sudo docker stop operation-stacked-workout
+            sudo docker rm operation-stacked-workout
             sudo docker pull ${{ secrets.ECR_URL }}/operation-stacked-workout:${{ env.APP_VERSION }}
             sudo docker run -d -p 5002:8080 \
               -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
@@ -63,3 +65,17 @@ jobs:
               -e AWS_DEFAULT_REGION=${{ secrets.AWS_REGION }} \
               --name operation-stacked-workout \
               ${{ secrets.ECR_URL }}/operation-stacked-workout:${{ env.APP_VERSION }}
+
+      - name: Validate deployment
+        run: |
+          for i in {1..60}; do
+            echo "Checking if the deployed version is ${APP_VERSION} (Attempt $i)"
+            DEPLOYED_VERSION=$(curl --silent https://app.operationstacked.com/workout/version)
+            if [ "$DEPLOYED_VERSION" = "${{ env.APP_VERSION }}" ]; then
+              echo "Deployment validation succeeded"
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "Deployment validation failed"
+          exit 1
