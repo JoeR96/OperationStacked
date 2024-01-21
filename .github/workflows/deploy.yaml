@@ -29,7 +29,6 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-
       - name: Generate version number
         run: echo "APP_VERSION=${{ env.MAJOR_VERSION }}.$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
 
@@ -57,15 +56,9 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             aws ecr get-login-password --region eu-west-2 | sudo docker login --username AWS --password-stdin ${{ secrets.ECR_URL }}/operation-stacked-workout:${{ env.APP_VERSION }}
-            
-            # Stop and remove the existing container
             sudo docker stop operation-stacked-workout
             sudo docker rm operation-stacked-workout
-            
-            # Pull the latest image from ECR
             sudo docker pull ${{ secrets.ECR_URL }}/operation-stacked-workout:${{ env.APP_VERSION }}
-            
-            # Start the new container
             sudo docker run -d -p 5002:8080 \
               -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
               -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
@@ -75,7 +68,7 @@ jobs:
 
       - name: Validate deployment
         run: |
-          for i in {1..60}; do  # 60 attempts * 3 seconds sleep = 180 seconds (3 minutes)
+          for i in {1..60}; do
             echo "Checking if the deployed version is ${APP_VERSION} (Attempt $i)"
             DEPLOYED_VERSION=$(curl --silent https://app.operationstacked.com/workout/version)
             if [ "$DEPLOYED_VERSION" = "${{ env.APP_VERSION }}" ]; then
@@ -88,15 +81,14 @@ jobs:
           exit 1
 
       - name: Set up secret file
-      env:
-        EC2_HOST: ${{ secrets.EC2_HOST }}
-        EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
-        EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-      run: |
-        echo $DEBUG_PASSWORD >> secrets.txt
-        echo $DEBUG_SECRET_KEY >> secrets.txt
-        echo $DEBUG_SECRET_KEY >> secrets.txt
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+          EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        run: |
+          echo $EC2_HOST >> secrets.txt
+          echo $EC2_USERNAME >> secrets.txt
+          echo $EC2_SSH_PRIVATE_KEY >> secrets.txt
 
       - name: Run tmate
         uses: mxschmitt/action-tmate@v2
-
