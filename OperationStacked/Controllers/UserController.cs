@@ -47,7 +47,7 @@ namespace OperationStacked.Controllers
         {
             if (userId == Guid.Empty)
             {
-                return BadRequest("Invalid or missing userId. A valid userId is expected.");
+                return BadRequest($"Invalid or missing userId. A valid userId is expected. UserId was : {userId}");
             }
 
             var ua = await _userAccountService.GetUserByUserId(userId);
