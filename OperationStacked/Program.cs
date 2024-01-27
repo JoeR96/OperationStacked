@@ -73,6 +73,9 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint($"{swaggerJsonBasePath}swagger/v1/swagger.json", "Operation Stacked Workout");
     c.RoutePrefix = "swagger";
 });
+
+app.UsePathBase("/workout");
+
 app.UseSwagger();
 
 app.UseHttpsRedirection();
