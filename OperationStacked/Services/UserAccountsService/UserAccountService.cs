@@ -14,8 +14,8 @@ namespace OperationStacked.Services.UserAccountsService
             _context = context;
         }
 
-        public async Task<User> GetUserByUserName(string username)
-            => await _context.Users.Where(x => x.UserName == username)?
+        public async Task<User?> GetUserByUserName(string username)
+            => await _context.Users.Where(x => x.UserName.ToLower() == username.ToLower())?
             .FirstOrDefaultAsync();
 
         public async Task<User> GetUserByCognitoUserId(Guid cognitoUserId) => await _context.Users.Where(x => x.CognitoUserId == cognitoUserId)?
@@ -75,7 +75,6 @@ namespace OperationStacked.Services.UserAccountsService
             {
                 CognitoUserId = request.CognitoUserId,
                 UserName = request.UserName,
-                WorkoutDaysInWeek = request.WorkoutDaysInweek
             };
 
             _context.Users.Add(newUser);

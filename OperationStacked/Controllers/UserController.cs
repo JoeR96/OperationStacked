@@ -48,5 +48,20 @@ namespace OperationStacked.Controllers
             var t = ua.UserName;
             return Ok(t);
         }
+        
+        [Route("username/{username}")]
+        [HttpGet]
+        public async Task<IActionResult> GetUsername([FromRoute] string username)
+        {
+           
+
+            var ua = await _userAccountService.GetUserByUserName(username);
+            if (ua == null)
+            {
+                return Ok(false);
+            }
+            return Ok(true);
+        }
+
     }
 }
