@@ -92,6 +92,27 @@ namespace OperationStacked.Services.UserAccountsService
             return new WeekAndDayResponse(
                 user.CurrentWeek, user.CurrentDay,user.WorkoutDaysInWeek);
         }
+
+        public async Task<bool> SetUsername(SetUsernameRequest request)
+        {
+            var user = await _context.Users.FindAsync(request.UserId);
+            if (user == null)
+            {
+                return false; // User not found
+            }
+
+            // Optionally, you might want to check if the username is already taken.
+            var isUsernameTaken = await _context.Users.AnyAsync(u => u.UserName == request.Username);
+            if (isUsernameTaken)
+            {
+                return false; // Username is already taken
+            }
+
+            user.UserName = request.Username;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
 public static class UserExtensions

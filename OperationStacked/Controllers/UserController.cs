@@ -75,5 +75,20 @@ namespace OperationStacked.Controllers
             return Ok(true);
         }
 
+        [Route("set-username")]
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> SetUsername([FromBody] SetUsernameRequest request)
+        {
+            var result = await _userAccountService.SetUsername(request);
+            if (result)
+            {
+                return Ok("Username updated successfully.");
+            }
+
+            return BadRequest("Failed to update username.");
+        }
+
     }
 }

@@ -14,6 +14,7 @@ namespace OperationStacked.Services.UserAccountsService
         public Task<WeekAndDayResponse> GetWeekAndDay(Guid cognitoUserId);
         public Task CreateUser(CreateUser request);
         Task<WeekAndDayResponse> UpdateWeekAndDay(UpdateWeekAndDayRequest request);
+        Task<bool> SetUsername(SetUsernameRequest request);
     }
     
 }
