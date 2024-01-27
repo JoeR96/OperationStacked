@@ -62,6 +62,9 @@ var app = builder.Build();
 
 app.MapHealthChecks("/health");
 app.UseCors("MyPolicy");
+// app.UsePathBase("/workout");
+
+
 app.UseSwaggerUI(c =>
 {
     var swaggerJsonBasePath = "/workout/";
@@ -71,10 +74,9 @@ app.UseSwaggerUI(c =>
     }
 
     c.SwaggerEndpoint($"{swaggerJsonBasePath}swagger/v1/swagger.json", "Operation Stacked Workout");
-    c.RoutePrefix = "swagger";
+    c.RoutePrefix = "workout/swagger";
 });
 
-app.UsePathBase("/workout");
 
 app.UseSwagger();
 
@@ -95,7 +97,6 @@ app.Run();
 {
     try
     {
-        // List objects in the specified S3 bucket
         var listObjectsRequest = new ListObjectsV2Request
         {
             BucketName = bucketName
@@ -104,11 +105,9 @@ app.Run();
         ListObjectsV2Response response = await s3Client.ListObjectsV2Async(listObjectsRequest);
         var objects = response.S3Objects;
 
-        // Assuming the version files are named in a sortable manner
-        // e.g., "version_1", "version_2" and so on
         var latestObject = objects
-            .OrderByDescending(s3Object => s3Object.Key) // Sort by key name in descending order
-            .FirstOrDefault(); // Get the first object, which is the latest one
+            .OrderByDescending(s3Object => s3Object.Key)
+            .FirstOrDefault();
 
         return latestObject?.Key; // Return the key of the latest object or null if there are no objects
     }
