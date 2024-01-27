@@ -39,6 +39,7 @@ namespace OperationStacked.Controllers
         [HttpPost("create-user")]
         [AllowAnonymous]
         public async Task UpdateUser([FromBody] CreateUser request) => await _userAccountService.CreateUser(request);
+
         [Route("name")]
         [HttpGet]
         [ProducesResponseType(typeof(string),StatusCodes.Status200OK),]
@@ -51,7 +52,7 @@ namespace OperationStacked.Controllers
         
         [Route("username/{username}")]
         [HttpGet]
-        public async Task<IActionResult> GetUsername([FromRoute] string username)
+        public async Task<IActionResult> GetUserByUserName([FromRoute] string username)
         {
            
 
