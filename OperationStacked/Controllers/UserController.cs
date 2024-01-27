@@ -42,15 +42,25 @@ namespace OperationStacked.Controllers
 
         [Route("name")]
         [HttpGet]
-        [ProducesResponseType(typeof(string),StatusCodes.Status200OK),]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUsername(Guid userId)
         {
+            if (userId == Guid.Empty)
+            {
+                return BadRequest("Invalid or missing userId. A valid userId is expected.");
+            }
 
+            var ua = await _userAccountService.GetUserByUserId(userId);
 
-            var ua = await _userAccountService.GetUserByUserId(Guid.Parse(userId.ToString()));
+            if (ua == null || string.IsNullOrEmpty(ua.UserName))
+            {
+                return NotFound($"User not found or UserName is null for userId: {userId}");
+            }
+
             var t = ua.UserName;
             return Ok(t);
         }
+
         
         [Route("username/{username}")]
         [HttpGet]
