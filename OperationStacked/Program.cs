@@ -62,7 +62,7 @@ var app = builder.Build();
 
 app.MapHealthChecks("/health");
 app.UseCors("MyPolicy");
-// app.UsePathBase("/workout");
+app.UsePathBase("/workout");
 
 
 app.UseSwaggerUI(c =>
@@ -74,7 +74,7 @@ app.UseSwaggerUI(c =>
     }
 
     c.SwaggerEndpoint($"{swaggerJsonBasePath}swagger/v1/swagger.json", "Operation Stacked Workout");
-    c.RoutePrefix = "workout/swagger";
+    c.RoutePrefix = "swagger";
 });
 
 
