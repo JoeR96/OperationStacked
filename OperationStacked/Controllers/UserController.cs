@@ -40,10 +40,9 @@ namespace OperationStacked.Controllers
         [AllowAnonymous]
         public async Task UpdateUser([FromBody] CreateUser request) => await _userAccountService.CreateUser(request);
 
-        [Route("name")]
-        [HttpGet]
+        [HttpGet("name/{userId:guid}")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetUsername(Guid userId)
+        public async Task<IActionResult> GetUsername([FromRoute] Guid userId)
         {
             if (userId == Guid.Empty)
             {
