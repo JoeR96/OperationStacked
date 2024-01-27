@@ -43,9 +43,9 @@ namespace OperationStacked.Controllers
         [Route("name")]
         [HttpGet]
         [ProducesResponseType(typeof(string),StatusCodes.Status200OK),]
-        public async Task<IActionResult> GetUsername(Guid cognitoUserId)
+        public async Task<IActionResult> GetUsername(Guid userId)
         {
-            var ua = await _userAccountService.GetUserByCognitoUserId(cognitoUserId);
+            var ua = await _userAccountService.GetUserByUserId(userId);
             var t = ua.UserName;
             return Ok(t);
         }

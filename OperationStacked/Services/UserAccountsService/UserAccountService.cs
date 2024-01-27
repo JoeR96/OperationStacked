@@ -18,7 +18,7 @@ namespace OperationStacked.Services.UserAccountsService
             => await _context.Users.Where(x => x.UserName.ToLower() == username.ToLower())?
             .FirstOrDefaultAsync();
 
-        public async Task<User> GetUserByCognitoUserId(Guid cognitoUserId) => await _context.Users.Where(x => x.CognitoUserId == cognitoUserId)?
+        public async Task<User> GetUserByUserId(Guid userId) => await _context.Users.Where(x => x.Id == userId)?
                 .FirstOrDefaultAsync();
 
         public async Task<User> GetUserById(Guid userId)
