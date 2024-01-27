@@ -30,7 +30,7 @@ namespace OperationStacked.Controllers
         public async Task<IActionResult> UpdateUserWeekAndDay([FromBody] Guid cognitoUserId)
             => Ok(await _userAccountService.ProgressWeekAndDay(cognitoUserId));
 
-        [Route("week-and-day/{userId}")]
+        [Route("week-and-day/{userId:guid}")]
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(WeekAndDayResponse))]
         public async Task<IActionResult> GetCurrentWeekAndDay([FromRoute] Guid userId)
@@ -41,6 +41,7 @@ namespace OperationStacked.Controllers
         public async Task UpdateUser([FromBody] CreateUser request) => await _userAccountService.CreateUser(request);
         [Route("name")]
         [HttpGet]
+        [ProducesResponseType(typeof(string),StatusCodes.Status200OK),]
         public async Task<IActionResult> GetUsername(Guid cognitoUserId)
         {
             var ua = await _userAccountService.GetUserByCognitoUserId(cognitoUserId);
