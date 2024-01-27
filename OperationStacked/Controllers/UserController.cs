@@ -45,7 +45,9 @@ namespace OperationStacked.Controllers
         [ProducesResponseType(typeof(string),StatusCodes.Status200OK),]
         public async Task<IActionResult> GetUsername(Guid userId)
         {
-            var ua = await _userAccountService.GetUserByUserId(userId);
+
+
+            var ua = await _userAccountService.GetUserByUserId(Guid.Parse(userId.ToString()));
             var t = ua.UserName;
             return Ok(t);
         }
