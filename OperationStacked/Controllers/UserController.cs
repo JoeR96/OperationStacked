@@ -63,6 +63,7 @@ namespace OperationStacked.Controllers
         
         [Route("username/{username}")]
         [HttpGet]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)] // Indicates that this endpoint returns a boolean
         public async Task<IActionResult> GetUserByUserName([FromRoute] string username)
         {
            
