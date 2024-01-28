@@ -20,7 +20,7 @@ public class ExerciseHistoryController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(200, Type = typeof(GetExerciseResult))]
-    [Route("{exerciseId}")]
+    [Route("{exerciseId:guid}")]
     public async Task<IActionResult> GetExerciseHistoryById(
         [FromRoute] Guid exerciseId) =>
         Ok(await _exerciseHistoryService.GetExerciseHistoryById(exerciseId));

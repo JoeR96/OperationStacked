@@ -6,8 +6,6 @@ using OperationStacked.Repositories.WorkoutRepository;
 using OperationStacked.Requests;
 using OperationStacked.Response;
 using OperationStacked.Services.ExerciseCreationService;
-using OperationStacked.Services.ExerciseProgressionService;
-using OperationStacked.Services.ExerciseRetrievalService;
 
 namespace OperationStacked.Controllers;
 
@@ -17,16 +15,12 @@ namespace OperationStacked.Controllers;
 public class ExerciseController : ControllerBase
 {
     private readonly IExerciseCreationService _exerciseCreationService;
-    private readonly IExerciseRetrievalService _exerciseRetrievalService;
     private readonly IExerciseRepository _exerciseRepository;
 
-    public ExerciseController(IExerciseCreationService workoutCreationService,
-        IWorkoutExerciseProgressionService workoutExerciseProgressionService,
-        IExerciseRetrievalService exerciseRetrievalService,
-        IExerciseRepository exerciseRepository, IWorkoutRepository workoutRepository)
+    public ExerciseController(IExerciseCreationService exerciseCreationService,
+        IExerciseRepository exerciseRepository)
     {
-        _exerciseCreationService = workoutCreationService;
-        _exerciseRetrievalService = exerciseRetrievalService;
+        _exerciseCreationService = exerciseCreationService;
         _exerciseRepository = exerciseRepository;
     }
 
@@ -39,27 +33,27 @@ public class ExerciseController : ControllerBase
 
     [HttpDelete]
     [ProducesResponseType(200, Type = typeof(bool))]
-    [Route("{exerciseId}/delete")]
+    [Route("{exerciseId:guid}/delete")]
     public async Task<IActionResult> DeleteExercise(
         [FromRoute] Guid exerciseId) =>
         Ok(await _exerciseRepository.DeleteExercise(exerciseId));
 
     [HttpDelete]
     [ProducesResponseType(200, Type = typeof(bool))]
-    [Route("{userId}/delete-all")]
+    [Route("{userId:guid}/delete-all")]
     public async Task<IActionResult> DeleteAllExercisesForUser(
         [FromRoute] Guid userId) =>
         Ok(await _exerciseRepository.DeleteAllExercisesForUser(userId));
 
     [HttpGet]
     [ProducesResponseType(200, Type = typeof(GetExerciseResult))]
-    [Route("{exerciseId}")]
+    [Route("{exerciseId:guid}")]
     public async Task<IActionResult> GetExerciseById(
         [FromRoute] Guid exerciseId) =>
         Ok(await _exerciseRepository.GetExerciseById(exerciseId));
 
     [HttpGet]
-    [Route("{userId}/all")]
+    [Route("{userId:guid}/all")]
     public async Task<IActionResult> GetAllExercisesByUserId(
         [FromRoute] Guid userId) => Ok(await _exerciseRepository.GetAllExercisesByUserId(userId));
     
