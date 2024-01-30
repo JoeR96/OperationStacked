@@ -19,25 +19,25 @@ public static class AmazonSimpleSystemsManagementExtensions
         return response.Parameter.Value;
     }
     
-    public static async Task<IServiceCollection> ConfigureConnectionStringFromOptionsAsync(this IServiceCollection services)
+    public static IServiceCollection ConfigureConnectionStringFromOptions(this IServiceCollection services)
     {
-        using (var serviceProvider = services.BuildServiceProvider())
+        var connectionString = Environment.GetEnvironmentVariable("OperationStackedConnectionString");
+
+        if (string.IsNullOrWhiteSpace(connectionString))
         {
-            var awsOptions = serviceProvider.GetRequiredService<IOptions<AWSOptions>>().Value;
-
-            var awsCredentials = new BasicAWSCredentials(awsOptions.AccessKeyId, awsOptions.SecretAccessKey);
-            var ssmClient = new AmazonSimpleSystemsManagementClient(awsCredentials, Amazon.RegionEndpoint.EUWest2);  // You can also refactor to use the Region from AWSOptions
-
-            var connectionString = RemovePortFromServer(await ssmClient.GetConnectionStringAsync("operation-stacked-connection-string"));
-
-            services.Configure<ConnectionStringOptions>(options =>
-            {
-                options.ConnectionString = connectionString;
-            });
+            throw new InvalidOperationException("Database connection string not found.");
         }
-    
+
+        connectionString = RemovePortFromServer(connectionString);
+
+        services.Configure<ConnectionStringOptions>(options =>
+        {
+            options.ConnectionString = connectionString;
+        });
+
         return services;
     }
+
 
     
     private static string RemovePortFromServer(string connectionString)

@@ -25,10 +25,6 @@ namespace OperationStacked.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("EquipmentStackKey")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<decimal>("IncrementCount")
                         .HasColumnType("decimal(65,30)");
 
@@ -36,6 +32,10 @@ namespace OperationStacked.Migrations
                         .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("InitialIncrements")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -156,7 +156,7 @@ namespace OperationStacked.Migrations
 
             modelBuilder.Entity("OperationStacked.Entities.User", b =>
                 {
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
@@ -180,7 +180,7 @@ namespace OperationStacked.Migrations
                     b.Property<int>("WorkoutWeeks")
                         .HasColumnType("int");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.ToTable("Users");
                 });
@@ -193,7 +193,7 @@ namespace OperationStacked.Migrations
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("UserAccountUserId")
+                    b.Property<Guid>("UserAccountId")
                         .HasColumnType("char(36)");
 
                     b.Property<int>("UserId")
@@ -203,7 +203,7 @@ namespace OperationStacked.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.HasIndex("UserAccountUserId");
+                    b.HasIndex("UserAccountId");
 
                     b.ToTable("UserRole");
                 });
@@ -347,7 +347,7 @@ namespace OperationStacked.Migrations
 
                     b.HasOne("OperationStacked.Entities.User", "UserAccount")
                         .WithMany("UserRoles")
-                        .HasForeignKey("UserAccountUserId")
+                        .HasForeignKey("UserAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
