@@ -38,8 +38,6 @@ public static class AmazonSimpleSystemsManagementExtensions
         return services;
     }
 
-
-    
     private static string RemovePortFromServer(string connectionString)
     {
         const string port = ":3306";
