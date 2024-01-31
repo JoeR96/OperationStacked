@@ -32,7 +32,7 @@ else
 }
 
 await builder.Services.SetAWSOptionsAsync();
-await builder.Services.ConfigureConnectionStringFromOptionsAsync();
+builder.Services.ConfigureConnectionStringFromOptions();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
