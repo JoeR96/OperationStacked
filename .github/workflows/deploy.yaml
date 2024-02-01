@@ -71,7 +71,7 @@ jobs:
             sudo docker pull ${{ secrets.ECR_URL }}/operation-stacked-workout:${{ env.APP_VERSION }}
 
             # Start the new containers
-            sudo docker run -d -p 5002:8080 \
+            sudo docker run -d -p 5002:8080 
               -e OperationStackedConnectionString=${{secrets.OPERATIONSTACKEDCONNECTIONSTRING}} 
               -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} 
               -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} 
