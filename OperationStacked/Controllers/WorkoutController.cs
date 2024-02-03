@@ -81,6 +81,7 @@ namespace OperationStacked.Controllers
             [FromQuery] int pageSize = 10)
         {
             var result = await _exerciseRetrievalService.GetAllWorkouts(userId, pageIndex, pageSize);
+
             return Ok(result);
         }
 
