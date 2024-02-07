@@ -1,9 +1,5 @@
-﻿using Amazon;
-using Amazon.Runtime;
-using Amazon.SecretsManager;
-using Amazon.SimpleSystemsManagement;
+﻿using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
-using Microsoft.Extensions.Options;
 using OperationStacked.Options;
 
 public static class AmazonSimpleSystemsManagementExtensions

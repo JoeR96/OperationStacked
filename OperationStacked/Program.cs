@@ -1,12 +1,6 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using OperationStacked.Data;
 using OperationStacked.Extensions.AuthenticationExtensions;
