@@ -9,9 +9,13 @@ namespace OperationStacked.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
+        [Required]
         public string ExerciseName { get; set; }
+        [Required]
         public Category Category { get; set; }
+        [Required]
         public EquipmentType EquipmentType { get; set; }
+        [Required]
         public Guid UserId { get; set; }
         public virtual ICollection<ExerciseHistory> ExerciseHistories { get; set; }
     }
