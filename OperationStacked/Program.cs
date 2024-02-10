@@ -56,7 +56,7 @@ var app = builder.Build();
 
 app.MapHealthChecks("/health");
 app.UseCors("MyPolicy");
-app.UsePathBase("/workout");
+// app.UsePathBase("/workout");
 
 
 app.UseSwaggerUI(c =>
