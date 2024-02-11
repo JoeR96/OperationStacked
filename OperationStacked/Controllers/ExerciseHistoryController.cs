@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using Microsoft.AspNetCore.Mvc;
 using OperationStacked.DTOs;
+using OperationStacked.Entities;
 using OperationStacked.Response;
 using OperationStacked.Services;
 
@@ -19,7 +20,7 @@ public class ExerciseHistoryController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(200, Type = typeof(GetExerciseResult))]
+    [ProducesResponseType(200, Type = typeof(List<ExerciseHistory>))]
     [Route("{exerciseId:guid}")]
     public async Task<IActionResult> GetExerciseHistoryById(
         [FromRoute] Guid exerciseId) =>
