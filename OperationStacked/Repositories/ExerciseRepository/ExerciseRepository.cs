@@ -66,6 +66,14 @@ namespace OperationStacked.Repositories
             await context.SaveChangesAsync();
         }
 
+        public async Task<Exercise> GetExerciseWithHistoriesById(Guid id)
+        {
+            return await _operationStackedContext.Exercises
+                .Include(x => x.ExerciseHistories)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+
         public async Task UpdateAsync(Exercise exercise)
         {
             _operationStackedContext.Exercises.Update(exercise);

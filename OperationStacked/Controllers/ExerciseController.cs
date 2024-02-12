@@ -57,5 +57,20 @@ public class ExerciseController : ControllerBase
     [ProducesResponseType(200,Type = typeof(List<Exercise>))]
     public async Task<IActionResult> GetAllExercisesByUserId(
         [FromRoute] Guid userId) => Ok(await _exerciseRepository.GetAllExercisesByUserId(userId));
+
+    [HttpGet("with-histories/{exerciseId:guid}")]
+    [ProducesResponseType(200, Type = typeof(Exercise))] // Adjust the return type if you have a specific DTO you'd rather use
+    public async Task<IActionResult> GetExerciseWithHistoriesById(
+        [FromRoute] Guid exerciseId)
+    {
+        var exerciseWithHistories = await _exerciseRepository.GetExerciseWithHistoriesById(exerciseId);
+        if (exerciseWithHistories == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(exerciseWithHistories);
+    }
+
     
 }
