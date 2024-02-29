@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OperationStacked.Entities
 {
-    public class Exercise 
+    public class Exercise
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

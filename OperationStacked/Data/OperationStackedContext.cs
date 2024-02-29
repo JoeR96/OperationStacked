@@ -19,8 +19,8 @@ namespace OperationStacked.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
-                optionsBuilder.UseMySql(_connectionString, serverVersion, options => options.EnableRetryOnFailure());
+                optionsBuilder.UseNpgsql(_connectionString, options =>
+                    options.EnableRetryOnFailure());
             }
             base.OnConfiguring(optionsBuilder);
         }

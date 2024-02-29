@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using Microsoft.AspNetCore.Mvc;
+using OperationStacked.DTOs;
 using OperationStacked.Entities;
 using OperationStacked.Repositories;
 using OperationStacked.Repositories.WorkoutRepository;
@@ -54,7 +55,7 @@ public class ExerciseController : ControllerBase
 
     [HttpGet]
     [Route("{userId:guid}/all")]
-    [ProducesResponseType(200,Type = typeof(List<Exercise>))]
+    [ProducesResponseType(200,Type = typeof(List<ExerciseDto>))]
     public async Task<IActionResult> GetAllExercisesByUserId(
         [FromRoute] Guid userId) => Ok(await _exerciseRepository.GetAllExercisesByUserId(userId));
 

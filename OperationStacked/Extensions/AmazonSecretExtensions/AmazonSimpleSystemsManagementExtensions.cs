@@ -24,8 +24,6 @@ public static class AmazonSimpleSystemsManagementExtensions
             throw new InvalidOperationException("Database connection string not found.");
         }
 
-        connectionString = RemovePortFromServer(connectionString);
-
         services.Configure<ConnectionStringOptions>(options =>
         {
             options.ConnectionString = connectionString;

@@ -64,17 +64,18 @@ namespace OperationStacked.Extensions.ServiceExtensions
             services.AddDbContext<OperationStackedContext>((serviceProvider, options) =>
             {
                 var connectionStringOptions = serviceProvider.GetRequiredService<IOptions<ConnectionStringOptions>>();
-                options.UseMySql(connectionStringOptions.Value.ConnectionString, new MySqlServerVersion(new Version(8, 0, 29)));
+                options.UseNpgsql(connectionStringOptions.Value.ConnectionString);
             }, ServiceLifetime.Transient);
 
             services.AddDbContextFactory<OperationStackedContext>((serviceProvider, options) =>
             {
                 var connectionStringOptions = serviceProvider.GetRequiredService<IOptions<ConnectionStringOptions>>();
-                options.UseMySql(connectionStringOptions.Value.ConnectionString, new MySqlServerVersion(new Version(8, 0, 29)));
+                options.UseNpgsql(connectionStringOptions.Value.ConnectionString);
             }, ServiceLifetime.Transient);
 
             return services;
         }
+
     }
 
 }

@@ -10,10 +10,9 @@ using OperationStacked.Services.Logger;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Determine if the environment is local development
 bool isLocalDev = builder.Environment.IsDevelopment();
 
-string appVersion = "1.0.0"; // Default version
+string appVersion = "1.0.0";
 
 if (isLocalDev)
 {
@@ -25,7 +24,7 @@ else
     appVersion = Environment.GetEnvironmentVariable("APP_VERSION") ?? appVersion;
 }
 
-await builder.Services.SetAWSOptionsAsync();
+// await builder.Services.SetAWSOptionsAsync();
 builder.Services.ConfigureConnectionStringFromOptions();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -48,10 +47,27 @@ builder.Services.AddServices();
 builder.Services.AddHealthChecks();
 builder.Services.AddRepositories();
 builder.Services.AddCustomCorsPolicy();
-builder.Services.AddCognitoAuthentication();
+// builder.Services.AddCognitoAuthentication();
 builder.Services.AddSingleton<ICloudWatchLogger>(sp => new CloudWatchLogger("operation-stacked", RegionEndpoint.EUWest2));
 builder.Services.AddOperationStackedContext();
 
+ static string CustomSchemaIdStrategy(Type currentClass)
+{
+    var className = currentClass.Name;
+    if (className.EndsWith("Dto"))
+    {
+        className = className.Substring(0, className.Length - 3);
+    }
+    return className;
+}
+
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+    // Use the custom schema ID strategy
+    c.CustomSchemaIds(CustomSchemaIdStrategy);
+});
 var app = builder.Build();
 
 app.MapHealthChecks("/health");
