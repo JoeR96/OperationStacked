@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using MySqlX.XDevAPI;
 using NUnit.Framework;
 using OperationStacked.Extensions.TemplateExtensions;
 using OperationStacked.TestLib;

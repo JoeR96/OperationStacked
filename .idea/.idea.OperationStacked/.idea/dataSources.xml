@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="OperationStacked" uuid="e65d5a3c-cc34-4698-a342-705090e8d61a">
-      <driver-ref>mysql.8</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://operation-stacked-db.cjmlgmxmo9qy.eu-west-2.rds.amazonaws.com:3306</jdbc-url>
-      <working-dir>$ProjectFileDir$</working-dir>
-    </data-source>
-    <data-source source="LOCAL" name="@operation-stacked-db.cjmlgmxmo9qy.eu-west-2.rds.amazonaws.com" uuid="2e970bb6-4863-4ac4-bafd-fca9e0622d6f">
-      <driver-ref>mysql.8</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://operation-stacked-db.cjmlgmxmo9qy.eu-west-2.rds.amazonaws.com:3306</jdbc-url>
-      <working-dir>$ProjectFileDir$</working-dir>
-    </data-source>
-    <data-source source="LOCAL" name="operation_stacked@13.42.72.4" uuid="563ca1fd-03e5-4677-b39c-65db76ef3e29">
+    <data-source source="LOCAL" name="OperationStacked" uuid="563ca1fd-03e5-4677-b39c-65db76ef3e29">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <configured-by-url>true</configured-by-url>

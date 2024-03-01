@@ -17,7 +17,8 @@ public static class AmazonSimpleSystemsManagementExtensions
     
     public static IServiceCollection ConfigureConnectionStringFromOptions(this IServiceCollection services)
     {
-        var connectionString = Environment.GetEnvironmentVariable("OperationStackedConnectionString");
+        var connectionString =
+            Environment.GetEnvironmentVariable("OperationStackedConnectionString");
 
         if (string.IsNullOrWhiteSpace(connectionString))
         {

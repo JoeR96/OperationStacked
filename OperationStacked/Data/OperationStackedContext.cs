@@ -64,7 +64,6 @@ namespace OperationStacked.Data
         public virtual DbSet<Exercise> Exercises { get; set; }
         public virtual DbSet<WorkoutExercise> WorkoutExercises { get; set; }
         public virtual DbSet<ExerciseHistory> ExerciseHistory { get; set; }
-
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<EquipmentStack> EquipmentStacks { get; set; }
         public virtual DbSet<Workout>  Workouts { get; set; }

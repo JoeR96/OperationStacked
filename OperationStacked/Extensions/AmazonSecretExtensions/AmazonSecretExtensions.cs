@@ -24,10 +24,10 @@ public static class AmazonSecretsManagerExtensions
 
         var config = new AWSOptions
         {        
-            AccessKeyId = await client.GetSecretAsync("AWS_ACCESS_KEY_ID"),
-            SecretAccessKey = await client.GetSecretAsync("AWS_SECRET_ACCESS_KEY"),
-            Region = Amazon.RegionEndpoint.EUWest2.ToString(),
-            UserPoolId = await client.GetSecretAsync("AWS_UserPoolId")
+            // AccessKeyId = await client.GetSecretAsync("AWS_ACCESS_KEY_ID"),
+            // SecretAccessKey = await client.GetSecretAsync("AWS_SECRET_ACCESS_KEY"),
+            // Region = Amazon.RegionEndpoint.EUWest2.ToString(),
+            // UserPoolId = await client.GetSecretAsync("AWS_UserPoolId")
         };
 
         // Configure AWSOptions for dependency injection
