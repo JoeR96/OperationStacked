@@ -48,6 +48,9 @@ jobs:
           tags: ${{ steps.login-ecr.outputs.registry }}/operation-stacked-workout:${{ env.APP_VERSION }}
           build-args: VERSION=${{ env.APP_VERSION }}
 
+      - name: Echo ECR Repository URI
+        run: echo "${{ steps.login-ecr.outputs.registry }}/operation-stacked-workout:${{ env.APP_VERSION }}"
+  
       - name: SSH into EC2 and deploy new container
         uses: appleboy/ssh-action@master
         with:
