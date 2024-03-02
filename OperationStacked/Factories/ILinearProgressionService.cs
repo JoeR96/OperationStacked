@@ -13,6 +13,7 @@ public interface ILinearProgressionService
     );
     Task<(LinearProgressionExercise, ExerciseCompletedStatus)> ProgressExercise(CompleteExerciseRequest request);
 
-    decimal CreateStack(Guid exerciseParentId, decimal workingWeight, int startIndex,
+    decimal CreateStack(Guid exerciseParentId,
+        decimal workingWeight, int startIndex,
         EquipmentStack stack);
 }
