@@ -8,7 +8,7 @@ on:
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
   ECR_REPOSITORY: operation-stacked-workout
-  MAJOR_VERSION: 0 # Fixed Major Version
+  MAJOR_VERSION: 0 # Fixed Major Versio
 
 jobs:
   deploy:
