@@ -1,17 +1,26 @@
-﻿namespace OperationStacked.Extensions.CorsExtensions;
+﻿using Microsoft.Extensions.DependencyInjection;
 
-public static class CorsExtensions
+namespace OperationStacked.Extensions.CorsExtensions
 {
-    public static void AddCustomCorsPolicy(this IServiceCollection services)
+    public static class CorsExtensions
     {
-        services.AddCors(options =>
+        public static void AddCustomCorsPolicy(this IServiceCollection services)
         {
-            options.AddPolicy("MyPolicy", builder =>
+            services.AddCors(options =>
             {
-                builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
+                options.AddPolicy("MyPolicy", builder =>
+                {
+                    builder.WithOrigins(
+                            "https://operationstacked.com",
+                            "http://localhost:5173",
+                            "https://localhost:5173",
+                            "http://localhost:4200",
+                            "https://your-domain-prefix.auth.eu-west-2.amazoncognito.com")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
             });
-        });
+        }
     }
 }
