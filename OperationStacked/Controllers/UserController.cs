@@ -53,12 +53,12 @@ namespace OperationStacked.Controllers
 
             if (ua == null || string.IsNullOrEmpty(ua.UserName))
             {
-                return NotFound($"User not found or UserName is null for userId: {userId}");
+                return Ok(new { UserName = string.Empty });
             }
 
-            var t = ua.UserName;
-            return Ok(t);
+            return Ok(ua.UserName);
         }
+
 
         
         [Route("username/{username}")]

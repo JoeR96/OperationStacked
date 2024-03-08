@@ -151,10 +151,6 @@ namespace OperationStacked.Controllers
 
                     await _workoutExerciseProgressionService.CompleteExercise(completeExerciseRequest);
                 }
-                else
-                {
-                    // Handle the case where there's no exercise scheduled for the current week.
-                }
             }
         }
 
