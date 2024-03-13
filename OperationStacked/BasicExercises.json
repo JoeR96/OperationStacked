@@ -1,0 +1,155 @@
+﻿[
+  {
+    "ExerciseName": "Bench Press",
+    "Category": 1,
+    "EquipmentType": 0
+  },
+  {
+    "ExerciseName": "Incline Dumbbell Press",
+    "Category": 1,
+    "EquipmentType": 2
+  },
+  {
+    "ExerciseName": "Chest Fly Machine",
+    "Category": 1,
+    "EquipmentType": 3
+  },
+  {
+    "ExerciseName": "Tricep Dips",
+    "Category": 4,
+    "EquipmentType": 1
+  },
+  {
+    "ExerciseName": "Tricep Overhead Extension",
+    "Category": 4,
+    "EquipmentType": 2
+  },
+  {
+    "ExerciseName": "Tricep Pulldowns",
+    "Category": 4,
+    "EquipmentType": 2
+  },
+  {
+    "ExerciseName": "Tricep Crucifix Pulldown",
+    "Category": 4,
+    "EquipmentType": 2
+  },
+  {
+    "ExerciseName": "Machine Assist Pull-Ups",
+    "Category": 2,
+    "EquipmentType": 1
+  },{
+    "ExerciseName": "Pull-Ups",
+    "Category": 2,
+    "EquipmentType": 6
+  },
+  {
+    "ExerciseName": "Barbell Rows",
+    "Category": 2,
+    "EquipmentType": 0
+  },
+  {
+    "ExerciseName": "Lat Pull Down",
+    "Category": 2,
+    "EquipmentType": 4
+  },
+  {
+    "ExerciseName": "Seated Cable Row",
+    "Category": 2,
+    "EquipmentType": 4
+  },
+  {
+    "ExerciseName": "Barbell Curl",
+    "Category": 3,
+    "EquipmentType": 0
+  },
+  {
+    "ExerciseName": "Bicep Curl",
+    "Category": 3,
+    "EquipmentType": 2
+  },
+  {
+    "ExerciseName": "Hammer Curl",
+    "Category": 3,
+    "EquipmentType": 2
+  },
+  {
+    "ExerciseName": "Squat",
+    "Category": 5,
+    "EquipmentType": 0
+  },
+  {
+    "ExerciseName": "Deadlift",
+    "Category": 4,
+    "EquipmentType": 0
+  },
+  {
+    "ExerciseName": "Romanian Deadlift",
+    "Category": 5,
+    "EquipmentType": 0
+  },
+  {
+    "ExerciseName": "Leg Press",
+    "Category": 5,
+    "EquipmentType": 3
+  },
+  {
+    "ExerciseName": "Lunges",
+    "Category": 5,
+    "EquipmentType": 2
+  },
+  {
+    "ExerciseName": "Calf Raises",
+    "Category": 5,
+    "EquipmentType": 3
+  },
+  {
+    "ExerciseName": "Overhead Press",
+    "Category": 0,
+    "EquipmentType": 0
+  },
+  {
+    "ExerciseName": "Lateral Raise",
+    "Category": 0,
+    "EquipmentType": 2
+  },  {
+    "ExerciseName": "Dumbell Row",
+    "Category": 4,
+    "EquipmentType": 2
+  },
+  {
+    "ExerciseName": "Front Raise",
+    "Category": 0,
+    "EquipmentType": 2
+  },
+  {
+    "ExerciseName": "Shrugs",
+    "Category": 0,
+    "EquipmentType": 0
+  },
+  {
+    "ExerciseName": "Cable Reverse Fly",
+    "Category": 0,
+    "EquipmentType": 4
+  },
+  {
+    "ExerciseName": "Clean and Press",
+    "Category": 4,
+    "EquipmentType": 0
+  },
+  {
+    "ExerciseName": "Smith Machine Squat",
+    "Category": 5,
+    "EquipmentType": 1
+  },
+  {
+    "ExerciseName": "Incline Smith Press",
+    "Category": 1,
+    "EquipmentType": 1
+  },
+  {
+    "ExerciseName": "One-Arm Dumbbell Row",
+    "Category": 2,
+    "EquipmentType": 1
+  }
+]

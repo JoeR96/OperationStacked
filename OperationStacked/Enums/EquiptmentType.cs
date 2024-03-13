@@ -7,6 +7,7 @@
         Dumbbell,
         Machine,
         Cable,
+        Bodyweight
     }
 
 

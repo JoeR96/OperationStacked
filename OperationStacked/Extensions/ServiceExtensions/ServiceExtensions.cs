@@ -12,6 +12,7 @@ using OperationStacked.Services.A2S;
 using OperationStacked.Services.ExerciseCreationService;
 using OperationStacked.Services.ExerciseProgressionService;
 using OperationStacked.Services.ExerciseRetrievalService;
+using OperationStacked.Services.SessionService;
 using OperationStacked.Services.UserAccountsService;
 using OperationStacked.Services.WorkoutService;
 
@@ -51,7 +52,8 @@ namespace OperationStacked.Extensions.ServiceExtensions
                 .AddTransient<IWorkoutExerciseService, WorkoutExerciseService>()
                 .AddTransient<LinearProgressionService>()
                 .AddTransient<IExerciseHistoryService, ExerciseHistoryService>()
-                .AddTransient<IWorkoutService, WorkoutService>();
+                .AddTransient<IWorkoutService, WorkoutService>()
+                .AddTransient<ISessionService, SessionService>();
 
         public static IServiceCollection AddRepositories(this IServiceCollection services)
             => services.AddTransient<IExerciseRepository, ExerciseRepository>()

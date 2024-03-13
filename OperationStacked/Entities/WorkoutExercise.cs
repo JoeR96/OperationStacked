@@ -10,7 +10,8 @@ public class WorkoutExercise
     public Guid Id { get; set; }
     public Guid WorkoutId { get; set; }
     [ForeignKey("Exercise")]
-    public Guid ExerciseId { get; set; }    public virtual Exercise Exercise { get; set; }
+    public Guid ExerciseId { get; set; }
+    public virtual Exercise Exercise { get; set; }
     public virtual ICollection<LinearProgressionExercise> LinearProgressionExercises { get; set; }
     public ExerciseTemplate Template { get; set; }
     public int LiftDay { get; set; }

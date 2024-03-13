@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using OperationStacked.DTOs;
 using OperationStacked.Entities;
 using OperationStacked.Repositories;
@@ -73,5 +74,40 @@ public class ExerciseController : ControllerBase
         return Ok(exerciseWithHistories);
     }
 
-    
+    [HttpGet]
+    [Route("{userId:guid}/generate-basic-exercises")]
+    [ProducesResponseType(200)]
+    public async Task<IActionResult> GenerateBasicExercises(Guid userId)
+    {
+        string filePath = Path.Combine(Directory.GetCurrentDirectory(), "BasicExercises.json");
+        string json = await System.IO.File.ReadAllTextAsync(filePath);
+
+        List<Exercise> exercises = JsonConvert.DeserializeObject<List<Exercise>>(json);
+
+        foreach (var exercise in exercises)
+        {
+            exercise.UserId = userId;
+        }
+
+
+        var exercisesToGenerate = new List<CreateExerciseRequest>();
+
+        foreach (var exercise in exercises)
+        {
+            var createExerciseRequest = new CreateExerciseRequest
+            {
+                ExerciseName = exercise.ExerciseName,
+                Category = exercise.Category,
+                EquipmentType = exercise.EquipmentType,
+                UserId = exercise.UserId
+            };
+
+            exercisesToGenerate.Add(createExerciseRequest);
+        }
+
+        var _ = await _exerciseCreationService.CreateExercises(exercisesToGenerate);
+
+        return Ok();
+    }
+
 }

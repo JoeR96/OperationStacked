@@ -56,6 +56,26 @@ namespace OperationStacked.Data
                     .HasForeignKey(h => h.ExerciseId)
                     .OnDelete(DeleteBehavior.Cascade);
 
+                modelBuilder.Entity<Session>()
+                    .HasMany(s => s.SessionExercises)
+                    .WithOne() // No inverse navigation property defined in SessionExercise
+                    .HasForeignKey(se => se.Id) // Assuming SessionId property is added to SessionExercise
+                    .OnDelete(DeleteBehavior.Cascade); // Ensuring cascade delete
+
+                // Configure SessionExercise and Set relationship
+                modelBuilder.Entity<SessionExercise>()
+                    .HasMany(se => se.Sets)
+                    .WithOne() // No inverse navigation property defined in Set
+                    .HasForeignKey(s => s.Id) // Assuming SessionExerciseId property is added to Set
+                    .OnDelete(DeleteBehavior.Cascade); // Ensuring cascade delete
+
+                // Configure SessionExercise and Exercise relationship
+                modelBuilder.Entity<SessionExercise>()
+                    .HasOne(se => se.Exercise)
+                    .WithMany() // Assuming no navigation property back from Exercise to SessionExercise
+                    .HasForeignKey(se => se.ExerciseId)
+                    .OnDelete(DeleteBehavior.Restrict); // Assuming you don't want deleting an Exercise to cascade
+
 
         }
 
@@ -67,6 +87,9 @@ namespace OperationStacked.Data
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<EquipmentStack> EquipmentStacks { get; set; }
         public virtual DbSet<Workout>  Workouts { get; set; }
+        public virtual DbSet<Session>  Sessions { get; set; }
+        public virtual DbSet<SessionExercise>  SessionExercises { get; set; }
+        public virtual DbSet<Set>  Sets { get; set; }
 
         public static decimal? SafeParseDecimal(string value)
         {
