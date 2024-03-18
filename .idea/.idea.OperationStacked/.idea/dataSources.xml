@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="OperationStacked" uuid="563ca1fd-03e5-4677-b39c-65db76ef3e29">
+    <data-source source="LOCAL" name="operation_stacked@13.42.72.4" uuid="563ca1fd-03e5-4677-b39c-65db76ef3e29">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <configured-by-url>true</configured-by-url>

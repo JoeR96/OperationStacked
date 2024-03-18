@@ -9,5 +9,6 @@ namespace OperationStacked.Repositories
         Task<List<Session>> GetSessionsByUserIdAsync(Guid userId);
         Task UpdateSessionAsync(Session session);
         Task DeleteSessionAsync(Guid sessionId);
+        Task<Session?> GetActiveSessionForUserAsync(Guid userId);
     }
 }

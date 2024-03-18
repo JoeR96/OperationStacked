@@ -122,4 +122,17 @@ public class SessionController : ControllerBase
         }
     }
     
+    [HttpGet("active-session/{userId}")]
+    [ProducesResponseType(typeof(ActiveSessionResponse),StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetActiveSessionForUser(Guid userId)
+    {
+       var result = await _sessionService.GetActiveSessionForUser(userId);
+       if (result is null)
+       {
+           return Ok(new ActiveSessionResponse(false));
+       }
+       
+       return Ok( new ActiveSessionResponse(true, result));
+ 
+    }
 }

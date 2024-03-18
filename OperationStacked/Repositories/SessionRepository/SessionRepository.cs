@@ -55,5 +55,16 @@ namespace OperationStacked.Repositories.SessionRepository
                 await context.SaveChangesAsync();
             }
         }
+
+        public async Task<Session?> GetActiveSessionForUserAsync(Guid userId)
+        {
+            await using var context = _operationStackedContext;
+            return await context.Sessions
+                .Where(s => s.UserId == userId)
+                .Where(s => s.IsActive == true)
+                .Include(s => s.SessionExercises)
+                .ThenInclude(e => e.Sets)
+                .FirstOrDefaultAsync();
+        }        
     }
 }

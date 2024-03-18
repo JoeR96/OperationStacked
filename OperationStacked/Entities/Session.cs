@@ -12,4 +12,5 @@ public class Session
     public DateTime SessionStartDateTime { get; set; }
     public string SessionName { get; set; }
     public List<SessionExercise> SessionExercises { get; set; } = new();
+    public bool IsActive { get; set; }
 }
