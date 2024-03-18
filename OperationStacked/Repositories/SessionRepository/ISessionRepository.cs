@@ -6,7 +6,7 @@ namespace OperationStacked.Repositories
     {
         Task InsertSessionAsync(Session session);
         Task<Session> GetSessionByIdAsync(Guid sessionId);
-        Task<List<Session>> GetSessionsByUserIdAsync(string userId);
+        Task<List<Session>> GetSessionsByUserIdAsync(Guid userId);
         Task UpdateSessionAsync(Session session);
         Task DeleteSessionAsync(Guid sessionId);
     }

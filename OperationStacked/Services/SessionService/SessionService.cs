@@ -86,4 +86,9 @@ public class SessionService : ISessionService
 
         return session;
     }
+
+    public async Task<List<Session>> GetSessionsByUserId(Guid userId)
+    {
+        return await _sessionRepository.GetSessionsByUserIdAsync(userId);
+    }
 }

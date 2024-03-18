@@ -28,16 +28,17 @@ namespace OperationStacked.Repositories.SessionRepository
                 .FirstOrDefaultAsync(s => s.Id == sessionId);
         }
 
-        public async Task<List<Session>> GetSessionsByUserIdAsync(string userId)
+        public async Task<List<Session>> GetSessionsByUserIdAsync(Guid userId)
         {
             await using var context = _operationStackedContext;
             return await context.Sessions
-                .Where(s => s.UserId == userId)
                 .Include(s => s.SessionExercises)
-                .ToListAsync();
+                .ThenInclude(e => e.Sets).ToListAsync();
         }
 
-        public async Task UpdateSessionAsync(Session session)
+    
+
+    public async Task UpdateSessionAsync(Session session)
         {
             await using var context = _operationStackedContext;
             context.Sessions.Update(session);

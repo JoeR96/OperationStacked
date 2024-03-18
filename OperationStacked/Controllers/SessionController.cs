@@ -105,4 +105,21 @@ public class SessionController : ControllerBase
             return StatusCode(500, "An error occurred while processing your request.");
         }
     }
+    
+    [HttpGet("all-sessions/{userId}")]
+    [ProducesResponseType(typeof(List<Session>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAllSessionsByUserId(Guid userId)
+    {
+        try
+        {
+            var sessions = await _sessionService.GetSessionsByUserId(userId);
+
+            return Ok(sessions);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while processing your request.");
+        }
+    }
+    
 }

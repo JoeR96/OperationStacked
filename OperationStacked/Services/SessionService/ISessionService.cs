@@ -10,5 +10,6 @@ namespace OperationStacked.Services
         Task AddSetToExerciseAsync(AddSetRequest addSetRequest);
         Task RemoveSetFromExerciseAsync(DeleteSetRequest deleteSetRequest);
         Task<Session?> GetSessionByIdAsync(Guid sessionId);
+        Task<List<Session>> GetSessionsByUserId(Guid sessionId);
     }
 }
