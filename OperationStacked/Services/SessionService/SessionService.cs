@@ -15,6 +15,7 @@ public class SessionService : ISessionService
 
     public async Task<Session> CreateSessionAsync(Session session)
     {
+        
         await _sessionRepository.InsertSessionAsync(session);
         return session;
     }

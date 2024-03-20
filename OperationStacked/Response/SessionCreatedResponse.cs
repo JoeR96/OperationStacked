@@ -1,3 +1,5 @@
-﻿namespace OperationStacked.Response;
+﻿using OperationStacked.Entities;
 
-public sealed record SessionCreatedResponse(string sessionName, DateTime SessionCreatedTime);
+namespace OperationStacked.Response;
+
+public sealed record SessionCreatedResponse(Session session);

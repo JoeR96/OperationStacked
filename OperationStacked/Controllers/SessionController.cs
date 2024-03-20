@@ -26,7 +26,7 @@ public class SessionController : ControllerBase
         try
         {
             var createdSession = await _sessionService.CreateSessionAsync(session);
-            return Ok(new SessionCreatedResponse(createdSession.SessionName, createdSession.SessionStartDateTime));
+            return Ok(new SessionCreatedResponse(createdSession));
         }
         catch (Exception ex)
         {
