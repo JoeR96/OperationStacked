@@ -10,5 +10,6 @@ namespace OperationStacked.Repositories
         Task UpdateSessionAsync(Session session);
         Task DeleteSessionAsync(Guid sessionId);
         Task<Session?> GetActiveSessionForUserAsync(Guid userId);
+        Task DeleteExerciseAsync(Guid id);
     }
 }

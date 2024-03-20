@@ -96,4 +96,9 @@ public class SessionService : ISessionService
     {
         return await _sessionRepository.GetActiveSessionForUserAsync(userId);
     }
+
+    public async Task RemoveExerciseFromSession(DeleteSessionExerciseRequest deleteSessionExerciseRequest)
+    {
+         await _sessionRepository.DeleteExerciseAsync(deleteSessionExerciseRequest.Id);
+    }
 }

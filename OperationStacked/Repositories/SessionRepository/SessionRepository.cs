@@ -65,6 +65,15 @@ namespace OperationStacked.Repositories.SessionRepository
                 .Include(s => s.SessionExercises)
                 .ThenInclude(e => e.Sets)
                 .FirstOrDefaultAsync();
-        }        
+        }
+
+        public async Task DeleteExerciseAsync(Guid id)
+        {
+            await using var context = _operationStackedContext;
+            var exercise = await context.SessionExercises.Where(s => s.Id == id).FirstOrDefaultAsync();
+            context.SessionExercises.Remove(exercise);
+
+            await context.SaveChangesAsync();
+        }
     }
 }

@@ -12,5 +12,6 @@ namespace OperationStacked.Services
         Task<Session?> GetSessionByIdAsync(Guid sessionId);
         Task<List<Session>> GetSessionsByUserId(Guid sessionId);
         Task<Session?> GetActiveSessionForUser(Guid userId);
+        Task RemoveExerciseFromSession(DeleteSessionExerciseRequest deleteSessionExerciseRequest);
     }
 }

@@ -84,6 +84,21 @@ public class SessionController : ControllerBase
         {
             return BadRequest(ex.Message);
         }
+    } 
+    
+    [HttpDelete("delete-exercise")]
+    public async Task<IActionResult> DeleteExercise([FromBody] DeleteSessionExerciseRequest deleteSessionExerciseRequest)
+    {
+        try
+        {
+             await _sessionService.RemoveExerciseFromSession(deleteSessionExerciseRequest);
+
+             return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpGet("{sessionId}")]
