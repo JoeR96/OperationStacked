@@ -21,7 +21,7 @@ namespace OperationStackedAuth.Tests
                 var authResponse = await authClient.LoginAsync(new LoginRequest
                 {
                     Email = "joeyyrichardson96@gmail.com",
-                    Password = "Zelfdwnq9512!"
+                    Password = "!"
                 });
                 var token = authResponse.AccessToken;
                 userId = authResponse.UserId;
